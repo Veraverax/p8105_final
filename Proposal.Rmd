@@ -25,10 +25,24 @@ Yuanxin Zhang   | yz3736
 
 
 #### The anticipated data sources
-
+Reference: https://dannyjra.github.io/02_Blog_JSON/blog
 ```{r}
+##library(jsonlite)
+##library(tibble)
+##library(dplyr)
 
+##covid_tbl = 
+##  stream_in(file("./data/covid.json")) %>% 
+##  jsonlite::flatten() %>% as_tibble
 
+##business_tbl = 
+##  stream_in(file("./data/business.json")) %>% 
+##  jsonlite::flatten() %>% as_tibble
+
+##yelp =
+##  inner_join(business_tbl, covid_tbl, by = "business_id")
+
+##yelp %>% count(state) %>% view
 ```
 
 #### The planned analyses / visualizations / coding challenges
