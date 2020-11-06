@@ -13,16 +13,16 @@ This dataset offers us a great opportunity to explore what factors are
 associated with wine ratings. We hope to conduct regression analysis of
 the wine rating and price based on location/grape type/notes/region and
 see if there are significant difference among these categorical
-predictors. The regression model would help customer estimate and
+predictors. The regression model would help customers estimate and
 predict wine rating with a series of wine characteristics. We also want
-to provide people with a interactive website to visualize wine rating
+to provide people with a interactive website to visualize wine ratings
 and prices.
 
 #### The intended final products
 
-There will be four sectors in the final website. The first one would be
-a descriptive statistics and static visualization page. The second part
-will be the regression analysis results. The third part will be
+There will be four main sections in the final website. The first would
+be a descriptive statistics and static visualization page. The second
+part will be the regression analysis results. The third part will be
 interactive plots showing detailed information of wine characteristics.
 The fourth part will be a world map with wine rating information.
 
@@ -30,10 +30,10 @@ The fourth part will be a world map with wine rating information.
 
 The data for this project is downloaded from
 <https://www.kaggle.com/zynicide/wine-reviews>. It was scraped on
-November 22nd, 2017 from WineEnthusiast Rating database
-(<https://www.winemag.com/?s=&drink_type=wine>). It contains 130k wine
-reviews with variety, location, winery, price, description and reviewer
-information.
+November 22nd, 2017 from the [WineEnthusiast Rating
+database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k
+wine reviews with variety, location, winery, price, description and
+reviewer information.
 
 #### The planned analyses / visualizations / coding challenges
 
@@ -65,9 +65,9 @@ categorical variables for regression analysis
 
 ##### Coding Challenges:
 
-1\) Extract notes information from the text description; 2) Generate
-coordiates using some packages; 3)Level of significance of the
-regression model; 4) Missing/duplicate data problem
+1\) Extract notes information from text description; 2) Generate
+coordinates using packages; 3) Level of significance of the regression
+model; 4) Dealing with missing/duplicate data
 
 #### The planned timeline
 
