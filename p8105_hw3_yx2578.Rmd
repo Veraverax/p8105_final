@@ -1,0 +1,219 @@
+---
+title: "Homework 3"
+author: Vera Xu
+output: github_document
+---
+
+This is my solution to HW3.
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(p8105.datasets)
+```
+
+
+### Problem 1 demonstrated by Jeff in class
+
+```{r}
+data("instacart")
+```
+
+This dataset contains `r nrow(instacart)` rows and ... columns. 
+
+Observations are the level of items in orders by user. There are user / order variables -- user ID, order ID, order day, and order hour. There are also item variables -- name, aisle, department, and some numeric codes. 
+
+How many aisles, and which are most items from?
+
+```{r, message = FALSE, warning = FALSE}
+instacart %>% 
+	count(aisle) %>% 
+	arrange(desc(n))
+```
+
+
+Let's make a plot
+
+```{r, message = FALSE, warning = FALSE}
+instacart %>% 
+	count(aisle) %>% 
+	filter(n > 10000) %>% 
+	mutate(
+		aisle = factor(aisle),
+		aisle = fct_reorder(aisle, n)
+	) %>% 
+	ggplot(aes(x = aisle, y = n)) + 
+	geom_point() + 
+	theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+
+Let's make a table!!
+
+```{r, message = FALSE, warning = FALSE}
+instacart %>% 
+	filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
+	group_by(aisle) %>% 
+	count(product_name) %>% 
+	mutate(rank = min_rank(desc(n))) %>% 
+	filter(rank < 4) %>% 
+	arrange(aisle, rank) %>% 
+	knitr::kable()
+```
+
+
+Apples vs ice cream..
+
+```{r, message = FALSE, warning = FALSE}
+instacart %>% 
+	filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
+	group_by(product_name, order_dow) %>% 
+	summarize(mean_hour = mean(order_hour_of_day)) %>% 
+	pivot_wider(
+		names_from = order_dow,
+		values_from = mean_hour
+	)
+```
+
+### Question 2
+
+
+#### Load and tidy the data
+
+```{r, message = FALSE, warning = FALSE}
+p2_df = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+   activity_1:activity_1440,
+   names_prefix = "activity_",
+   names_to = "min",
+   values_to = "activity"
+   ) %>%
+   mutate(
+    weekday = ifelse(day %in% c("Saturday", "Sunday"), FALSE, TRUE),
+    min = as.numeric(min),
+    day = factor(day, 
+                 levels=c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+                 ) 
+    )%>%
+  arrange(day) %>%
+  select(-day_id)
+```
+
+* The resulting dataset contains `r ncol(p2_df)` columns and `r nrow(p2_df)` rows.
+* Variables are: week, day of the week, weekday (True or False), minute of the day and activity. 
+
+
+
+#### Total activity of each day
+
+Total activity of each day is computed using the following code chunk: 
+
+```{r, message = FALSE, warning = FALSE}
+p2_df %>%
+  group_by(week, day) %>% 
+  summarize(total_activity = sum(activity))%>%
+  mutate(total_activity = round(total_activity, 0))%>%
+  pivot_wider (
+    names_from = day,
+    values_from = total_activity
+  )
+```
+
+* It seems that this person tend to have a stable level of activity over the weekdays, with extremely low activity levels on the Saturday of week 4 and 5.
+* It also seems like this person is more active on week 2 Friday, Week 3 Monday and Week 5 Thursday and Friday.
+
+
+
+#### Activity level plot by day
+
+```{r, message = FALSE, warning = FALSE}
+p2_df %>%
+  ggplot(aes(x = min, y = activity)) + 
+  geom_line(aes(colour = day), alpha = 0.5)+
+  geom_smooth(aes(colour = day), alpha = 0.5)
+```
+
+* It looks like this person is active during daytime and not active after midnight.
+* There are several peaks of activity during weekdays in the mornings and evenings.
+* This person is more active during weekdays, in general.
+
+
+### Question 3
+
+
+#### Load and tidy the data
+
+```{r message = FALSE, warning = FALSE}
+p3_df =
+  ny_noaa %>%
+  separate(date, c("year", "month", "day"), sep = "-") %>%
+  mutate(
+    year = as.numeric(year),
+    month = as.numeric(month),
+    day = as.numeric(day),
+    prcp = as.numeric(prcp)*0.1,
+    tmax = as.numeric(tmax)*0.1,
+    tmin = as.numeric(tmin)*0.1)
+```
+
+* The tidied dataset contains `r ncol(p3_df)` columns and `r nrow(p3_df)` rows.
+* Variables are: weather station ID, year, month, day, precipitation (in mm), snowfall (in mm), snow depth (in mm), maximum temperature (in degree C), minimum temperature (in degree C). 
+* There are a lot of missing values in this data set:
+  * The precipitation variable has `r sum(is.na(p3_df$prcp))` missing values
+  * The snowfall has `r sum(is.na(p3_df$snow))` missing values
+  * The snow depth variable has `r sum(is.na(p3_df$snwd))` missing values
+  * The minimum temperature has `r sum(is.na(p3_df$tmin))` missing values
+  * The maximum temperature has `r sum(is.na(p3_df$tmax))` missing values
+
+#### Answer to the questions
+
+* For snowfall, most commonly observed values is 0, there are `r p3_df %>% filter(snow == 0) %>% nrow()` rows with a 0 snowfall record.
+
+* Plot showing the average max temperature in January and in July in each station across years:
+
+```{r, message = FALSE, warning = FALSE}
+p3_df %>%
+  filter(month == 1 | month == 7) %>%
+  group_by(id, year, month) %>%
+  mutate(
+    avg_tmax = mean(tmax, na.rm = TRUE),
+    month = month.name[month]) %>%
+  ggplot(aes(x = year, y = avg_tmax, color = month)) + 
+  geom_point(size = 0.1)+
+  geom_smooth(alpha = 0.5, se = FALSE)+
+  facet_grid(~month)+
+  theme(legend.position="none")+
+  scale_color_manual(values=c("blue", "orange"))
+```
+
+Observable and interpretable structure: It is warmer in July overall. The average maximum temperature among different stations has a smaller fluctuation range among July over the years, as compared to January. It seems that there is not apparent global warming trend from this plot. There seem to be extremely cold winters around 1993~1994 and around 2002-2004.
+
+
+* Make a two-panel plot that consist of
+  * maximum temperature vs minimum temperature for the full dataset
+  * distribution of snowfall values (between 0 and 100) over the years
+
+```{r, message = FALSE, warning = FALSE}
+library("patchwork")
+
+p3_3_a <- 
+  p3_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_hex()
+
+p3_3_b <- 
+p3_df %>% 
+  filter(snow < 100 & snow > 0) %>%
+  mutate(year = factor(year)) %>%
+  ggplot(aes(x = year, y = snow)) + 
+  geom_violin(aes(fill = year), alpha = 0.3, draw_quantiles = c(0.25, 0.5, 0.75))+
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position="none")
+
+p3_3_a/p3_3_b
+```
+
+
+
+
