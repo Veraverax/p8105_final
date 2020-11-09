@@ -9,21 +9,44 @@ library(tidyverse)
 ```
 
 Read in wine data.
+
+```{r}
+year_extract <- function(string) {
+  t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
+  sapply(t, function(x) {
+    if(length(x) > 0){
+      return(as.numeric(x))
+    } else {
+      return(NA)    
+    }
+  })
+}
+
+```
+
 ```{r}
 wine_df = 
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
   select(-region_2, -taster_twitter_handle) %>% 
   filter(variety == "Pinot Noir",
-         !is.na(region_1))
+         !is.na(region_1)
+         ) %>%
+  mutate(year = year_extract(title))
 
 ### remove region 2, taster twitter and missing values in region 1.
 
-
+wine_type <- wine_df %>% group_by(variety) %>% count() %>% arrange(desc(n)) %>% as.tibble()
 
 ```
 
+Separate wine types by four major types: white, red, sparkling
+
+https://media.winefolly.com/Different-Types-of-Wine-v2.jpg
+
+
 Explore the data
+
 ```{r}
 
 
@@ -42,4 +65,28 @@ Explore the data
 
 ### 1154 NA regions
 ```
+
+
+Questions to address for data cleaning and following analysis 
+
+* how to deal w/ NA values in region
+
+* possible to search for coordinates for the winery
+
+* how to focus on major wine types
+
+* find out frequency of wine notes from description and make visualization - to each type
+  ** red
+  ** white
+  ** rose
+  ** sparkling
+  ** dessert
+  
+  ** filter by higher ratings
+  
+
+Work breakdown:
+1. categorize by major types and subtypes, generate subsets - Vera and Jady
+2. figure out the word cloud functions - Yolanda
+3. figure out the geo_map searching functions - Helen
 
