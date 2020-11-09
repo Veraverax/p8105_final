@@ -1,27 +1,25 @@
 ---
-title: ""
+title: "Data Cleaning"
 output: github_document
 ---
 
 ```{r}
 library(tidyverse)
-
 ```
 
 Read in wine data.
 
-```{r}
+```{r extract_year_function}
 year_extract <- function(string) {
   t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
   sapply(t, function(x) {
-    if(length(x) > 0){
+    if (length(x) > 0) {
       return(as.numeric(x))
     } else {
       return(NA)    
     }
   })
 }
-
 ```
 
 ```{r}
@@ -93,4 +91,26 @@ Work breakdown:
 1. categorize by major types and subtypes, generate subsets - Vera and Jady
 2. figure out the word cloud functions - Yolanda
 3. figure out the geo_map searching functions - Helen
+
+```{r geocoding}
+wine_tidy_df = 
+  read_csv(
+  "./wine_data/winemag-data-130k-v2.csv") %>% 
+  janitor::clean_names() %>% 
+  select(-region_2, -taster_twitter_handle, -taster_name, -x1) %>% 
+  mutate(year = year_extract(title)) 
+
+wine_by_country = wine_tidy_df %>% 
+  group_by(country) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% view
+
+wine_us_df = wine_tidy_df %>% 
+  filter(country == "US")
+
+wine_ny_df = wine_tidy_df %>% 
+  filter(province == "New York") %>% 
+  view
+
+```
 
