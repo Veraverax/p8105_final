@@ -8,6 +8,7 @@ library(tidyverse)
 library(leaflet)
 library(ggplot2)
 library(tigris)
+library(readxl)
 ```
 
 Read in wine data.
@@ -30,18 +31,15 @@ wine_df =
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
   select(-region_2, -taster_twitter_handle) %>% 
-  filter(variety == "Pinot Noir",
-         !is.na(region_1)
-         ) %>%
   mutate(year = year_extract(title))
 
 ### remove region 2, taster twitter and missing values in region 1.
 
-wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
-            group_by(variety) %>% 
-            count() %>% 
-            arrange(desc(n)) %>% 
-            as.tibble()
+#wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
+#            group_by(variety) %>% 
+#            count() %>% 
+#            arrange(desc(n)) %>% 
+#            as.tibble()
 
 ```
 
@@ -50,25 +48,39 @@ Separate wine types by four major types: white, red, sparkling
 https://media.winefolly.com/Different-Types-of-Wine-v2.jpg
 
 
-Explore the data
-
+# Subset data to four types of wine: red, white, sparkling, and rose.
 ```{r}
 
+wine_type = 
+    read_xlsx(
+  "./wine_data/wine type.xlsx")  
 
-#wine_df %>% 
-#  count(taster_name) 
+wine_df = 
+  wine_df %>% 
+  mutate(type = ifelse(variety %in% wine_type$red, "red", 
+                       ifelse(variety %in% wine_type$white, "white", 
+                              ifelse(variety %in% wine_type$sparkling, "sparkling", 
+                                     ifelse(variety %in% wine_type$rose, "rose", NA )))))
 
-# 17 tasters, could be one of the x variables
+red_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "red")
+  
+white_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "white")
 
-#wine_df %>% 
-#  count(region_1) %>% 
-#  summarise(mean = mean(n))
-### more than 200 distinct regions
+sparkling_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "sparkling")
 
-#wine_df %>% 
-#  count(is.na(region_1))
-
-### 1154 NA regions
+rose_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "rose")
 ```
 
 
