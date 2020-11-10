@@ -5,6 +5,12 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(leaflet)
+library(ggplot2)
+library(tigris)
+
+# install.packages('tigris')
+# devtools::install_github('walkerke/tigris')
 ```
 
 Read in wine data.
@@ -105,12 +111,45 @@ wine_by_country = wine_tidy_df %>%
   count() %>% 
   arrange(desc(n)) %>% view
 
-wine_us_df = wine_tidy_df %>% 
-  filter(country == "US")
-
-wine_ny_df = wine_tidy_df %>% 
-  filter(province == "New York") %>% 
+wine_us = wine_tidy_df %>% 
+  filter(country == "US") %>% 
+  group_by(province) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  rename(
+    state = province,
+    total = n) %>% 
   view
-
 ```
 
+```{r choropleth_map}
+states <- states(cb = TRUE)
+
+states %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(popup = ~NAME)
+
+states_merged <- geo_join(states, wine_us, "STUSPS", "state")
+
+states_merged <- subset(states_merged, !is.na(total))
+
+pal <- colorNumeric("Blues", domain = states_merged$total)
+
+popup_wine <- paste0("Wineries: ", as.character(states_merged$total))
+
+leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(-98.483330, 38.712046, zoom = 4) %>% 
+  addPolygons(data = states_merged, 
+              fillColor = ~pal(states_merged$total), 
+              fillOpacity = 0.7, 
+              weight = 0.2, 
+              smoothFactor = 0.2, 
+              popup = ~popup_wine)
+  
+#   addLegend(pal = pal, 
+#            values = states_merged$total, 
+#            position = "bottomright", 
+#           title = "Wineries")
+```
