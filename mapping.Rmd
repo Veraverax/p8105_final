@@ -1,6 +1,6 @@
 ---
 title: "Mapping"
-output: github_document
+output: html_document
 ---
 
 ```{r}
@@ -60,7 +60,8 @@ states %>%
 
 states_merged_wine <- geo_join(states, wine_us, "NAME", "state")
 
-pal <- colorNumeric("Blues", domain = states_merged_wine$total)
+mybins <- c(0,10,50,100,200,1000,5000,8000,10000,Inf)
+mypal <- colorBin(palette = "Purples", domain = states_merged_wine$total, na.color = "transparent", bins = mybins)
 
 states_merged_wine <- subset(states_merged_wine, !is.na(total))
 
@@ -71,12 +72,12 @@ states_merged_wine %>%
   addProviderTiles("CartoDB.Positron") %>%
   setView(-98.483330, 38.712046, zoom = 4) %>% 
   addPolygons(
-    fillColor = ~pal(total), 
-    fillOpacity = 0.7, 
-    weight = 0.2, 
+    fillColor = ~mypal(total), 
+    fillOpacity = 1.0, 
+    weight = 0.4, 
     smoothFactor = 0.2, 
     popup = ~popup) %>% 
-  addLegend(pal = pal, 
+  addLegend(pal = mypal, 
             values = states_merged_wine$total, 
             position = "bottomright", 
             title = "Wineries")
