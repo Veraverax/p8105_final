@@ -1,0 +1,83 @@
+---
+title: "Mapping"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(leaflet)
+library(ggplot2)
+library(tigris)
+```
+
+Read in wine data.
+
+```{r extract_year_function}
+year_extract <- function(string) {
+  t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
+  sapply(t, function(x) {
+    if (length(x) > 0) {
+      return(as.numeric(x))
+    } else {
+      return(NA)    
+    }
+  })
+}
+```
+
+```{r geocoding}
+wine_tidy_df = 
+  read_csv(
+  "./wine_data/winemag-data-130k-v2.csv") %>% 
+  janitor::clean_names() %>% 
+  select(-region_2, -taster_twitter_handle, -taster_name, -x1) %>% 
+  mutate(year = year_extract(title)) 
+
+wine_by_country = wine_tidy_df %>% 
+  group_by(country) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% view
+
+wine_us = wine_tidy_df %>% 
+  filter(country == "US") %>% 
+  group_by(province) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  rename(
+    state = province,
+    total = n) %>% 
+  mutate(total = as.numeric(total)) %>% 
+  view
+```
+
+```{r choropleth_map}
+states <- states(cb = TRUE)
+
+states %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(popup = ~NAME)
+
+states_merged_wine <- geo_join(states, wine_us, "NAME", "state")
+
+pal <- colorNumeric("Blues", domain = states_merged_wine$total)
+
+states_merged_wine <- subset(states_merged_wine, !is.na(total))
+
+popup <- paste0("Wineries: ", as.character(states_merged_wine$total))
+
+states_merged_wine %>% 
+  leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(-98.483330, 38.712046, zoom = 4) %>% 
+  addPolygons(
+    fillColor = ~pal(total), 
+    fillOpacity = 0.7, 
+    weight = 0.2, 
+    smoothFactor = 0.2, 
+    popup = ~popup) %>% 
+  addLegend(pal = pal, 
+            values = states_merged_wine$total, 
+            position = "bottomright", 
+            title = "Wineries")
+```

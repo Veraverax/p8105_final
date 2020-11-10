@@ -1,3 +1,5 @@
+Data Cleaning
+================
 
 ``` r
 library(tidyverse)
@@ -14,13 +16,22 @@ library(tidyverse)
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
+``` r
+library(leaflet)
+library(ggplot2)
+library(tigris)
+```
+
+    ## To enable 
+    ## caching of data, set `options(tigris_use_cache = TRUE)` in your R script or .Rprofile.
+
 Read in wine data.
 
 ``` r
 year_extract <- function(string) {
   t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
   sapply(t, function(x) {
-    if(length(x) > 0){
+    if (length(x) > 0) {
       return(as.numeric(x))
     } else {
       return(NA)    
