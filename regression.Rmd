@@ -5,3 +5,13 @@ output:
     toc: true
     toc_float: true
 ---
+
+#### Exploratory analysis
+
+```{r}
+#fit_1 = lm(points ~ price + year + country, data = red_df)
+
+#fit_1 %>% 
+#  broom::tidy()
+```
+
