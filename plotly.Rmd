@@ -5,3 +5,280 @@ output:
     toc: true
     toc_float: true
 ---
+
+```{r}
+library(tidyverse)
+library(leaflet)
+library(ggplot2)
+library(plotly)
+library(readxl)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+
+Read in wine data.
+
+```{r extract_year_function}
+year_extract <- function(string) {
+  t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
+  sapply(t, function(x) {
+    if (length(x) > 0) {
+      return(as.numeric(x))
+    } else {
+      return(NA)    
+    }
+  })
+}
+```
+
+```{r}
+wine_df = 
+  read_csv(
+  "./wine_data/winemag-data-130k-v2.csv") %>% 
+  select(-region_2, -taster_twitter_handle) %>% 
+  mutate(year = year_extract(title))
+
+### remove region 2, taster twitter and missing values in region 1.
+
+#wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
+#            group_by(variety) %>% 
+#            count() %>% 
+#            arrange(desc(n)) %>% 
+#            as.tibble()
+
+```
+
+Separate wine types by four major types: white, red, sparkling
+
+https://media.winefolly.com/Different-Types-of-Wine-v2.jpg
+
+
+# Subset data to four types of wine: red, white, sparkling, and rose.
+```{r}
+
+wine_type = 
+    read_xlsx(
+  "./wine_data/wine type.xlsx")  
+
+wine_df = 
+  wine_df %>% 
+  mutate(type = ifelse(variety %in% wine_type$red, "red", 
+                       ifelse(variety %in% wine_type$white, "white", 
+                              ifelse(variety %in% wine_type$sparkling, "sparkling", 
+                                     ifelse(variety %in% wine_type$rose, "rose", NA )))))
+
+red_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "red")
+  
+white_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "white")
+
+sparkling_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "sparkling")
+
+rose_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "rose")
+```
+
+
+Make a plot of distribution of price/rating by type
+```{r}
+
+wine_df %>% 
+  filter(!is.na(type),
+         price <= 200) %>% 
+  ggplot(aes(x = type, y = price, color = type)) +
+  geom_violin()
+
+
+wine_df %>% 
+  filter(!is.na(type)) %>% 
+  rename(rating = points) %>% 
+  ggplot(aes(x = type, y = rating, color = type)) +
+  geom_violin()
+
+
+
+```
+
+Make a plot of distribution of price/rating by region
+```{r}
+y <- list(
+  title = "Mean Price"
+)
+wine_df %>% 
+  filter(!is.na(price)) %>% 
+  group_by(country) %>% 
+  summarise(mean = mean(price)) %>% 
+  mutate(country = fct_reorder(country, mean),
+         mean = round(mean, 2),
+        text_label=str_c("Country:", country, "\nmean price:", mean)) %>% 
+  plot_ly(
+  x = ~country, y = ~mean, color = ~country, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+  layout(yaxis = y)
+  
+  
+
+y <- list(
+  title = "Mean rating"
+)
+wine_df %>% 
+  filter(!is.na(points)) %>% 
+  group_by(country) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(country = fct_reorder(country, mean),
+         mean = round(mean, 2),
+        text_label=str_c("Country:", country, "\nmean rating:", mean)) %>% 
+  plot_ly(
+  x = ~country, y = ~mean, color = ~country, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+  layout(yaxis = y)
+
+
+
+
+
+```
+Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. 
+
+
+
+
+Make plots of ratings/price by year by wine type. 
+```{r}
+
+
+wine_df %>% 
+  filter(!is.na(points),
+         !is.na(type),
+         year > 1900) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_line() +
+  labs(y = "Mean rating",
+      x = "Year",
+      title = "change in mean ratings by wine type and year")
+
+
+
+wine_df %>% 
+  filter(!is.na(price),
+         !is.na(type),
+         year > 1900) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(price)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
+  geom_line() +
+  labs(y = "Mean price",
+      x = "Year",
+      title = "change in mean price by wine type in 1900-2017")
+
+
+wine_df %>% 
+  filter(!is.na(price),
+         !is.na(type),
+         year > 2000) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(price)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
+  geom_line() +
+  labs(y = "Mean price",
+      x = "Year",
+      title = "change in mean price by wine type in 21 century")
+```
+
+
+Make plots of ratings by taster.
+```{r}
+
+y <- list(
+  title = "Mean ratings"
+)
+wine_df %>% 
+  filter(!is.na(points)) %>% 
+  group_by(taster_name) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(taster_name = fct_reorder(taster_name, mean),
+         mean = round(mean, 2),
+        text_label=str_c("Taster:", taster_name, "\nmean rating:", mean)) %>% 
+  plot_ly(
+  x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+  layout(yaxis = y)
+  
+
+
+
+```
+
+
+who rates the highest price wine? (greater than $800)
+
+```{r}
+
+wine_df %>% 
+  filter(price >= 800,
+         !is.na(taster_name)) %>% 
+  group_by(taster_name) %>% 
+  count()
+
+
+```
+Most of the most expensive wine are rated by Roger Voss.
+
+
+
+```{r}
+wine_df %>% 
+  filter(!is.na(taster_name)) %>% 
+  group_by(taster_name) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  knitr::kable()
+
+```
+
+Roger Voss rates most number of wine at WineEthusiast Magazine. 
+
+
+Get the winery which has the top average ratings wine. 
+
+```{r}
+
+wine_df %>% 
+  filter(!is.na(winery)) %>% 
+  group_by(winery,country) %>% 
+  summarise(mean = mean(points)) %>% 
+  arrange(desc(mean)) %>% 
+  top_n(10)
+
+
+```
+
