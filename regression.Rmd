@@ -6,12 +6,136 @@ output:
     toc_float: true
 ---
 
+## Red Wine
+
 #### Exploratory analysis
 
 ```{r}
-#fit_1 = lm(points ~ price + year + country, data = red_df)
+library(tidyverse)
+library(modelr)
+library(mgcv)
+```
 
-#fit_1 %>% 
-#  broom::tidy()
+
+```{r}
+red_df_notes <- 
+  red_df %>%
+  mutate(bold = str_detect(red_df$description, "bold"),
+         tannis = str_detect(red_df$description, "tanni"),
+         dry = str_detect(red_df$description, "dry"),
+         acidic = str_detect(red_df$description, "acidi"),
+         price_cp1 = (price > 100) * (price - 100),
+         price_cp2 = (price < 30) * (price - 30))
+```
+
+```{r}
+fit_1 = lm(points ~ price + year + bold + tannis + dry + acidic, data = red_df_notes)
+
+fit_1 %>% 
+  broom::tidy()
+```
+
+```{r}
+# check_word <- function(word_list, sentence) 
+#   {
+#   t = 0
+#   for (i in 1:length(word_list))
+#   {
+#     t = t + as.numeric(str_detect(sentence, word_list[i]))
+#   }
+#   
+#   isTRUE(t > 0)
+# }
+```
+
+```{r}
+linear_mod_red = lm(points ~ price, data = red_df_notes)
+
+pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_notes)
+
+smooth_mod_red = gam(points ~ s(price), data = red_df_notes)
+```
+
+
+
+
+## White Wine
+
+```{r}
+fit_2 = lm(points ~ price + year, data = white_df)
+
+fit_2 %>% 
+  broom::tidy()
+```
+```{r}
+white_df %>%
+  filter(price >= 100) %>%
+  ggplot(aes (x = price, y = points, color = country))+ 
+  geom_point()
+
+white_df %>%
+  filter(points > 84) %>%
+  ggplot(aes (x = country, y = price))+ 
+  geom_boxplot()
+```
+
+```{r}
+white_df_notes = 
+  white_df %>%
+  mutate(price_cp1 = (price > 100) * (price - 100),
+         price_cp2 = (price < 30) * (price - 30))
+
+linear_mod_white = lm(points ~ price, data = white_df_notes)
+
+pwl_mod_white = lm(points ~ price + price_cp1 + price_cp2,  data = white_df_notes)
+
+smooth_mod_white = gam(points ~ s(price), data = white_df_notes)
+```
+
+
+```{r}
+library("patchwork")
+
+a =
+  red_df_notes %>% 
+  gather_predictions(linear_mod_red, pwl_mod_red, smooth_mod_red) %>%
+  mutate(model = fct_inorder(model)) %>%
+  ggplot(aes(x = price, y = points)) + 
+  geom_point(alpha = .05) +
+  geom_line(aes(y = pred), color = "dark red") + 
+  facet_grid(~model)
+  
+  
+b = 
+  white_df_notes %>% 
+  gather_predictions(linear_mod_white, pwl_mod_white, smooth_mod_white) %>%
+  mutate(model = fct_inorder(model)) %>%
+  ggplot(aes(x = price, y = points)) + 
+  geom_point(alpha = .05) +
+  geom_line(aes(y = pred), color = "yellow") + 
+  facet_grid(~model)
+
+a/b
+```
+
+```{r}
+white_cv_df =
+  crossv_mc(white_df_notes, 100) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble))
+
+# white_cv_df = 
+#   white_cv_df %>% 
+#   mutate(
+#     linear_mod  = map(train, ~lm(points ~ price, data = .price)),
+#     pwl_mod     = map(train, ~lm(armc ~ weight + weight_cp, data = .x)),
+#     smooth_mod  = map(train, ~gam(armc ~ s(weight), data = as_tibble(.x)))) %>% 
+#   mutate(
+#     rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
+#     rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
+#     rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
+# 
+
 ```
 
