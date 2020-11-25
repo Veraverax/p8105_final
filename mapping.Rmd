@@ -26,38 +26,98 @@ year_extract <- function(string) {
 }
 ```
 
-```{r geocoding}
+```{r tidying_data}
 wine_tidy_df = 
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
   janitor::clean_names() %>% 
   select(-region_2, -taster_twitter_handle, -taster_name, -x1) %>% 
-  mutate(year = year_extract(title)) 
+  mutate(year = year_extract(title))
+```
 
+```{r wine_us}
+wine_us = wine_tidy_df %>% 
+  filter(country == "US") %>%
+  rename(
+    state = province) %>% 
+  mutate(
+   state = na_if(state, "America")
+ ) %>%
+  select(state, points, price) %>% 
+  drop_na() %>% 
+  group_by(state) %>%
+  summarise(
+    total = n(),
+    avg_rating = mean(points),
+    avg_price = mean(price)
+  ) %>%
+  mutate(
+    avg_rating = round(avg_rating, 0), 
+    avg_price = round(avg_price, 2)
+    ) %>% 
+  arrange(desc(total)) %>% 
+  view
+```
+
+```{r missing_us}
+wine_us_missing = wine_tidy_df %>% 
+  filter(country == "US") %>%
+  rename(
+    state = province) %>% 
+  select(state, points, price) %>% 
+  mutate(
+   state = na_if(state, "America")
+ )
+
+map(wine_us_missing, ~ sum(is.na(.)))
+```
+
+### US Mapping Explanations:
+Missing Values:
+* State: 95
+* Points: 0
+* Price: 239
+Several wines that were made in the US did not have a province/state listed. Instead they were labeled as America. Recoded America into NA. many wines also did not have prices listed. Wines that did not have points, prices, or province were excluded from the final mapping dataset...
+
+Rounded rating to nearest whole number and price to 2 decimal places.
+
+```{r country_df}
 wine_by_country = wine_tidy_df %>% 
  mutate(
    country = recode(country, US = "United States")
  ) %>% 
-  group_by(country) %>% 
-  drop_na(country) %>% 
-  count() %>% 
-  arrange(desc(n)) %>% 
-  rename(
-    total = n) %>% 
-  mutate(total = as.numeric(total)) %>% 
-  view
-
-wine_us = wine_tidy_df %>% 
-  filter(country == "US") %>% 
-  group_by(province) %>% 
-  count() %>% 
-  arrange(desc(n)) %>% 
-  rename(
-    state = province,
-    total = n) %>% 
-  mutate(total = as.numeric(total)) %>% 
+  select(country, points, price) %>% 
+  group_by(country) %>%
+  drop_na() %>% 
+  summarise(
+    total = n(),
+    avg_rating = mean(points),
+    avg_price = mean(price)
+  ) %>%
+  mutate(
+    avg_rating = round(avg_rating, 0), 
+    avg_price = round(avg_price, 2)
+    ) %>% 
+  arrange(desc(total)) %>% 
   view
 ```
+
+```{r country_missing}
+wine_country_missing = wine_tidy_df %>% 
+ mutate(
+   country = recode(country, US = "United States")
+ ) %>% 
+  select(country, points, price)
+
+map(wine_country_missing, ~ sum(is.na(.)))
+```
+
+### World Mapping Explanations:
+Missing Values:
+* Country: 63
+* Points: 0
+* Price: 8996
+Several wines did not contain country of origin or price. Wines that did not have country or prices were excluded from the final world mapping dataset...
 
 ```{r choropleth_map}
 states <- states(cb = TRUE)
@@ -74,7 +134,12 @@ mypal <- colorBin(palette = "Purples", domain = states_merged_wine$total, na.col
 
 states_merged_wine <- subset(states_merged_wine, !is.na(total))
 
-popup <- paste0("Wineries: ", as.character(states_merged_wine$total))
+popup <- paste0(
+  states_merged_wine$NAME,"<br>", 
+  "Wineries: ", states_merged_wine$total, "<br>", 
+      "Avg Rating: ", states_merged_wine$avg_rating, "<br>",
+      "Avg Price: ", states_merged_wine$avg_price,"<br>"
+      )
 
 states_merged_wine %>% 
   leaflet() %>%
@@ -115,12 +180,17 @@ world_pal <- colorBin(palette = "Reds", domain = countries_merged_wine$total, na
 
 countries_merged_wine <- subset(countries_merged_wine, !is.na(total))
 
-world_popup <- paste0("Wineries: ", as.character(countries_merged_wine$total))
+world_popup <- paste0(
+  countries_merged_wine$country,"<br>", 
+  "Wineries: ", countries_merged_wine$total, "<br>", 
+      "Avg Rating: ", countries_merged_wine$avg_rating, "<br>",
+      "Avg Price: ", countries_merged_wine$avg_price,"<br>"
+      )
 
 countries_merged_wine %>% 
   leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
-  setView(-98.483330, 38.712046, zoom = 4) %>% 
+  setView( lat = 10, lng = 0 , zoom = 2) %>% 
   addPolygons(
     fillColor = ~world_pal(total), 
     fillOpacity = 1.0, 
@@ -133,3 +203,8 @@ countries_merged_wine %>%
             title = "Wineries")
 ```
 
+### Mapping Thoughts/Questions
+
+Is legend necessary?
+
+Aesthetics....better shape files? overlay is a lil funky looking
