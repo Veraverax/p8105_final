@@ -3,12 +3,13 @@ title: "Mapping"
 output: html_document
 ---
 
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(leaflet)
 library(ggplot2)
 library(tigris)
 library(plotly)
+library(rgdal)
 ```
 
 Read in wine data.
@@ -26,7 +27,7 @@ year_extract <- function(string) {
 }
 ```
 
-```{r tidying_data}
+```{r tidying_data, message=FALSE}
 wine_tidy_df = 
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
@@ -73,9 +74,11 @@ map(wine_us_missing, ~ sum(is.na(.)))
 
 ### US Mapping Explanations:
 Missing Values:
+
 * State: 95
 * Points: 0
 * Price: 239
+
 Several wines that were made in the US did not have a province/state listed. Instead they were labeled as America. Recoded America into NA. many wines also did not have prices listed. Wines that did not have points, prices, or province were excluded from the final mapping dataset...
 
 Rounded rating to nearest whole number and price to 2 decimal places.
@@ -112,12 +115,14 @@ map(wine_country_missing, ~ sum(is.na(.)))
 
 ### World Mapping Explanations:
 Missing Values:
+
 * Country: 63
 * Points: 0
 * Price: 8996
+
 Several wines did not contain country of origin or price. Wines that did not have country or prices were excluded from the final world mapping dataset...
 
-```{r choropleth_map}
+```{r choropleth_map, echo = T, warning = F, results = 'hide'}
 states <- states(cb = TRUE)
 
 states %>% 
@@ -153,13 +158,14 @@ state_map = states_merged_wine %>%
             values = states_merged_wine$total, 
             position = "bottomright", 
             title = "Wineries")
+```
 
+```{r state_map}
 state_map
 ```
 
-```{r world_choropleth}
-library(rgdal)
 
+```{r world_choropleth, echo = T, warning = F, results = 'hide'}
 world_spdf <- readOGR( 
   dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
   layer = "TM_WORLD_BORDERS_SIMPL-0.3",
@@ -199,11 +205,9 @@ world_map_nolab = countries_merged_wine %>%
             values = countries_merged_wine$total, 
             position = "bottomright", 
             title = "Wineries")
-
-world_map_nolab
 ```
 
-```{r world_map_labels}
+```{r world_map_labels, echo = T, warning = F, results = 'hide'}
 world_map_labels = countries_merged_wine %>% 
   leaflet() %>%
   addMapPane(name = "polygons", zIndex = 410) %>% 
@@ -224,22 +228,30 @@ world_map_labels = countries_merged_wine %>%
   addLayersControl(baseGroups = "CartoDB.PositronNoLabels",
                    overlayGroups = c("map labels",
                                      "country"))
+```
+
+```{r world_maps}
+world_map_nolab
 
 world_map_labels
 ```
 
-### Mapping Thoughts/Questions
 
-Is legend necessary?
+#### Mapping Thoughts/Questions
 
-For world map, aesthetics....overlay is a lil funky looking
+* Is legend necessary?
+
+* For world map, aesthetics....overlay is a lil funky looking
 Adding labels may help...
 (not sure how to deal with the overlap button tho...)
 
+Potential Ideas: 
+
+* https://rstudio.github.io/leaflet/showhide.html
+
 BaseMap, dark or light?
+
 Base Map options:
 http://leaflet-extras.github.io/leaflet-providers/preview/
-
-providers$CartoDB.DarkMatter
 
 Code adapted from https://www.r-graph-gallery.com/183-choropleth-map-with-leaflet.html
