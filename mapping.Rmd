@@ -141,7 +141,7 @@ popup <- paste0(
       "Avg Price: ", states_merged_wine$avg_price,"<br>"
       )
 
-states_merged_wine %>% 
+state_map = states_merged_wine %>% 
   leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
   setView(-98.483330, 38.712046, zoom = 4) %>% 
@@ -155,11 +155,11 @@ states_merged_wine %>%
             values = states_merged_wine$total, 
             position = "bottomright", 
             title = "Wineries")
+
+state_map
 ```
 
 ```{r world_choropleth}
-wine_by_country
-
 library(rgdal)
 
 world_spdf <- readOGR( 
@@ -187,7 +187,7 @@ world_popup <- paste0(
       "Avg Price: ", countries_merged_wine$avg_price,"<br>"
       )
 
-countries_merged_wine %>% 
+world_map_nolab = countries_merged_wine %>% 
   leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
   setView( lat = 10, lng = 0 , zoom = 2) %>% 
@@ -201,10 +201,47 @@ countries_merged_wine %>%
             values = countries_merged_wine$total, 
             position = "bottomright", 
             title = "Wineries")
+
+world_map_nolab
+```
+
+```{r world_map_labels}
+world_map_labels = countries_merged_wine %>% 
+  leaflet() %>%
+  addMapPane(name = "polygons", zIndex = 410) %>% 
+  addMapPane(name = "maplabels", zIndex = 420) %>% 
+  addProviderTiles("CartoDB.PositronNoLabels") %>%
+  addProviderTiles("CartoDB.PositronOnlyLabels", 
+                   options = leafletOptions(pane = "maplabels"),
+                   group = "map labels") %>%
+  setView( lat = 10, lng = 0 , zoom = 2) %>% 
+  addPolygons(
+    fillColor = ~world_pal(total), 
+    fillOpacity = 1.0, 
+    group = "country",
+    weight = 0.4, 
+    smoothFactor = 0.2, 
+    popup = ~world_popup,
+    options = leafletOptions(pane = "polygons")) %>%
+  addLayersControl(baseGroups = "CartoDB.PositronNoLabels",
+                   overlayGroups = c("map labels",
+                                     "country"))
+
+world_map_labels
 ```
 
 ### Mapping Thoughts/Questions
 
 Is legend necessary?
 
-Aesthetics....better shape files? overlay is a lil funky looking
+For world map, aesthetics....overlay is a lil funky looking
+Adding labels may help...
+(not sure how to deal with the overlap button tho...)
+
+BaseMap, dark or light?
+Base Map options:
+http://leaflet-extras.github.io/leaflet-providers/preview/
+
+providers$CartoDB.DarkMatter
+
+Code adapted from https://www.r-graph-gallery.com/183-choropleth-map-with-leaflet.html
