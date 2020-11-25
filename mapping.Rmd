@@ -55,8 +55,7 @@ wine_us = wine_tidy_df %>%
     avg_rating = round(avg_rating, 0), 
     avg_price = round(avg_price, 2)
     ) %>% 
-  arrange(desc(total)) %>% 
-  view
+  arrange(desc(total))
 ```
 
 ```{r missing_us}
@@ -98,8 +97,7 @@ wine_by_country = wine_tidy_df %>%
     avg_rating = round(avg_rating, 0), 
     avg_price = round(avg_price, 2)
     ) %>% 
-  arrange(desc(total)) %>% 
-  view
+  arrange(desc(total))
 ```
 
 ```{r country_missing}
