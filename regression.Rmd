@@ -114,7 +114,7 @@ b =
   geom_point(alpha = .05) +
   geom_line(aes(y = pred), color = "yellow") + 
   facet_grid(~model)
-
+b
 a/b
 ```
 

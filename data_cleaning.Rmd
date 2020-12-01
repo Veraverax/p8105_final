@@ -31,6 +31,10 @@ year_extract <- function(string) {
     }
   })
 }
+
+## update the regex - substrate winery name
+## save as new csv so that other rmd files get access
+
 ```
 
 ```{r}
