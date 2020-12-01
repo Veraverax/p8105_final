@@ -3,16 +3,27 @@ Data Cleaning
 
 ``` r
 library(tidyverse)
+<<<<<<< HEAD
+=======
+```
+
+    ## ── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+    ## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+    ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+    ## ✓ readr   1.3.1     ✓ forcats 0.5.0
+
+    ## ── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
+>>>>>>> 0303d1d9f14306c4c803b1648ac1ac54ec18017f
 library(leaflet)
 library(ggplot2)
 library(tigris)
 library(readxl)
-library(tidytext)
-library(RColorBrewer)
-library(tidytext)
-library(wordcloud2)
-library(knitr)
-library(DT)
 ```
 
 Read in wine data.
@@ -113,6 +124,7 @@ Questions to address for data cleaning and following analysis
   - how to focus on major wine types
 
   - find out frequency of wine notes from description and make
+<<<<<<< HEAD
     visualization - to each type \*\* red \*\* white \*\* rose \*\*
     sparkling \*\* dessert
 
@@ -202,6 +214,10 @@ red_word %>%
 <!--/html_preserve-->
 
 \*\* filter by higher ratings
+=======
+    visualization - to each type (filter by higher ratings) \*\* red
+    \*\* white \*\* rose \*\* sparkling \*\* dessert
+>>>>>>> 0303d1d9f14306c4c803b1648ac1ac54ec18017f
 
 Work breakdown: 1. categorize by major types and subtypes, generate
 subsets - Vera and Jady 2. figure out the word cloud functions - Yolanda

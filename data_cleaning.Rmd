@@ -1,7 +1,6 @@
 ---
 title: "Data Cleaning"
 output: github_document
-always_allow_html: true
 ---
 
 ```{r}
@@ -10,12 +9,6 @@ library(leaflet)
 library(ggplot2)
 library(tigris)
 library(readxl)
-library(tidytext)
-library(RColorBrewer)
-library(tidytext)
-library(wordcloud2)
-library(knitr)
-library(DT)
 ```
 
 Read in wine data.
@@ -98,49 +91,13 @@ Questions to address for data cleaning and following analysis
 
 * how to focus on major wine types
 
-* find out frequency of wine notes from description and make visualization - to each type
+* find out frequency of wine notes from description and make visualization - to each type (filter by higher ratings)
   ** red
   ** white
   ** rose
   ** sparkling
   ** dessert
-```{r}
-# reshape the .txt data frame into one column
-red_word = 
-  red_df %>% 
-  select(description) %>% 
-  unnest_tokens(word, description) %>% 
-  dplyr::count(word, sort = TRUE) %>% 
-  ungroup()
 
-# remove uninformative words
-data("stop_words")
-red_word = 
-  anti_join(red_word, stop_words)
-# remove more uninformative words in our study
-other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend"))
-red_word = 
-  red_word %>% 
-  anti_join(other_meaningless, by = "word")
-# remove numbers
-nums = red_word %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique()
-red_word = red_word %>% 
-  anti_join(nums, by = "word")
-# check the top 10 words
-red_word %>% head(10)
-
-# define a nice color palette
-pal <- brewer.pal(8,"Dark2")
-# plot word cloud
-red_word %>% 
-  wordcloud2(size = 1.6, shape = 'star', color = 'random-dark')
-
-# searchable data table for words
-red_word %>%
-  DT::datatable()
-```
-  
-  ** filter by higher ratings
   
 
 Work breakdown:
