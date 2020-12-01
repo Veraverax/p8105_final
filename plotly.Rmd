@@ -118,31 +118,18 @@ Make plots of ratings/price by year by wine type.
 wine_df %>% 
   filter(!is.na(points),
          !is.na(type),
-         year > 1900) %>% 
+         year > 2000) %>% 
   group_by(year,type) %>% 
   summarise(mean = mean(points)) %>% 
   mutate(mean = round(mean, 2)) %>% 
   ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
   geom_line() +
   labs(y = "Mean rating",
       x = "Year",
-      title = "change in mean ratings by wine type and year")
+      title = "change in mean ratings by wine type in 21 century")
 
 
-
-wine_df %>% 
-  filter(!is.na(price),
-         !is.na(type),
-         year > 1900) %>% 
-  group_by(year,type) %>% 
-  summarise(mean = mean(price)) %>% 
-  mutate(mean = round(mean, 2)) %>% 
-  ggplot(aes(x = year, y = mean, color = type))+
-  geom_point()+
-  geom_line() +
-  labs(y = "Mean price",
-      x = "Year",
-      title = "change in mean price by wine type in 1900-2017")
 
 
 wine_df %>% 
@@ -167,7 +154,8 @@ Make plots of ratings by taster.
 y <- list(
   title = "Mean ratings"
 )
-wine_df %>% 
+
+  wine_df %>% 
   filter(!is.na(points)) %>% 
   group_by(taster_name) %>% 
   summarise(mean = mean(points)) %>% 
@@ -177,8 +165,9 @@ wine_df %>%
   plot_ly(
   x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
   type = "bar", colors = "viridis") %>% 
-  layout(yaxis = y)
-  
+  layout(yaxis = y) 
+
+
 
 
 
