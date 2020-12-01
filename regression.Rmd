@@ -6,7 +6,6 @@ output:
     toc_float: true
 ---
 
-## Red Wine
 
 #### Exploratory analysis
 
@@ -19,88 +18,87 @@ library(mgcv)
 
 ```{r}
 red_df =  read_csv("./wine_data/tidy/wine_red.csv")
+white_df = read_csv("./wine_data/tidy/wine_white.csv") 
 
-red_df_notes =
-  red_df%>%
-  mutate(bold = str_detect(red_df$description, "bold"),
-         tannis = str_detect(red_df$description, "tanni"),
-         dry = str_detect(red_df$description, "dry"),
-         acidic = str_detect(red_df$description, "acidi"),
+red_df_reg =
+  red_df %>%
+  filter(year>=2000) %>%
+  mutate(
+         bold = str_detect(description, "bold"),
+         tannis = str_detect(description, "tanni"),
+         dry = str_detect(description, "dry"),
+         acidic = str_detect(description, "acidi"),
          price_cp1 = (price > 100) * (price - 100),
+         price_cp2 = (price < 30) * (price - 30)
+    )
+
+white_df_reg = 
+  white_df %>%
+  filter(year>=2000) %>%
+  mutate(price_cp1 = (price > 100) * (price - 100),
          price_cp2 = (price < 30) * (price - 30))
 ```
 
+## Fit models for red wine points
+
 ```{r}
-fit_1 = lm(points ~ price + year + bold + tannis + dry + acidic, data = red_df_notes)
+fit_1 = lm(points ~ price + year + bold + tannis + dry + acidic
+           , 
+           data = red_df_reg)
 
 fit_1 %>% 
   broom::tidy()
 ```
 
 ```{r}
-# check_word <- function(word_list, sentence) 
-#   {
-#   t = 0
-#   for (i in 1:length(word_list))
-#   {
-#     t = t + as.numeric(str_detect(sentence, word_list[i]))
-#   }
-#   
-#   isTRUE(t > 0)
-# }
-```
+linear_mod_red = lm(points ~ price, data = red_df_reg)
 
-```{r}
-linear_mod_red = lm(points ~ price, data = red_df_notes)
+pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)
 
-pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_notes)
-
-smooth_mod_red = gam(points ~ s(price), data = red_df_notes)
+smooth_mod_red = gam(points ~ s(price), data = red_df_reg)
 ```
 
 
 
-
-## White Wine
+## Fit models for white wine points
 
 ```{r}
-fit_2 = lm(points ~ price + year, data = white_df)
+fit_2 = lm(points ~ price + year, data = white_df_reg)
 
 fit_2 %>% 
   broom::tidy()
+
+linear_mod_white = lm(points ~ price, data = white_df_reg)
+
+pwl_mod_white = lm(points ~ price + price_cp1 + price_cp2,  data = white_df_reg)
+
+smooth_mod_white = gam(points ~ s(price), data = white_df_reg)
 ```
 ```{r}
-white_df =
-  read_csv("./wine_data/tidy/wine_red.csv") %>%
+red_df_reg %>%
   filter(price >= 100) %>%
   ggplot(aes (x = price, y = points, color = country))+ 
   geom_point()
 
-white_df %>%
+white_df_reg %>%
+  filter(price >= 100) %>%
+  ggplot(aes (x = price, y = points, color = country))+ 
+  geom_point()
+
+white_df_reg %>%
   filter(points > 84) %>%
   ggplot(aes (x = country, y = price))+ 
   geom_boxplot()
+
 ```
 
-```{r}
-white_df_notes = 
-  white_df %>%
-  mutate(price_cp1 = (price > 100) * (price - 100),
-         price_cp2 = (price < 30) * (price - 30))
-
-linear_mod_white = lm(points ~ price, data = white_df_notes)
-
-pwl_mod_white = lm(points ~ price + price_cp1 + price_cp2,  data = white_df_notes)
-
-smooth_mod_white = gam(points ~ s(price), data = white_df_notes)
-```
-
+Plot the 3 models with residuals
 
 ```{r}
 library("patchwork")
 
 a =
-  red_df_notes %>% 
+  red_df_reg %>% 
   gather_predictions(linear_mod_red, pwl_mod_red, smooth_mod_red) %>%
   mutate(model = fct_inorder(model)) %>%
   ggplot(aes(x = price, y = points)) + 
@@ -108,25 +106,27 @@ a =
   geom_line(aes(y = pred), color = "dark red") + 
   facet_grid(~model)
   
-  
 b = 
-  white_df_notes %>% 
+  white_df_reg %>% 
   gather_predictions(linear_mod_white, pwl_mod_white, smooth_mod_white) %>%
   mutate(model = fct_inorder(model)) %>%
   ggplot(aes(x = price, y = points)) + 
   geom_point(alpha = .05) +
   geom_line(aes(y = pred), color = "yellow") + 
   facet_grid(~model)
+
+
+a
+
 b
-a/b
 ```
 
 ```{r}
-white_cv_df =
-  crossv_mc(white_df_notes, 100) %>% 
-  mutate(
-    train = map(train, as_tibble),
-    test = map(test, as_tibble))
+# white_cv_df =
+#   crossv_mc(white_df_reg, 100) %>% 
+#   mutate(
+#     train = map(train, as_tibble),
+#     test = map(test, as_tibble))
 
 # white_cv_df = 
 #   white_cv_df %>% 
@@ -139,6 +139,5 @@ white_cv_df =
 #     rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
 #     rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
 # 
-
 ```
 
