@@ -43,7 +43,7 @@ wine_df =
   select(-region_2, -taster_twitter_handle) %>% 
   mutate(year = year_extract(title))
 
-write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
+
 ```
 
 Separate wine types by four major types: white, red, sparkling
@@ -82,7 +82,7 @@ rose_df =
   wine_df %>% 
     filter(!is.na(type),
            type == "rose")
-
+write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
 write.csv(red_df, file = "./wine_data/tidy/wine_red.csv")
 write.csv(white_df, file = "./wine_data/tidy/wine_white.csv")
 write.csv(sparkling_df, file = "./wine_data/tidy/wine_sparkling.csv")
