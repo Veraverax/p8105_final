@@ -22,7 +22,7 @@ Read in wine data.
 
 ```{r extract_year_function}
 year_extract <- function(string) {
-  t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
+  t <- regmatches(string, regexec("[1][9][4-9][0-9]|[2][0-9][0-9][0-9]", string))
   sapply(t, function(x) {
     if (length(x) > 0) {
       return(as.numeric(x))
@@ -32,10 +32,9 @@ year_extract <- function(string) {
   })
 }
 
-## update the regex - substrate winery name
-## save as new csv so that other rmd files get access
-
 ```
+
+Read in the wine data and generate year variable and save as csv file.
 
 ```{r}
 wine_df = 
@@ -44,24 +43,15 @@ wine_df =
   select(-region_2, -taster_twitter_handle) %>% 
   mutate(year = year_extract(title))
 
-### remove region 2, taster twitter and missing values in region 1.
-
-#wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
-#            group_by(variety) %>% 
-#            count() %>% 
-#            arrange(desc(n)) %>% 
-#            as.tibble()
-
+write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
 ```
 
 Separate wine types by four major types: white, red, sparkling
 
 https://media.winefolly.com/Different-Types-of-Wine-v2.jpg
 
-
 # Subset data to four types of wine: red, white, sparkling, and rose.
 ```{r}
-
 wine_type = 
     read_xlsx(
   "./wine_data/wine type.xlsx")  
@@ -92,6 +82,11 @@ rose_df =
   wine_df %>% 
     filter(!is.na(type),
            type == "rose")
+
+write.csv(red_df, file = "./wine_data/tidy/wine_red.csv")
+write.csv(white_df, file = "./wine_data/tidy/wine_white.csv")
+write.csv(sparkling_df, file = "./wine_data/tidy/wine_sparkling.csv")
+write.csv(rose_df, file = "./wine_data/tidy/wine_rose.csv")
 ```
 
 

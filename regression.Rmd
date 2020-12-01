@@ -18,8 +18,10 @@ library(mgcv)
 
 
 ```{r}
-red_df_notes <- 
-  red_df %>%
+red_df =  read_csv("./wine_data/tidy/wine_red.csv")
+
+red_df_notes =
+  red_df%>%
   mutate(bold = str_detect(red_df$description, "bold"),
          tannis = str_detect(red_df$description, "tanni"),
          dry = str_detect(red_df$description, "dry"),
@@ -68,7 +70,8 @@ fit_2 %>%
   broom::tidy()
 ```
 ```{r}
-white_df %>%
+white_df =
+  read_csv("./wine_data/tidy/wine_red.csv") %>%
   filter(price >= 100) %>%
   ggplot(aes (x = price, y = points, color = country))+ 
   geom_point()
