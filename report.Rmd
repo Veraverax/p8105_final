@@ -1,0 +1,105 @@
+---
+title: "report"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(leaflet)
+library(ggplot2)
+library(plotly)
+library(readxl)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r}
+wine_df = 
+  read_csv(
+  "./wine_data/tidy/wine_all.csv")
+
+### remove region 2, taster twitter and missing values in region 1.
+
+#wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
+#            group_by(variety) %>% 
+#            count() %>% 
+#            arrange(desc(n)) %>% 
+#            as.tibble()
+
+```
+
+Your report should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:
+
+# Motivation:
+Provide an overview of the project goals and motivation.
+
+#Related work: 
+Anything that inspired you, such as a paper, a web site, or something we discussed in class.
+
+#Initial questions: 
+What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
+
+# Data: 
+Source, scraping method, cleaning, etc.
+
+The data for this project is downloaded from [Kaggle](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine. 
+
+This dataset contains `r nrow(wine_df)` wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste. 
+
+### *Variables of interest*
+
+##### **Outcomes**
+
+  * `price` . Count of evictions (or eviction filings) per year at the census tract level.
+  * `rating`. Calculated using number of evictions or eviction filings divided by the number of `renter_occupied_households` and multiplied by 100, to be interpreted as a percentage. 
+
+##### **Candidate Predictors**
+
+  * `years_since_2010`. Since our data range from 2010 to 2016, and we did not want to assume a constant effect of time, we included year as a set of indicator variables in all models except our empty model (see below).
+  * `hisp`. Percent of population (at census tract level, for all race/ethnicity variables) that self-report Hispanic ethnicity.
+  * `white`. Percent self-reporting White race.
+  * `black`. Percent self-reporting Black race.
+  * `asian`. Percent self-reporting Asian race.
+  * `aian`. Percent self-reporting American Indian / Alaska Native race.
+  * `nhpi`. Percent self-reporting Native Hawaiian / Pacific Islander race.
+  * `other`. Percent self-reporting other race.
+  * `rent_burden`. Average percent of income spent on rent.
+  * `density`. Population density.
+  * `pct_eng`. Percent of population who speak English less than 'Very Well'. This is interpreted as a proxy for percent English as a second language (ESL) speakers. 
+  * `median_household_income`. Median census tract household income in USD.
+  * `poverty_rate`. Percent living below Federal Poverty Line (FPL).
+  * `median_gross_rent`. Median census tract gross rent in USD.
+  * `pct_renter_occupied`. Percent of census tract occupied by renters.
+  * `median_property_value`. Median census tract property value in USD.
+  * `family_size`. Average family size in census tract.
+  * `pct_fam_households`. Percentage of census tract households that contain families.
+
+
+
+
+
+At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on [Wine Folly](https://winefolly.com/deep-dive/different-types-of-wine/).
+
+#Exploratory analysis: 
+Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
+
+#Additional analysis: 
+If you undertake formal statistical analyses, describe these in detail
+
+#Discussion: 
+What were your findings? Are they what you expect? What insights into the data can you make?
+
+
+
+
+
