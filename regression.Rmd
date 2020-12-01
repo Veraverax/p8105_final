@@ -25,9 +25,11 @@ red_df_reg =
   filter(year>=2000) %>%
   mutate(
          bold = str_detect(description, "bold"),
-         tannis = str_detect(description, "tanni"),
+         tannin = str_detect(description, "tanni"),
          dry = str_detect(description, "dry"),
-         acidic = str_detect(description, "acidi"),
+         acidity = str_detect(description, "acidi"),
+         full_body = str_detect(tolower(description),
+                                 paste(c("full body", "full in body"),collapse = '|')),
          price_cp1 = (price > 100) * (price - 100),
          price_cp2 = (price < 30) * (price - 30)
     )
@@ -42,8 +44,7 @@ white_df_reg =
 ## Fit models for red wine points
 
 ```{r}
-fit_1 = lm(points ~ price + year + bold + tannis + dry + acidic
-           , 
+fit_1 = lm(points ~ price + year + bold + tannin + dry + acidity + full_body, 
            data = red_df_reg)
 
 fit_1 %>% 
@@ -141,3 +142,8 @@ b
 # 
 ```
 
+
+## Fit models for price
+
+
+## Categorize old world and new world wine
