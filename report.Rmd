@@ -1,5 +1,5 @@
 ---
-title: "report"
+title: "Report"
 output: html_document
 ---
 ```{r}
@@ -41,13 +41,38 @@ wine_df =
 Your report should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:
 
 # Motivation:
-Provide an overview of the project goals and motivation.
+
+This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.
 
 #Related work: 
+
 Anything that inspired you, such as a paper, a web site, or something we discussed in class.
 
 #Initial questions: 
+
+1. Wine distribution worldwide: 
+
+- correspond to the world map
+- correspond to the word cloud
+
+2. Understanding the points and price distribution:
+- Points difference between a) wine type, b) region 
+- Price difference between a) wine type, b) region 
+- Change of price and points over time
+```{r}
+#plots from plotly
+#anova analysis
+```
+
+3. Linear model - predict
+Based on the information we have about a bottle of wine, how can we predict the price and points?
+
 What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
+
+4. Didn't address yet - interactive plot (shiny)
+- filter by price
+- filter by country
+- filter by wine type
 
 # Data: 
 Source, scraping method, cleaning, etc.
@@ -57,6 +82,10 @@ The data for this project is downloaded from [Kaggle](https://www.kaggle.com/zyn
 This dataset contains `r nrow(wine_df)` wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste. 
 
 ### *Variables of interest*
+
+```{r}
+## Vera in charge of editing this sector
+```
 
 ##### **Outcomes**
 
@@ -91,10 +120,25 @@ This dataset contains `r nrow(wine_df)` wine reviews with variety, location, win
 At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on [Wine Folly](https://winefolly.com/deep-dive/different-types-of-wine/).
 
 #Exploratory analysis: 
-Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.
+
+### Visualizations, 
+
+### summaries, and 
+
+### exploratory statistical analyses
+anova
+2-sample ttest. 
+
+Justify the steps you took, and show any major changes to your ideas.
 
 #Additional analysis: 
 If you undertake formal statistical analyses, describe these in detail
+
+### linear model - multivariate
+
+### linear model - name TBD
+
+### linear model - cross validation
 
 #Discussion: 
 What were your findings? Are they what you expect? What insights into the data can you make?
