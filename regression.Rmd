@@ -6,17 +6,14 @@ output:
     toc_float: true
 ---
 
-
-#### Exploratory analysis
-
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(modelr)
 library(mgcv)
 ```
 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 red_df =  read_csv("./wine_data/tidy/wine_red.csv")
 white_df = read_csv("./wine_data/tidy/wine_white.csv") 
 
@@ -41,15 +38,27 @@ white_df_reg =
          price_cp2 = (price < 30) * (price - 30))
 ```
 
-## Fit models for red wine points
 
-```{r}
-fit_1 = lm(points ~ price + year + bold + tannin + dry + acidity + full_body, 
-           data = red_df_reg)
+## Relationship between price and rating - the more expensive the better?
 
-fit_1 %>% 
-  broom::tidy()
+There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
+
+The price of wine ranges from value purchase to luxury. The picture summary below shows a general price segmentation of wine. For more information, we highly recommend this [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides more comprehensive discussion about price and quality. 
+
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_types.jpg" style="width:50%"></h6>
+
+The wine price distribution from our dataset follows the trend of general pattern of the wine market.
+
+```{r, message = FALSE, warning = FALSE}
+library("patchwork")
+
+a = red_df %>%
+  ggplot2(aes(x=price))+ 
+  geom_histogram()
+
 ```
+
+
 
 ```{r}
 linear_mod_red = lm(points ~ price, data = red_df_reg)
