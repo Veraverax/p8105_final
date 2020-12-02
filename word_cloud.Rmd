@@ -16,50 +16,120 @@ library(knitr)
 library(DT)
 ```
 
-Read in tidy wine data.
+Read in tidy wine data and generate subsets for new world, old world, higher-rating (>=90), and lower-rating (<90) wines.
 
 ```{r extract_year_function}
 red_df =  read_csv("./wine_data/tidy/wine_red.csv")
+white_df = read_csv("./wine_data/tidy/wine_white.csv")
+rose_df = read_csv("./wine_data/tidy/wine_rose.csv")
+sparkling_df = read_csv("./wine_data/tidy/wine_sparkling.csv")
+
+new_red = red_df %>% filter(new_world == TRUE)
+old_red = red_df %>% filter(old_world == TRUE)
+new_white = white_df %>% filter(new_world == TRUE)
+old_white = white_df %>% filter(old_world == TRUE)
+new_rose = rose_df %>% filter(new_world == TRUE)
+old_rose = rose_df %>% filter(old_world == TRUE)
+new_sparkling = sparkling_df %>% filter(new_world == TRUE)
+old_sparkling = sparkling_df %>% filter(old_world == TRUE)
+
+high_red = red_df %>% filter(points >= 90)
+low_red = red_df %>% filter(points < 90)
+high_white = white_df %>% filter(points >= 90)
+low_white = white_df %>% filter(points < 90)
+high_rose = rose_df %>% filter(points >= 90)
+low_rose = rose_df %>% filter(points < 90)
+high_sparkling = sparkling_df %>% filter(points >= 90)
+low_sparkling = sparkling_df %>% filter(points < 90)
 ```
 
-* find out frequency of wine notes from description and make visualization - to each type
-  ** red
-  ** white
-  ** rose
-  ** sparkling
-  ** dessert
+* find out top 10 wine notes from description - to each type (red, white, rose, and sparkling)
+
 ```{r}
-# reshape the .txt data frame into one column
-red_word = 
-  red_df %>% 
-  select(description) %>% 
-  unnest_tokens(word, description) %>% 
-  dplyr::count(word, sort = TRUE) %>% 
-  ungroup()
-
-# remove uninformative words
-data("stop_words")
-red_word = 
-  anti_join(red_word, stop_words)
-# remove more uninformative words in our study
-other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend", "palate", "cabernet"))
-red_word = 
-  red_word %>% 
-  anti_join(other_meaningless, by = "word")
-# remove numbers
-nums = red_word %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique()
-red_word = red_word %>% 
-  anti_join(nums, by = "word")
-# check the top 10 words
-red_word %>% head(10)
-
-# plot word cloud using image of the wine bottle as a mask
-red_word %>%
-  wordcloud2(figPath = "./image/wine_bottle.png", size = 0.58, color = 'red', backgroundColor = "white")
-
-# searchable data table for words
-# red_word %>%
-#  DT::datatable()
-```
+wine_top10_word <- function(wine_subset){
+  # reshape the .txt data frame into one column
+  wine_word = 
+    wine_subset %>% 
+    select(description) %>% 
+    unnest_tokens(word, description) %>% 
+    dplyr::count(word, sort = TRUE) %>% 
+    ungroup()
   
-  ** filter by higher ratings
+  # remove uninformative words
+  data("stop_words")
+  wine_word = 
+    anti_join(wine_word, stop_words)
+  
+  # remove more uninformative words in our study
+  other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend",   "palate", "cabernet", "pinot","chardonnay", "aromas", "black", "red", "wine", "rose", "rosé", "sparkling"))
+  wine_word = 
+    wine_word %>% 
+    anti_join(other_meaningless, by = "word")
+  
+  # remove numbers
+  nums = wine_word %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique()
+  wine_word = wine_word %>% 
+    anti_join(nums, by = "word")
+  
+  # check the top 10 words
+  wine_word %>% head(10) %>% as_tibble()
+}
+
+wine_top10_word(red_df)
+wine_top10_word(white_df)
+wine_top10_word(rose_df)
+wine_top10_word(sparkling_df)
+
+wine_top10_word(high_red)
+wine_top10_word(low_red)
+wine_top10_word(new_red)
+wine_top10_word(old_red)
+```
+
+* Create word cloud for each type (red, white, rose, and sparkling)
+
+```{r}
+wine_word_cloud <- function(wine_subset, color1, color2) {
+  # reshape the .txt data frame into one column
+  wine_word = 
+    wine_subset %>% 
+    select(description) %>% 
+    unnest_tokens(word, description) %>% 
+    dplyr::count(word, sort = TRUE) %>% 
+    ungroup()
+  
+  # remove uninformative words
+  data("stop_words")
+  wine_word = 
+    anti_join(wine_word, stop_words)
+  
+  # remove more uninformative words in our study
+  other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend",   "palate", "cabernet", "pinot", "chardonnay", "aromas", "black", "red", "wine", "rose", "rosé", "sparkling"))
+  wine_word = 
+    wine_word %>% 
+    anti_join(other_meaningless, by = "word")
+  
+  # remove numbers
+  nums = wine_word %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique()
+  wine_word = wine_word %>% 
+    anti_join(nums, by = "word")
+  
+  # plot word cloud using image of the wine bottle as a mask
+  wine_word %>%
+    wordcloud2(figPath = "./image/wine_bottle.png", size = 0.58, color = color1, backgroundColor =   color2)
+  
+  # searchable data table for words
+  # red_word %>%
+  #  DT::datatable()
+}
+
+wine_word_cloud(red_df, "red", "white")
+wine_word_cloud(white_df, "orange", "white")
+wine_word_cloud(rose_df, "pink", "white")
+wine_word_cloud(sparkling_df, "green", "white")
+
+wine_word_cloud(high_red, "blue", "white")
+wine_word_cloud(low_red, "purple", "white")
+```
+
+
