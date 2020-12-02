@@ -175,8 +175,7 @@ wine_df %>%
   geom_point()+
   geom_line() +
   labs(y = "Mean price",
-      x = "Year",
-      title = "change in mean price by wine type in 21 century")
+      x = "Year")
 ```
 
 
@@ -198,8 +197,7 @@ wine_df %>%
   geom_point()+
   geom_line() +
   labs(y = "Mean rating",
-      x = "Year",
-      title = "change in mean ratings by wine type in 21 century")
+      x = "Year")
 
 ```
 
@@ -247,7 +245,7 @@ wine_df %>%
 
 
 # Who reviews the largest number of wines?
-Roger Voss rates most number of wine at WineEthusiast Magazine. 
+Roger Voss rated the most number of wine at WineEthusiast Magazine. 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
   filter(!is.na(taster_name)) %>% 

@@ -231,6 +231,15 @@ wine_df %>%
 
 
 ### Trend of price/rating over time
+Question: What is the trend of price/rating over time among 4 types of wine? 
+
+For this question, we first start with extracting the year from the description on the wine bottle. We use a regex function to pull out the year the wine is made in. However, some of the year did not make sense so we choose to filter out all the wine before 2000 from our data. Then, we made a line plot to show the trend of price and rating over time. 
+
+For prices, we can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparling wine and 2004 is a good year for white wine
+
+For ratings, we can see a trend that sparkling wines that are older have higher ratings. For other types of wine, the ratings are stable. Therefore, the age of the wine does not affect the rating much for red, rose and white wines. Among the wine that were produced before 2010, Sparkling wine have the highest ratings among all types but the ratings decreases with the year closer to present.
+
+We could add year as a predictor in our future modeling. 
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -244,8 +253,7 @@ wine_df %>%
   geom_point()+
   geom_line() +
   labs(y = "Mean price",
-      x = "Year",
-      title = "change in mean price by wine type in 21 century")
+      x = "Year")
 wine_df %>% 
   filter(!is.na(points),
          !is.na(type),
@@ -257,14 +265,17 @@ wine_df %>%
   geom_point()+
   geom_line() +
   labs(y = "Mean rating",
-      x = "Year",
-      title = "change in mean ratings by wine type in 21 century")
+      x = "Year")
 
 ```
 
+<br><br>
 
-### Average wine ratings by taster.
 
+### Price and ratings by taster.
+Question: Who rates the highest price wine? Who reviews the largest number of wines?
+
+We also have data on who rated the wine and want to extract some information from it. We ploted an interactive bar plot to show the avergae ratings for each taster.
 ```{r, message=FALSE, warning=FALSE}
 y <- list(
   title = "Mean ratings"
@@ -284,8 +295,7 @@ y <- list(
 
 ```
 
-### Who rates the highest price wine? 
-We want to know the tasters that rated wines with price greater than $800.Most of the most expensive wine are rated by Roger Voss.
+We also want to know the tasters that rated wines with price greater than $800 and most of the most expensive wine are rated by Roger Voss.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -299,9 +309,7 @@ wine_df %>%
 
 ```
 
-
-### Who reviews the largest number of wines?
-Roger Voss rates most number of wine at WineEthusiast Magazine. 
+In addition, we find out that Roger Voss rated the most number of wine at WineEthusiast Magazine. 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
   filter(!is.na(taster_name)) %>% 
@@ -316,8 +324,12 @@ wine_df %>%
 <br><br>
 
 
-### Which winery has the top average ratings wine? 
-Araujo in the US has the highest average rating of 98. Among the top 10 wineries, four of them are in the US and four of them are in the France.
+### Winery and ratings
+Question: Which winery has the top average ratings wine? 
+
+We want to know that if the origin of a wine affect the ratings. We group by winery and country and get the avergae points of the wines at each winery. We ranked them in descending order and picked out the top 10. Araujo in the US has the highest average rating of 98. Among the top 10 wineries, four of them are in the US and four of them are in the France.
+
+This could be a useful information if we want to predict whether a wine will be rated high or not based on the winery it came from.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -332,9 +344,16 @@ wine_df %>%
 
 ```
 
+<br><br>
+
 
 ### Differences of prices/ratings between new world and old world wine
 
+We followed a popular categorizing method to divided all the wines to new world and old world. We wanted to investigate that whether this categorization will affect the price or rating for a wine. We created boxplot to show the distribution of prices and ratings for two groups: new world and old world. In addition, we conducted a two sample t-test to see there is a significant differences in prices or ratings between the two groups. 
+
+In conclusion, we found out that ratings for new world or old world wine are not different from the others but prices of new world or old world wine are significantly different from the others.
+
+This could also be useful information in our regression analysis.
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -366,6 +385,9 @@ t.test(price ~ new_old, data = wine_price)
 
 
 ```
+
+<br><br>
+
 
 ### Visualizations
 In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US. 
