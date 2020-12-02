@@ -1,9 +1,30 @@
 ---
 title: "About Us"
+output: html_document
 ---
 
-### About this site
+<br></br>
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
+ 
+ABOUT
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+<br></br>
+
+# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Veru Xu
+
+ABOUT
+
+<br></br>
+
+# <a href=""><img class="cat_circle" src="image/test.jpg"></a><span style="padding-left:25px">Helen Zhang
+
+ABOUT placeholder 
+
+<br></br>
+
+# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Yuanxin (Yolanda) Zhang
+
+ABOUT
+
+<br></br>
