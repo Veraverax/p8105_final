@@ -47,25 +47,43 @@ Your report should include the following topics. Depending on your project type 
 
 This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.
 
-#Related work: 
+# Related work: 
 
 Anything that inspired you, such as a paper, a web site, or something we discussed in class.
 
-#Initial questions: 
+
+# Initial questions: 
+
+We are trying to answer some questions from exploratory analysis. 
+To understand the information that customers could get from the ratings, price among different wine type and region, we want to answer the following questions:
+
+1. What is the distribution of prices among four types of wine? Is at least one wine type's price different from the others?
+
+2. What is the distribution of ratings among four types of wine? Is at least one wine type's rating different from the others?
+
+3. What is the average price of wines at different regions? Which region has the highest average price wine?
+
+4. What is the average rating of wines at different regions? Which region has the highest average rating?
+
+5. What is the trend of price over time among 4 types of wine? 
+
+6. What is the trend of ratings over time among 4 types of wine?
+
+7. What is the average ratings by each tasters? Who rates the highest price wine? Who reviews the largest number of wines?
+
+8. Which winery has the top average ratings wine? 
+
+9. Is there any differences in prices between new world and old world wine?
+
+10. Is there any differences in ratings between new world and old world wine?
+
+
 
 1. Wine distribution worldwide: 
 
 - correspond to the world map
 - correspond to the word cloud
 
-2. Understanding the points and price distribution:
-- Points difference between a) wine type, b) region 
-- Price difference between a) wine type, b) region 
-- Change of price and points over time
-```{r}
-#plots from plotly
-#anova analysis
-```
 
 3. Linear model - predict
 Based on the information we have about a bottle of wine, how can we predict the price and points?
@@ -123,6 +141,231 @@ This dataset contains `r nrow(wine_df)` wine reviews with variety, location, win
 At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on [Wine Folly](https://winefolly.com/deep-dive/different-types-of-wine/).
 
 # Exploratory analysis: 
+
+<br><br>
+
+## Descriptive Statistics
+
+### Distribution of price/rating by wine type
+Question: What is the distribution of prices/rating among four types of wine? Is at least one wine type's price/rating different from the others?
+
+To explore this question, we first look at the wine with price lower than $100 since there are many very expensive wine and it is hard to show the distribution with a very long tail. We want to graph a boxplot of prices for each of the four types of wine: red, rose, sparkling and white. It is interesting to see that red and sparking wine have similar distribution with mean price around $27. The prices of rose are lower than the other three types and are mostly round $10~$20. In addition, we run an ANOVA test to find if at least one of the wine types'e price is different from the others. 
+
+We repeat the same process to ratings. The results for price and ratings are both significant. Therefore, we can conclude that there is at least one wine type's price/rating significantly different from the others. 
+
+This inform further modeling to see if we can based on the type of wine to predict its price and rating.
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  filter(!is.na(type),
+         price <= 100) %>% 
+  ggplot(aes(x = type, y = price, color = type)) +
+  geom_boxplot()
+
+wine_price = 
+  wine_df %>% 
+  filter(price <= 100)
+res.aov <- aov(price ~ type, data = wine_price)
+summary(res.aov)
+
+
+wine_df %>% 
+  filter(!is.na(type)) %>% 
+  rename(rating = points) %>% 
+  ggplot(aes(x = type, y = rating, color = type)) +
+  geom_boxplot()
+
+res.aov <- aov(points ~ type, data = wine_df)
+summary(res.aov)
+
+```
+
+<br><br>
+
+
+### Distribution of price/rating by region
+Question: What is the average price/rating of wines at different regions? Which region has the highest average price/rating wine? 
+
+To answer this question, we look at the average price grouped by the country they come from. We have created an interactive plot to show the rank of price and ratings. Switzerland has the highest mean price of wine at $85. England is the second highest and Germany is the third. 
+England has the highest average rating. Indis and Austria are the second and third highest.
+Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. Wine in Switzerland is not very recommended. 
+
+This inform further modeling to see if we can based on the origin of the wine to predict its price and rating.
+
+
+```{r, message=FALSE, warning=FALSE}
+y <- list(
+  title = "Mean Price"
+)
+wine_df %>% 
+  filter(!is.na(price)) %>% 
+  group_by(country) %>% 
+  summarise(mean = mean(price)) %>% 
+  mutate(country = fct_reorder(country, mean),
+         mean = round(mean, 2),
+        text_label=str_c("Country:", country, "\nmean price:", mean)) %>% 
+  plot_ly(
+  x = ~country, y = ~mean, color = ~country, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+  layout(yaxis = y)
+  
+y <- list(
+  title = "Mean rating"
+)
+wine_df %>% 
+  filter(!is.na(points)) %>% 
+  group_by(country) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(country = fct_reorder(country, mean),
+         avg_rating = round(mean, 2),
+        text_label=str_c("Country:", country, "\nmean rating:", mean)) %>% 
+  plot_ly(
+  x = ~country, y = ~avg_rating, color = ~country, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+  layout(yaxis = list(range = c(80,95)))
+
+```
+
+
+<br><br>
+
+
+### Trend of price/rating over time
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  filter(!is.na(price),
+         !is.na(type),
+         year > 2000) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(price)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
+  geom_line() +
+  labs(y = "Mean price",
+      x = "Year",
+      title = "change in mean price by wine type in 21 century")
+wine_df %>% 
+  filter(!is.na(points),
+         !is.na(type),
+         year > 2000) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
+  geom_line() +
+  labs(y = "Mean rating",
+      x = "Year",
+      title = "change in mean ratings by wine type in 21 century")
+
+```
+
+
+### Average wine ratings by taster.
+
+```{r, message=FALSE, warning=FALSE}
+y <- list(
+  title = "Mean ratings"
+)
+
+  wine_df %>% 
+  filter(!is.na(points)) %>% 
+  group_by(taster_name) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(taster_name = fct_reorder(taster_name, mean),
+         mean = round(mean, 2),
+        text_label=str_c("Taster:", taster_name, "\nmean rating:", mean)) %>% 
+  plot_ly(
+  x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
+  type = "bar", colors = "viridis") %>% 
+ layout(yaxis = list(range = c(80,95)))
+
+```
+
+### Who rates the highest price wine? 
+We want to know the tasters that rated wines with price greater than $800.Most of the most expensive wine are rated by Roger Voss.
+
+```{r, message=FALSE, warning=FALSE}
+
+wine_df %>% 
+  filter(price >= 800,
+         !is.na(taster_name)) %>% 
+  group_by(taster_name) %>% 
+  summarise(number_of_wine = n()) %>% 
+  arrange(desc(number_of_wine)) %>% 
+  knitr::kable()
+
+```
+
+
+### Who reviews the largest number of wines?
+Roger Voss rates most number of wine at WineEthusiast Magazine. 
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  filter(!is.na(taster_name)) %>% 
+  group_by(taster_name) %>% 
+  summarise(number_of_wine = n()) %>% 
+  arrange(desc(number_of_wine)) %>% 
+  knitr::kable()
+
+```
+
+
+<br><br>
+
+
+### Which winery has the top average ratings wine? 
+Araujo in the US has the highest average rating of 98. Among the top 10 wineries, four of them are in the US and four of them are in the France.
+
+```{r, message=FALSE, warning=FALSE}
+
+wine_df %>% 
+  filter(!is.na(winery)) %>% 
+  group_by(winery,country) %>% 
+  summarise(mean = mean(points)) %>% 
+  arrange(desc(mean)) %>% 
+  head(n = 10) %>% 
+  knitr::kable()
+
+
+```
+
+
+### Differences of prices/ratings between new world and old world wine
+
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
+  rename(rating = points) %>% 
+  ggplot(aes(x = new_old, y = rating, color =new_old)) +
+  geom_boxplot() +
+    labs(y = "Mean rating",
+      x = "new vs old world wine")
+wine_new_old=
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world"))
+t.test(price ~ new_old, data = wine_new_old)
+
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
+  filter(price <= 100) %>% 
+  ggplot(aes(x = new_old, y = price, color =new_old)) +
+  geom_boxplot() +
+    labs(y = "Mean price",
+      x = "new vs old world wine")
+
+wine_price = 
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
+  filter(price<=100)
+t.test(price ~ new_old, data = wine_price)
+
+
+
+```
 
 ### Visualizations
 In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US. 
