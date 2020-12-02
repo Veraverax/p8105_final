@@ -20,6 +20,7 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -247,6 +248,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -301,6 +305,14 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Report</h1>
@@ -308,11 +320,30 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)
-library(leaflet)
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(leaflet)
 library(ggplot2)
-library(plotly)
-library(readxl)
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(readxl)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -431,11 +462,176 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <li><code>pct_fam_households</code>. Percentage of census tract households that contain families.</li>
 </ul>
 <p>At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on <a href="https://winefolly.com/deep-dive/different-types-of-wine/">Wine Folly</a>.</p>
-<p>#Exploratory analysis:</p>
 </div>
 </div>
+</div>
+<div id="exploratory-analysis" class="section level1">
+<h1>Exploratory analysis:</h1>
 <div id="visualizations" class="section level3">
-<h3>Visualizations,</h3>
+<h3>Visualizations</h3>
+<p>In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US.</p>
+<pre class="r"><code>wine_tidy_df = 
+  read_csv(
+  &quot;./wine_data/tidy/wine_all.csv&quot;) %&gt;% 
+  janitor::clean_names()</code></pre>
+<pre class="r"><code>wine_us = wine_tidy_df %&gt;% 
+  filter(country == &quot;US&quot;) %&gt;%
+  rename(
+    state = province) %&gt;% 
+  mutate(
+   state = na_if(state, &quot;America&quot;)
+ ) %&gt;%
+  select(state, points, price) %&gt;% 
+  drop_na() %&gt;% 
+  group_by(state) %&gt;%
+  summarise(
+    total = n(),
+    avg_rating = mean(points),
+    avg_price = mean(price)
+  ) %&gt;%
+  mutate(
+    avg_rating = round(avg_rating, 0), 
+    avg_price = round(avg_price, 2)
+    ) %&gt;% 
+  arrange(desc(total))</code></pre>
+<pre class="r"><code>wine_us_missing = wine_tidy_df %&gt;% 
+  filter(country == &quot;US&quot;) %&gt;%
+  rename(
+    state = province) %&gt;% 
+  select(state, points, price) %&gt;% 
+  mutate(
+   state = na_if(state, &quot;America&quot;)
+ )
+
+purrr::map(wine_us_missing, ~ sum(is.na(.)))</code></pre>
+<pre class="r"><code>wine_by_country = wine_tidy_df %&gt;% 
+ mutate(
+   country = recode(country, US = &quot;United States&quot;)
+ ) %&gt;% 
+  select(country, points, price) %&gt;% 
+  group_by(country) %&gt;%
+  drop_na() %&gt;% 
+  summarise(
+    total = n(),
+    avg_rating = mean(points),
+    avg_price = mean(price)
+  ) %&gt;%
+  mutate(
+    avg_rating = round(avg_rating, 0), 
+    avg_price = round(avg_price, 2)
+    ) %&gt;% 
+  arrange(desc(total))</code></pre>
+<pre class="r"><code>wine_country_missing = wine_tidy_df %&gt;% 
+ mutate(
+   country = recode(country, US = &quot;United States&quot;)
+ ) %&gt;% 
+  select(country, points, price)
+
+purrr::map(wine_country_missing, ~ sum(is.na(.)))</code></pre>
+<p>Wines that contained missing prices and state or country information were removed from the dataset. Among all wines made in the US, there were several wines that were labeled as America under state. Those wines were recoded as missing state values and removed from the US dataset. From the US dataset, there were 95 wines that did not have a state value and 239 wines that were missing a price. From the world dataset, there were 63 wines that missing country information and 8996 wines that did not have a price listed. All wines in the dataset had a rating. As the number of missing values was relatively small in comparison to the total number of observations, all wines that contained missing information on wine origin and price were excluded from the map.</p>
+<p>For each dataset, we used <code>summarise</code> to generate average ratings and average prices for each state or country, along with the total count of all wines from each state or country. Average ratings was rounded to the nearest whole number and prices were rounded to 2 decimal points.</p>
+<pre class="r"><code>states &lt;- states(cb = TRUE)
+
+states %&gt;% 
+  leaflet() %&gt;% 
+  addTiles() %&gt;% 
+  addPolygons(popup = ~NAME)
+
+states_merged_wine &lt;- geo_join(states, wine_us, &quot;NAME&quot;, &quot;state&quot;)
+
+mybins &lt;- c(0,100,1000,8000,10000,40000)
+mypal &lt;- colorBin(palette = &quot;Purples&quot;, domain = states_merged_wine$total, na.color = &quot;transparent&quot;, bins = mybins)
+
+states_merged_wine &lt;- subset(states_merged_wine, !is.na(total))
+
+popup &lt;- paste0(
+  states_merged_wine$NAME,&quot;&lt;br&gt;&quot;, 
+  &quot;Total Wines: &quot;, states_merged_wine$total, &quot;&lt;br&gt;&quot;, 
+      &quot;Avg Rating: &quot;, states_merged_wine$avg_rating, &quot;&lt;br&gt;&quot;,
+      &quot;Avg Price: $&quot;, states_merged_wine$avg_price,&quot;&lt;br&gt;&quot;
+      )
+
+state_map = states_merged_wine %&gt;% 
+  leaflet() %&gt;%
+  addProviderTiles(&quot;CartoDB.Positron&quot;) %&gt;%
+  setView(-98.483330, 38.712046, zoom = 4) %&gt;% 
+  addPolygons(
+    fillColor = ~mypal(total), 
+    fillOpacity = 1.0, 
+    weight = 0.4, 
+    smoothFactor = 0.2, 
+    popup = ~popup) %&gt;% 
+  addLegend(pal = mypal, 
+            values = states_merged_wine$total, 
+            position = &quot;bottomright&quot;, 
+            title = &quot;Wines&quot;)</code></pre>
+<pre class="r"><code>world_spdf &lt;- readOGR( 
+  dsn = paste0(getwd(),&quot;/wine_data/world_shape_file/&quot;) , 
+  layer = &quot;TM_WORLD_BORDERS_SIMPL-0.3&quot;,
+  verbose = FALSE
+)
+
+world_spdf %&gt;% 
+  leaflet() %&gt;% 
+  addTiles() %&gt;% 
+  addPolygons(popup = ~NAME)
+
+countries_merged_wine &lt;- geo_join(world_spdf, wine_by_country, &quot;NAME&quot;, &quot;country&quot;)
+
+world_bins &lt;- c(0,100,1000,10000,20000,30000,60000)
+world_pal &lt;- colorBin(palette = &quot;RdPu&quot;, domain = countries_merged_wine$total, na.color = &quot;transparent&quot;, bins = world_bins)
+
+countries_merged_wine &lt;- subset(countries_merged_wine, !is.na(total))
+
+world_popup &lt;- paste0(
+  countries_merged_wine$country,&quot;&lt;br&gt;&quot;, 
+  &quot;Wines: &quot;, countries_merged_wine$total, &quot;&lt;br&gt;&quot;, 
+      &quot;Avg Rating: &quot;, countries_merged_wine$avg_rating, &quot;&lt;br&gt;&quot;,
+      &quot;Avg Price: $&quot;, countries_merged_wine$avg_price,&quot;&lt;br&gt;&quot;
+      )
+
+world_map_labels = countries_merged_wine %&gt;% 
+  leaflet() %&gt;%
+  addMapPane(name = &quot;polygons&quot;, zIndex = 410) %&gt;% 
+  addMapPane(name = &quot;maplabels&quot;, zIndex = 420) %&gt;% 
+  addProviderTiles(&quot;CartoDB.PositronNoLabels&quot;) %&gt;%
+  addProviderTiles(&quot;CartoDB.PositronOnlyLabels&quot;, 
+                   options = leafletOptions(pane = &quot;maplabels&quot;),
+                   group = &quot;labels&quot;) %&gt;%
+  setView( lat = 10, lng = 0 , zoom = 2) %&gt;% 
+  addPolygons(
+    fillColor = ~world_pal(total), 
+    fillOpacity = 1.0, 
+    group = &quot;country&quot;,
+    weight = 0.4, 
+    smoothFactor = 0.2, 
+    popup = ~world_popup,
+    options = leafletOptions(pane = &quot;polygons&quot;)) %&gt;% 
+  addLayersControl(overlayGroups = c(&quot;labels&quot;)) %&gt;% 
+  addLegend(pal = world_pal, 
+            values = countries_merged_wine$total, 
+            position = &quot;bottomright&quot;, 
+            title = &quot;Wines&quot;)</code></pre>
+<p><br><img src="image/us_map.png" alt="us_map" style="width:65%; border:2px solid"><br></p>
+<p><br><img src="image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br></p>
+<p>Static Map???</p>
+<pre class="r"><code>world_static = map_data(&quot;world&quot;) %&gt;%
+  left_join(wine_by_country, by = c(&quot;region&quot; = &quot;country&quot;))
+
+ggplot(data = world_static, 
+               mapping = aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill = avg_rating)) +
+  scale_fill_continuous(low = &quot;rosybrown1&quot;, high = &quot;darkred&quot;, 
+                        na.value = &quot;snow2&quot;) +
+  coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x  = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.background = element_rect(fill = &quot;white&quot;))</code></pre>
 </div>
 <div id="summaries-and" class="section level3">
 <h3>summaries, and</h3>
@@ -491,6 +687,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
