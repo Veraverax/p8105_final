@@ -4,14 +4,16 @@ output:
   html_document:
     toc: true
     toc_float: true
+    code_folding: hide
 ---
 
-```{r}
+```{r,echo = FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(leaflet)
 library(ggplot2)
 library(plotly)
 library(readxl)
+library(patchwork)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -28,10 +30,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-Read in wine data.
-
-
-```{r}
+```{r,echo = FALSE, message=FALSE, warning=FALSE}
 wine_df = 
   read_csv(
   "./wine_data/tidy/wine_all.csv")
@@ -47,28 +46,72 @@ wine_df =
 ```
 
 
-Make a plot of distribution of price/rating by type
-```{r}
+# Distribution of price by wine type
+First plot the distribution of wine prices across four different wine types: red, rose, sparkling, white. We saw the four distributions are all very right skewed since we have many very pricy wine. Therefore, we choose to only look at price under $100. 
+
+```{r, message=FALSE, warning=FALSE}
 
 wine_df %>% 
   filter(!is.na(type),
-         price <= 200) %>% 
+         price <= 100) %>% 
   ggplot(aes(x = type, y = price, color = type)) +
-  geom_violin()
-
-
-wine_df %>% 
-  filter(!is.na(type)) %>% 
-  rename(rating = points) %>% 
-  ggplot(aes(x = type, y = rating, color = type)) +
-  geom_violin()
-
+  geom_boxplot()
 
 
 ```
 
-Make a plot of distribution of price/rating by region
-```{r}
+It is interesting to see that red and sparking wine have similar distribution with mean price around $27. The prices of rose are lower than the other three types and are mostly round $10~$20. 
+
+<br><br>
+
+## Conduct a ANOVA test on price vs wine type
+
+The results is significant which means that we can conclude that at least one wine type's price is differnet from the others.
+
+```{r, message=FALSE, warning=FALSE}
+wine_price = 
+  wine_df %>% 
+  filter(price <= 100)
+res.aov <- aov(price ~ type, data = wine_price)
+summary(res.aov)
+
+```
+
+<br><br>
+
+# Distribution of rating by wine type
+Plot the distribution of wine ratings across four different wine types: red, rose, sparkling, white. 
+We can see that red wine has higher ratings than the other tree types. Rose has the lowest. 
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  filter(!is.na(type)) %>% 
+  rename(rating = points) %>% 
+  ggplot(aes(x = type, y = rating, color = type)) +
+  geom_boxplot()
+
+```
+
+<br><br>
+
+## Conduct a ANOVA test on rating vs wine type
+
+The results is significant which means that we can conclude that at least one wine type's rating is different from the others. Customers could guess the ratings of a wine based on its type since they are significant different from each other. From the boxplot, we could tell the customers that normally red wine will be rated higher. 
+
+```{r, message=FALSE, warning=FALSE}
+
+res.aov <- aov(points ~ type, data = wine_df)
+summary(res.aov)
+
+```
+
+
+<br><br>
+
+
+# Distribution of price by region
+Switzerland has the highest mean price of wine at $85. England is the second highest and Germany is the third. 
+```{r, message=FALSE, warning=FALSE}
 y <- list(
   title = "Mean Price"
 )
@@ -84,8 +127,19 @@ wine_df %>%
   type = "bar", colors = "viridis") %>% 
   layout(yaxis = y)
   
-  
 
+
+```
+
+
+<br><br>
+
+
+# Distribution of rating by region
+England has the highest average rating. Indis and Austria are the second and third highest.
+Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. Wine in Switzerlan is not very recommended. 
+
+```{r, message=FALSE, warning=FALSE}
 y <- list(
   title = "Mean rating"
 )
@@ -94,43 +148,21 @@ wine_df %>%
   group_by(country) %>% 
   summarise(mean = mean(points)) %>% 
   mutate(country = fct_reorder(country, mean),
-         mean = round(mean, 2),
+         avg_rating = round(mean, 2),
         text_label=str_c("Country:", country, "\nmean rating:", mean)) %>% 
   plot_ly(
-  x = ~country, y = ~mean, color = ~country, text = ~text_label, 
+  x = ~country, y = ~avg_rating, color = ~country, text = ~text_label, 
   type = "bar", colors = "viridis") %>% 
-  layout(yaxis = y)
-
-
-
-
-
+  layout(yaxis = list(range = c(80,95)))
 ```
-Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. 
+
+<br><br>
 
 
+# Trend of wine prices over time
+We can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparling wine and 2004 is a good year for white wine.
 
-
-Make plots of ratings/price by year by wine type. 
-```{r}
-
-
-wine_df %>% 
-  filter(!is.na(points),
-         !is.na(type),
-         year > 2000) %>% 
-  group_by(year,type) %>% 
-  summarise(mean = mean(points)) %>% 
-  mutate(mean = round(mean, 2)) %>% 
-  ggplot(aes(x = year, y = mean, color = type))+
-  geom_point()+
-  geom_line() +
-  labs(y = "Mean rating",
-      x = "Year",
-      title = "change in mean ratings by wine type in 21 century")
-
-
-
+```{r, message=FALSE, warning=FALSE}
 
 wine_df %>% 
   filter(!is.na(price),
@@ -148,8 +180,34 @@ wine_df %>%
 ```
 
 
-Make plots of ratings by taster.
-```{r}
+<br><br>
+
+# Trend of wine ratings over time
+We can see a trend that sparkling wines that are older have higher ratings. For other types of wine, the ratings are stable. Therefore, the age of the wine does not affect the rating much for red, rose and white wines. Among the wine that were produced before 2010, Sparkling wine have the highest ratings among all types but the ratings decreases with the year closer to present.
+
+```{r, message=FALSE, warning=FALSE}
+
+wine_df %>% 
+  filter(!is.na(points),
+         !is.na(type),
+         year > 2000) %>% 
+  group_by(year,type) %>% 
+  summarise(mean = mean(points)) %>% 
+  mutate(mean = round(mean, 2)) %>% 
+  ggplot(aes(x = year, y = mean, color = type))+
+  geom_point()+
+  geom_line() +
+  labs(y = "Mean rating",
+      x = "Year",
+      title = "change in mean ratings by wine type in 21 century")
+
+```
+
+
+# Average wine ratings by taster.
+
+Anne Krebiehl MW gives the highest mean ratings. Alexander Peartree gives the lowest mean ratings. 
+```{r, message=FALSE, warning=FALSE}
 
 y <- list(
   title = "Mean ratings"
@@ -165,55 +223,88 @@ y <- list(
   plot_ly(
   x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
   type = "bar", colors = "viridis") %>% 
-  layout(yaxis = y) 
-
-
+ layout(yaxis = list(range = c(80,95)))
 
 
 
 ```
 
 
-who rates the highest price wine? (greater than $800)
+# Who rates the highest price wine? 
+We want to know the tasters that rated wines with price greater than $800.Most of the most expensive wine are rated by Roger Voss.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 wine_df %>% 
   filter(price >= 800,
          !is.na(taster_name)) %>% 
   group_by(taster_name) %>% 
-  count()
-
-
-```
-Most of the most expensive wine are rated by Roger Voss.
-
-
-
-```{r}
-wine_df %>% 
-  filter(!is.na(taster_name)) %>% 
-  group_by(taster_name) %>% 
-  count() %>% 
-  arrange(desc(n)) %>% 
+  summarise(number_of_wine = n()) %>% 
+  arrange(desc(number_of_wine)) %>% 
   knitr::kable()
 
 ```
 
+
+# Who reviews the largest number of wines?
 Roger Voss rates most number of wine at WineEthusiast Magazine. 
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  filter(!is.na(taster_name)) %>% 
+  group_by(taster_name) %>% 
+  summarise(number_of_wine = n()) %>% 
+  arrange(desc(number_of_wine)) %>% 
+  knitr::kable()
+
+```
+
+
+
 
 
 Get the winery which has the top average ratings wine. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 wine_df %>% 
   filter(!is.na(winery)) %>% 
   group_by(winery,country) %>% 
   summarise(mean = mean(points)) %>% 
   arrange(desc(mean)) %>% 
-  top_n(10)
+  head(n = 10) %>% 
+  knitr::kable()
 
 
+```
+
+
+
+# Differences of prices between new world and old world wine
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
+  rename(rating = points) %>% 
+  ggplot(aes(x = new_old, y = rating, color =new_old)) +
+  geom_boxplot() +
+    labs(y = "Mean rating",
+      x = "new vs old world wine")
+
+```
+
+<br><br>
+
+# Differences of ratings between new world and old world wine
+
+```{r, message=FALSE, warning=FALSE}
+wine_df %>% 
+  mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
+  filter(price <= 100) %>% 
+  ggplot(aes(x = new_old, y = price, color =new_old)) +
+  geom_boxplot() +
+    labs(y = "Mean price",
+      x = "new vs old world wine")
+
+```
 ```
 
