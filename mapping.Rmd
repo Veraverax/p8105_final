@@ -92,14 +92,6 @@ wine_country_missing = wine_tidy_df %>%
 purrr::map(wine_country_missing, ~ sum(is.na(.)))
 ```
 
-Data Cleaning Steps:
-
-In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US. 
-
-Wines that contained missing prices and state or country information were removed from the dataset. Among all wines made in the US, there were several wines that were labeled as America under state. Those wines were recoded as missing state values and removed from the US dataset. From the US dataset, there were 95 wines that did not have a state value and 239 wines that were missing a price. From the world dataset, there were 63 wines that missing country information and 8996 wines that did not have a price listed. All wines in the dataset had a rating. As the number of missing values was relatively small in comparison to the total number of observations, all wines that contained missing information on wine origin and price were excluded from the map. 
-
-For each dataset, we used `summarise` to generate average ratings and average prices for each state or country, along with the total count of all wines from each state or country. Average ratings was rounded to the nearest whole number and prices were rounded to 2 decimal points.
-
 ```{r choropleth_map, echo = T, warning = F, results = 'hide'}
 states <- states(cb = TRUE)
 
