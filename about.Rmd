@@ -7,7 +7,7 @@ output: html_document
 
 # <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
  
-ABOUT
+I'm Jady, a second year MPH student in Biostatistics at Columbia University Mailman School of Public Health. My professional interests include data science, clinical trial methodology and health policy management. My favorite wine is called Josh and wine type is rose.
 
 <br></br>
 
