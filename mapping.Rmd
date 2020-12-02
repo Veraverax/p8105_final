@@ -1,6 +1,11 @@
 ---
-title: "Mapping"
-output: html_document
+title: "Maps"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+
 ---
 
 ```{r setup, include=FALSE}
@@ -15,17 +20,14 @@ library(mapproj)
 library(RColorBrewer)
 ```
 
-Read in wine data.
-
-```{r tidying_data, message=FALSE}
+```{r tidying_data, message=FALSE, warning = FALSE}
 wine_tidy_df = 
   read_csv(
   "./wine_data/tidy/wine_all.csv") %>% 
-  janitor::clean_names() %>%
-  select(-taster_name, -x1_1)
+  janitor::clean_names()
 ```
 
-```{r wine_us}
+```{r wine_us, warning = FALSE}
 wine_us = wine_tidy_df %>% 
   filter(country == "US") %>%
   rename(
@@ -72,7 +74,7 @@ Several wines that were made in the US did not have a province/state listed. Ins
 
 Rounded rating to nearest whole number and price to 2 decimal places.
 
-```{r country_df}
+```{r country_df, warning = FALSE}
 wine_by_country = wine_tidy_df %>% 
  mutate(
    country = recode(country, US = "United States")
@@ -149,10 +151,6 @@ state_map = states_merged_wine %>%
             title = "Wines")
 ```
 
-```{r state_map}
-state_map
-```
-
 ```{r world_map_labels_choropleth, echo = T, warning = F, results = 'hide'}
 world_spdf <- readOGR( 
   dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
@@ -204,10 +202,7 @@ world_map_labels = countries_merged_wine %>%
             title = "Wines")
 ```
 
-```{r world_maps}
-world_map_labels
-```
-
+## Static Map
 
 ```{r static_map}
 world_static = map_data("world") %>%
@@ -228,6 +223,21 @@ ggplot(data = world_static,
     axis.ticks.y = element_blank(),
     panel.background = element_rect(fill = "white"))
 ```
+
+## Interactive Maps {.tabset}
+
+### United States
+
+```{r state_map}
+state_map
+```
+
+### World
+```{r world_maps}
+world_map_labels
+```
+
+## {-}
 
 #### Mapping Next Steps
 

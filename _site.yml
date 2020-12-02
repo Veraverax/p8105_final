@@ -1,4 +1,4 @@
-name: "Yay internet!"
+name: "Wines"
 output_dir: "."
 navbar:
   title: "Home"
@@ -10,9 +10,9 @@ navbar:
     - text: "Regression Analysis"
       href: regression.html
     - text: "Maps"
-      href: map.html
+      href: mapping.html
     - icon: fa-github fa-lg
-      href: http://github.com/<YOUR_GH_NAME>/
+      href: https://github.com/Veraverax/p8105_final/
 output:
   html_document:
     theme: journal

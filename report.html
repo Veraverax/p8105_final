@@ -11,11 +11,11 @@
 
 
 
-<title>report</title>
+<title>Report</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -104,33 +104,33 @@ summary {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 61px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .dropdown-submenu {
   position: relative;
@@ -286,10 +286,10 @@ $(document).ready(function () {
   <a href="regression.html">Regression Analysis</a>
 </li>
 <li>
-  <a href="map.html">Maps</a>
+  <a href="mapping.html">Maps</a>
 </li>
 <li>
-  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+  <a href="https://github.com/Veraverax/p8105_final/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -303,7 +303,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">report</h1>
+<h1 class="title toc-ignore">Report</h1>
 
 </div>
 
@@ -330,11 +330,9 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
   read_csv(
   &quot;./wine_data/tidy/wine_all.csv&quot;)</code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
-<pre><code>## Warning: Duplicated column names deduplicated: &#39;X1&#39; =&gt; &#39;X1_1&#39; [2]</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   X1 = col_double(),
-##   X1_1 = col_double(),
 ##   country = col_character(),
 ##   description = col_character(),
 ##   designation = col_character(),
@@ -347,6 +345,8 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 ##   variety = col_character(),
 ##   winery = col_character(),
 ##   year = col_double(),
+##   new_world = col_logical(),
+##   old_world = col_logical(),
 ##   type = col_character()
 ## )</code></pre>
 <pre class="r"><code>### remove region 2, taster twitter and missing values in region 1.
@@ -359,9 +359,39 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <p>Your report should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:</p>
 <div id="motivation" class="section level1">
 <h1>Motivation:</h1>
-<p>Provide an overview of the project goals and motivation.</p>
-<p>#Related work: Anything that inspired you, such as a paper, a web site, or something we discussed in class.</p>
-<p>#Initial questions: What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?</p>
+<p>This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.</p>
+<p>#Related work:</p>
+<p>Anything that inspired you, such as a paper, a web site, or something we discussed in class.</p>
+<p>#Initial questions:</p>
+<ol style="list-style-type: decimal">
+<li>Wine distribution worldwide:</li>
+</ol>
+<ul>
+<li>correspond to the world map</li>
+<li>correspond to the word cloud</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Understanding the points and price distribution:</li>
+</ol>
+<ul>
+<li>Points difference between a) wine type, b) region</li>
+<li>Price difference between a) wine type, b) region</li>
+<li>Change of price and points over time</li>
+</ul>
+<pre class="r"><code>#plots from plotly
+#anova analysis</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Linear model - predict Based on the information we have about a bottle of wine, how can we predict the price and points?</li>
+</ol>
+<p>What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Didn’t address yet - interactive plot (shiny)</li>
+</ol>
+<ul>
+<li>filter by price</li>
+<li>filter by country</li>
+<li>filter by wine type</li>
+</ul>
 </div>
 <div id="data" class="section level1">
 <h1>Data:</h1>
@@ -370,6 +400,7 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <p>This dataset contains 129971 wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste.</p>
 <div id="variables-of-interest" class="section level3">
 <h3><em>Variables of interest</em></h3>
+<pre class="r"><code>## Vera in charge of editing this sector</code></pre>
 <div id="outcomes" class="section level5">
 <h5><strong>Outcomes</strong></h5>
 <ul>
@@ -400,10 +431,30 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <li><code>pct_fam_households</code>. Percentage of census tract households that contain families.</li>
 </ul>
 <p>At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on <a href="https://winefolly.com/deep-dive/different-types-of-wine/">Wine Folly</a>.</p>
-<p>#Exploratory analysis: Visualizations, summaries, and exploratory statistical analyses. Justify the steps you took, and show any major changes to your ideas.</p>
-<p>#Additional analysis: If you undertake formal statistical analyses, describe these in detail</p>
-<p>#Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</p>
+<p>#Exploratory analysis:</p>
 </div>
+</div>
+<div id="visualizations" class="section level3">
+<h3>Visualizations,</h3>
+</div>
+<div id="summaries-and" class="section level3">
+<h3>summaries, and</h3>
+</div>
+<div id="exploratory-statistical-analyses" class="section level3">
+<h3>exploratory statistical analyses</h3>
+<p>anova 2-sample ttest.</p>
+<p>Justify the steps you took, and show any major changes to your ideas.</p>
+<p>#Additional analysis: If you undertake formal statistical analyses, describe these in detail</p>
+</div>
+<div id="linear-model---multivariate" class="section level3">
+<h3>linear model - multivariate</h3>
+</div>
+<div id="linear-model---name-tbd" class="section level3">
+<h3>linear model - name TBD</h3>
+</div>
+<div id="linear-model---cross-validation" class="section level3">
+<h3>linear model - cross validation</h3>
+<p>#Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</p>
 </div>
 </div>
 

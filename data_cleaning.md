@@ -30,7 +30,7 @@ Read in the wine data and generate year variable and save as csv file.
 wine_df = 
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
-  select(-region_2, -taster_twitter_handle) %>% 
+  select(-region_2, -taster_twitter_handle, -X1) %>% 
   mutate(year = year_extract(title))
 ```
 
@@ -53,6 +53,23 @@ wine_df =
     ##   variety = col_character(),
     ##   winery = col_character()
     ## )
+
+##### Code new dummy variables for old/new world wine:
+
+The new-world and old-world wines are categorized mainly by the country
+of origin. The detailed introduction can be found
+at：<https://winefolly.com/deep-dive/new-world-vs-old-world-wine/>.
+
+``` r
+old_world_country = c("France", "Italy", "Portugal", "Spain", "Germany", "Hungary", "Croatia", "England")
+
+new_world_country = c("US", "Canada", "Argentina", "Australia", "New Zealand", "South Africa", "China")
+
+wine_df = 
+  wine_df %>% 
+  mutate(new_world = country %in% new_world_country,
+         old_world = country %in% old_world_country)
+```
 
 Separate wine types by four major types: white, red, sparkling
 
@@ -91,6 +108,9 @@ rose_df =
   wine_df %>% 
     filter(!is.na(type),
            type == "rose")
+```
+
+``` r
 write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
 write.csv(red_df, file = "./wine_data/tidy/wine_red.csv")
 write.csv(white_df, file = "./wine_data/tidy/wine_white.csv")
