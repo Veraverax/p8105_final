@@ -1,5 +1,5 @@
 ---
-title: "Maps"
+title: "Shiny"
 output: 
   html_document:
     code_folding: hide
@@ -9,6 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(shiny)
 library(tidyverse)
 library(leaflet)
 library(ggplot2)
