@@ -14,26 +14,12 @@ library(rgdal)
 
 Read in wine data.
 
-```{r extract_year_function}
-year_extract <- function(string) {
-  t <- regmatches(string, regexec("[1-2][9|0][0-9][0-9]", string))
-  sapply(t, function(x) {
-    if (length(x) > 0) {
-      return(as.numeric(x))
-    } else {
-      return(NA)    
-    }
-  })
-}
-```
-
 ```{r tidying_data, message=FALSE}
 wine_tidy_df = 
   read_csv(
-  "./wine_data/winemag-data-130k-v2.csv") %>% 
-  janitor::clean_names() %>% 
-  select(-region_2, -taster_twitter_handle, -taster_name, -x1) %>% 
-  mutate(year = year_extract(title))
+  "./wine_data/tidy/wine_all.csv") %>% 
+  janitor::clean_names() %>%
+  select(-taster_name, -x1_1)
 ```
 
 ```{r wine_us}
@@ -141,7 +127,7 @@ popup <- paste0(
   states_merged_wine$NAME,"<br>", 
   "Wineries: ", states_merged_wine$total, "<br>", 
       "Avg Rating: ", states_merged_wine$avg_rating, "<br>",
-      "Avg Price: ", states_merged_wine$avg_price,"<br>"
+      "Avg Price: $", states_merged_wine$avg_price,"<br>"
       )
 
 state_map = states_merged_wine %>% 
@@ -164,8 +150,7 @@ state_map = states_merged_wine %>%
 state_map
 ```
 
-
-```{r world_choropleth, echo = T, warning = F, results = 'hide'}
+```{r world_map_labels_choropleth, echo = T, warning = F, results = 'hide'}
 world_spdf <- readOGR( 
   dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
   layer = "TM_WORLD_BORDERS_SIMPL-0.3",
@@ -188,26 +173,9 @@ world_popup <- paste0(
   countries_merged_wine$country,"<br>", 
   "Wineries: ", countries_merged_wine$total, "<br>", 
       "Avg Rating: ", countries_merged_wine$avg_rating, "<br>",
-      "Avg Price: ", countries_merged_wine$avg_price,"<br>"
+      "Avg Price: $", countries_merged_wine$avg_price,"<br>"
       )
 
-world_map_nolab = countries_merged_wine %>% 
-  leaflet() %>%
-  addProviderTiles("CartoDB.Positron") %>%
-  setView( lat = 10, lng = 0 , zoom = 2) %>% 
-  addPolygons(
-    fillColor = ~world_pal(total), 
-    fillOpacity = 1.0, 
-    weight = 0.4, 
-    smoothFactor = 0.2, 
-    popup = ~world_popup) %>% 
-  addLegend(pal = world_pal, 
-            values = countries_merged_wine$total, 
-            position = "bottomright", 
-            title = "Wineries")
-```
-
-```{r world_map_labels, echo = T, warning = F, results = 'hide'}
 world_map_labels = countries_merged_wine %>% 
   leaflet() %>%
   addMapPane(name = "polygons", zIndex = 410) %>% 
@@ -231,27 +199,40 @@ world_map_labels = countries_merged_wine %>%
 ```
 
 ```{r world_maps}
-world_map_nolab
-
 world_map_labels
 ```
 
 
-#### Mapping Thoughts/Questions
+```{r static_map}
+world <- map_data("world") %>% left_join(avg_points_by_country, by = c("region" = "country"))
+ggplot(data = world, 
+               mapping = aes(x = long, y = lat, group = group)) +
+  geom_polygon(aes(fill = mean)) +
+  scale_fill_continuous(low="rosybrown1", high="darkred", 
+                        na.value="snow2") +
+  coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x  = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.background = element_rect(fill = "white"))
+```
 
-* Is legend necessary?
+#### Mapping Next Steps
 
-* For world map, aesthetics....overlay is a lil funky looking
-Adding labels may help...
-(not sure how to deal with the overlap button tho...)
+
+* Take screenshot of map/make static map
+
+* Update about page and report for mapping
+
+* Review interactive - shiny lecture
+
 
 Potential Ideas: 
 
 * https://rstudio.github.io/leaflet/showhide.html
-
-BaseMap, dark or light?
-
-Base Map options:
-http://leaflet-extras.github.io/leaflet-providers/preview/
 
 Code adapted from https://www.r-graph-gallery.com/183-choropleth-map-with-leaflet.html
