@@ -356,19 +356,13 @@ div.tocify {
   <a href="about.html">About Us</a>
 </li>
 <li>
-  <a href="plotly.html">Trend Graphs</a>
+  <a href="plotly.html">Exploratory Graphs</a>
 </li>
 <li>
   <a href="regression.html">Regression Analysis</a>
 </li>
 <li>
   <a href="map.html">Maps</a>
-</li>
-<li>
-  <a href="mailto:&lt;you@youremail.com&gt;">
-    <span class="fa fa-envelope fa-lg"></span>
-     
-  </a>
 </li>
 <li>
   <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
@@ -449,9 +443,11 @@ library(mgcv)</code></pre>
   filter(year&gt;=2000) %&gt;%
   mutate(
          bold = str_detect(description, &quot;bold&quot;),
-         tannis = str_detect(description, &quot;tanni&quot;),
+         tannin = str_detect(description, &quot;tanni&quot;),
          dry = str_detect(description, &quot;dry&quot;),
-         acidic = str_detect(description, &quot;acidi&quot;),
+         acidity = str_detect(description, &quot;acidi&quot;),
+         full_body = str_detect(tolower(description),
+                                 paste(c(&quot;full body&quot;, &quot;full in body&quot;),collapse = &#39;|&#39;)),
          price_cp1 = (price &gt; 100) * (price - 100),
          price_cp2 = (price &lt; 30) * (price - 30)
     )
@@ -464,22 +460,22 @@ white_df_reg =
 </div>
 <div id="fit-models-for-red-wine-points" class="section level2">
 <h2>Fit models for red wine points</h2>
-<pre class="r"><code>fit_1 = lm(points ~ price + year + bold + tannis + dry + acidic
-           , 
+<pre class="r"><code>fit_1 = lm(points ~ price + year + bold + tannin + dry + acidity + full_body, 
            data = red_df_reg)
 
 fit_1 %&gt;% 
   broom::tidy()</code></pre>
-<pre><code>## # A tibble: 7 x 5
-##   term         estimate std.error statistic   p.value
-##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 (Intercept) -117.      7.08        -16.6  1.56e- 61
-## 2 price          0.0279  0.000239    116.   0.       
-## 3 year           0.102   0.00352      28.9  1.44e-182
-## 4 boldTRUE       0.918   0.0691       13.3  2.96e- 40
-## 5 tannisTRUE     0.450   0.0218       20.6  3.94e- 94
-## 6 dryTRUE       -0.566   0.0341      -16.6  6.55e- 62
-## 7 acidicTRUE     0.105   0.0270        3.89 1.02e-  4</code></pre>
+<pre><code>## # A tibble: 8 x 5
+##   term           estimate std.error statistic   p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)   -117.      7.09        -16.5  7.99e- 61
+## 2 price            0.0279  0.000239    116.   0.       
+## 3 year             0.102   0.00353      28.8  3.08e-181
+## 4 boldTRUE         0.916   0.0691       13.3  4.55e- 40
+## 5 tanninTRUE       0.449   0.0218       20.6  1.01e- 93
+## 6 dryTRUE         -0.566   0.0341      -16.6  7.20e- 62
+## 7 acidityTRUE      0.106   0.0270        3.92 8.85e-  5
+## 8 full_bodyTRUE    0.349   0.147         2.37 1.77e-  2</code></pre>
 <pre class="r"><code>linear_mod_red = lm(points ~ price, data = red_df_reg)
 
 pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)
@@ -566,6 +562,12 @@ a</code></pre>
 #     rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
 #     rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
 # </code></pre>
+</div>
+<div id="fit-models-for-price" class="section level2">
+<h2>Fit models for price</h2>
+</div>
+<div id="categorize-old-world-and-new-world-wine" class="section level2">
+<h2>Categorize old world and new world wine</h2>
 </div>
 
 

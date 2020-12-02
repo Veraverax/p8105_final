@@ -2,16 +2,16 @@
 title: "Wine Rating - What's behind great wines?"
 output: 
   html_document:
-    toc: true
-    toc_float: true
+    toc: false
+    toc_float: false
 ---
 
 <h6 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
 
 <br></br>
+<h6 style="text-align: center;" markdown="1"><img src="image/main_pic.jpg" style="width:75%"></h6>
 
-<h6 style="text-align: center;" markdown="1">![](image/main_pic.jpg)</h6>
 (Wordcloud)
 
 (screencast)
@@ -33,7 +33,10 @@ At first, the dataset contains more than 50 wine varieties and it is hard to get
 
 <br></br>
 
-![](image/wine_types.jpg)
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_types.jpg" style="width:75%"></h6>
+
+
+
 ## Fun facts
 A quick summary of our findings include:
 

@@ -1,7 +1,9 @@
 ---
 title: "Word Cloud"
-output: github_document
-always_allow_html: true
+output: 
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r}
@@ -40,7 +42,7 @@ data("stop_words")
 red_word = 
   anti_join(red_word, stop_words)
 # remove more uninformative words in our study
-other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend"))
+other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "blend", "palate", "cabernet"))
 red_word = 
   red_word %>% 
   anti_join(other_meaningless, by = "word")
@@ -51,21 +53,13 @@ red_word = red_word %>%
 # check the top 10 words
 red_word %>% head(10)
 
-# define a nice color palette
-pal <- brewer.pal(8,"Dark2")
-# plot word cloud
-red_word %>% 
-  wordcloud2(size = 1.6, shape = 'star', color = 'random-dark')
+# plot word cloud using image of the wine bottle as a mask
+red_word %>%
+  wordcloud2(figPath = "./image/wine_bottle.png", size = 0.58, color = 'red', backgroundColor = "white")
 
 # searchable data table for words
-red_word %>%
-  DT::datatable()
+# red_word %>%
+#  DT::datatable()
 ```
   
   ** filter by higher ratings
-  
-
-Work breakdown:
-1. categorize by major types and subtypes, generate subsets - Vera and Jady
-2. figure out the word cloud functions - Yolanda
-3. figure out the geo_map searching functions - Helen

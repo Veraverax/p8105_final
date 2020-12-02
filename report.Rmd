@@ -45,6 +45,7 @@ Your report should include the following topics. Depending on your project type 
 This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.
 
 #Related work: 
+
 Anything that inspired you, such as a paper, a web site, or something we discussed in class.
 
 #Initial questions: 
