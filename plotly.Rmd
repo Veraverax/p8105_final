@@ -55,7 +55,7 @@ First plot the distribution of wine prices across four different wine types: red
 wine_df %>% 
   filter(!is.na(type),
          price <= 100) %>% 
-  ggplot(aes(x = type, y = price, color = type)) +
+  ggplot(aes(x = type, y = price, color = type)) + scale_color_brewer(palette = "Reds") +
   geom_boxplot()
 
 
@@ -88,7 +88,7 @@ We can see that red wine has higher ratings than the other tree types. Rose has 
 wine_df %>% 
   filter(!is.na(type)) %>% 
   rename(rating = points) %>% 
-  ggplot(aes(x = type, y = rating, color = type)) +
+  ggplot(aes(x = type, y = rating, color = type)) + scale_color_brewer(palette = "Reds") +
   geom_boxplot()
 
 ```
@@ -172,7 +172,7 @@ wine_df %>%
   group_by(year,type) %>% 
   summarise(mean = mean(price)) %>% 
   mutate(mean = round(mean, 2)) %>% 
-  ggplot(aes(x = year, y = mean, color = type))+
+  ggplot(aes(x = year, y = mean, color = type))+ scale_color_brewer(palette = "Reds")+
   geom_point()+
   geom_line() +
   labs(y = "Mean price",
@@ -194,7 +194,7 @@ wine_df %>%
   group_by(year,type) %>% 
   summarise(mean = mean(points)) %>% 
   mutate(mean = round(mean, 2)) %>% 
-  ggplot(aes(x = year, y = mean, color = type))+
+  ggplot(aes(x = year, y = mean, color = type))+ scale_color_brewer(palette = "Reds") +
   geom_point()+
   geom_line() +
   labs(y = "Mean rating",
@@ -286,7 +286,7 @@ wine_df %>%
 wine_df %>% 
   mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
   rename(rating = points) %>% 
-  ggplot(aes(x = new_old, y = rating, color =new_old)) +
+  ggplot(aes(x = new_old, y = rating, color =new_old)) + scale_color_brewer(palette = "Reds") +
   geom_boxplot() +
     labs(y = "Mean rating",
       x = "new vs old world wine")
@@ -315,7 +315,7 @@ t.test(price ~ new_old, data = wine_new_old)
 wine_df %>% 
   mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
   filter(price <= 100) %>% 
-  ggplot(aes(x = new_old, y = price, color =new_old)) +
+  ggplot(aes(x = new_old, y = price, color =new_old)) + scale_color_brewer(palette = "Reds") +
   geom_boxplot() +
     labs(y = "Mean price",
       x = "new vs old world wine")
