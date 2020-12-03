@@ -309,6 +309,7 @@ The goal for this part of regression analyses is to connect the rating with info
 
 In addition to tasting description, it is noteworthy that the wine are also categorized by new and old world wines, based on region of origin (Wine History 101 Time). The general distribution is shown below. We also categorized our wine dataset using country list from [Wine Folly](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/) and hope to identify whether the rating of "world" of origin differs.
 
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_world_distribution.jpg" style="width:50%"></h6>
 
 ### Red Wine
 
