@@ -143,15 +143,15 @@ red_df_reg %>%
 red_cv_df =
   crossv_mc(red_df_reg, 100) %>% 
   mutate(
-    train = map(train, as_tibble),
-    test = map(test, as_tibble))
+    train = purrr::map(train, as_tibble),
+    test = purrr::map(test, as_tibble))
 
 red_cv_df = 
   red_cv_df %>% 
   mutate(
-    linear_mod  = map(train, ~lm(points ~ price, data = red_df_reg)),
-    pwl_mod     = map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
-    smooth_mod  = map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
+    linear_mod  = purrr::map(train, ~lm(points ~ price, data = red_df_reg)),
+    pwl_mod     = purrr::map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
+    smooth_mod  = purrr::map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
   mutate(
     rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
     rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
@@ -234,15 +234,15 @@ white_df_reg %>%
 white_cv_df =
   crossv_mc(white_df_reg, 100) %>% 
   mutate(
-    train = map(train, as_tibble),
-    test = map(test, as_tibble))
+    train = purrr::map(train, as_tibble),
+    test = purrr::map(test, as_tibble))
 
 white_cv_df = 
   white_cv_df %>% 
   mutate(
-    linear_mod  = map(train, ~lm(points ~ price, data = red_df_reg)),
-    pwl_mod     = map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
-    smooth_mod  = map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
+    linear_mod  = purrr::map(train, ~lm(points ~ price, data = red_df_reg)),
+    pwl_mod     = purrr::map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
+    smooth_mod  = purrr::map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
   mutate(
     rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
     rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
@@ -315,8 +315,6 @@ In addition to tasting description, it is noteworthy that the wine are also cate
 ### Red Wine
 
 For red wine, predictor variables are:
-
-+ **year**: Year of production of a bottle of wine - easily found on the wine label.
  
 + **price_seg**: Price segment, as described in the previous part of analyses.
  
@@ -352,8 +350,6 @@ fit_red %>%
 ### White Wine
 
 For white wine, predictor variables are:
-
-+ **year**: Year of production of a bottle of wine - easily found on the wine label.
  
 + **price_seg**: Price segment, as described in the previous part of analyses.
  
@@ -381,7 +377,9 @@ fit_white %>%
 ### Limitations
 There are several large limitations to this analysis:   
 
-* **Year**: We omitted year as a predictor in the final multivariate model. This is because the linear relationship with year as a continuous variable is not appropriate. Although it tend to be that the certain older wines are better, in a preliminary analysis the slope of year is actually positive and lacks theoretical support.   
+* **Year**: (change wording)
+
+We omitted year as a predictor in the final multivariate model. This is because the linear relationship with year as a continuous variable is not appropriate. Although it tend to be that the certain older wines are better, in a preliminary analysis the slope of year is actually positive and lacks theoretical support.   
 
 * **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.
 

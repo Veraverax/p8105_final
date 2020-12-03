@@ -19,14 +19,14 @@ library(mapproj)
 library(RColorBrewer)
 ```
 
-```{r tidying_data, message=FALSE, warning = FALSE}
+```{r tidying_data, message=FALSE, warning = FALSE, echo = FALSE}
 wine_tidy_df = 
   read_csv(
   "./wine_data/tidy/wine_all.csv") %>% 
   janitor::clean_names()
 ```
 
-```{r wine_us, message = FALSE}
+```{r wine_us, message = FALSE, echo = FALSE}
 wine_us = wine_tidy_df %>% 
   filter(country == "US") %>%
   rename(
@@ -183,23 +183,23 @@ world_map_labels = countries_merged_wine %>%
 ## Static Map
 
 ```{r static_map}
-world_static = map_data("world") %>%
-  left_join(wine_by_country, by = c("region" = "country"))
-
-ggplot(data = world_static, 
-               mapping = aes(x = long, y = lat, group = group)) +
-  geom_polygon(aes(fill = avg_rating)) +
-  scale_fill_continuous(low = "rosybrown1", high = "darkred", 
-                        na.value = "snow2") +
-  coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x  = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.y  = element_blank(),
-    axis.ticks.y = element_blank(),
-    panel.background = element_rect(fill = "white"))
+# world_static = map_data("world") %>%
+#   left_join(wine_by_country, by = c("region" = "country"))
+# 
+# ggplot(data = world_static, 
+#                mapping = aes(x = long, y = lat, group = group)) +
+#   geom_polygon(aes(fill = avg_rating)) +
+#   scale_fill_continuous(low = "rosybrown1", high = "darkred", 
+#                         na.value = "snow2") +
+#   coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
+#   theme(
+#     axis.title.x = element_blank(),
+#     axis.text.x  = element_blank(),
+#     axis.ticks.x = element_blank(),
+#     axis.title.y = element_blank(),
+#     axis.text.y  = element_blank(),
+#     axis.ticks.y = element_blank(),
+#     panel.background = element_rect(fill = "white"))
 ```
 
 ## Interactive Maps {.tabset}

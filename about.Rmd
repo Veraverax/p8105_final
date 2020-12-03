@@ -5,13 +5,13 @@ output: html_document
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
+# <a href=""><img class="cat_circle" src="image/wine_words.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
  
 I'm Jady, a second year MPH student in Biostatistics at Columbia University Mailman School of Public Health. My professional interests include data science, clinical trial methodology and health policy management. My favorite wine is called Josh and wine type is rose.
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Veru Xu
+# <a href=""><img class="circle" src="image/vera.jpg"></a><span style="padding-left:25px"> Veru Xu
 
 ABOUT
 

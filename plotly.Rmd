@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Exploratory Graphs"
 output: 
   html_document:
     toc: true
@@ -14,6 +14,7 @@ library(ggplot2)
 library(plotly)
 library(readxl)
 library(patchwork)
+library(RColorBrewer)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -22,11 +23,11 @@ knitr::opts_chunk$set(
 )
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
+  ggplot2.continuous.colour = "Reds",
+  ggplot2.continuous.fill = "Reds"
 )
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
+ scale_colour_discrete = scale_color_brewer(palette = "Reds")
+ scale_fill_discrete = scale_color_brewer(palette = "Reds")
 ```
 
 
@@ -124,7 +125,7 @@ wine_df %>%
         text_label=str_c("Country:", country, "\nmean price:", mean)) %>% 
   plot_ly(
   x = ~country, y = ~mean, color = ~country, text = ~text_label, 
-  type = "bar", colors = "viridis") %>% 
+  type = "bar", colors = "Reds") %>% 
   layout(yaxis = y)
   
 
@@ -152,7 +153,7 @@ wine_df %>%
         text_label=str_c("Country:", country, "\nmean rating:", mean)) %>% 
   plot_ly(
   x = ~country, y = ~avg_rating, color = ~country, text = ~text_label, 
-  type = "bar", colors = "viridis") %>% 
+  type = "bar", colors = "Reds") %>% 
   layout(yaxis = list(range = c(80,95)))
 ```
 
@@ -220,7 +221,7 @@ y <- list(
         text_label=str_c("Taster:", taster_name, "\nmean rating:", mean)) %>% 
   plot_ly(
   x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
-  type = "bar", colors = "viridis") %>% 
+  type = "bar", colors = "Reds") %>% 
  layout(yaxis = list(range = c(80,95)))
 
 

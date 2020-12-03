@@ -2,19 +2,24 @@ name: "Wines"
 output_dir: "."
 navbar:
   title: "Home"
-  right:
+  left:
     - text: "About Us"
       href: about.html
     - text: "Exploratory Analysis"
       menu:
       - text: "Exploratory Graphs"
-      href: plotly.html
+        href: plotly.html
       - text: "Word Cloud"
-      href: word_cloud.html
+        href: word_cloud.html
     - text: "Regression Analysis"
       href: regression.html
     - text: "Maps"
       href: mapping.html
+  right:
+    - text: "Project Report"
+      href: report.html
+    - icon: fa-youtube fa-lg
+      href: https://www.youtube.com/watch?v=W-cQ8M_y7MY&feature=youtu.be&hd=1
     - icon: fa-github fa-lg
       href: https://github.com/Veraverax/p8105_final/
 output:
