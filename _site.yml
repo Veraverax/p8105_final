@@ -5,8 +5,12 @@ navbar:
   right:
     - text: "About Us"
       href: about.html
-    - text: "Exploratory Graphs"
+    - text: "Exploratory Analysis"
+      menu:
+      - text: "Exploratory Graphs"
       href: plotly.html
+      - text: "Word Cloud"
+      href: word_cloud.html
     - text: "Regression Analysis"
       href: regression.html
     - text: "Maps"

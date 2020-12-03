@@ -78,12 +78,14 @@ In the analysis of our dataset, we segmented the wine price at two cutoffs - \$3
 
 ```{r, message = FALSE, warning = FALSE}
 red_df %>%
-  count(price) %>%
+  group_by(price, price_seg) %>%
+  summarize(n = n()) %>%
   plot_ly(x = ~price, y = ~n, color = ~price_seg, type = "bar")
 
 
 white_df %>% 
-  count(price) %>%
+  group_by(price, price_seg) %>%
+  summarize(n = n()) %>%
   plot_ly(x = ~price, y = ~n, color = ~price_seg, type = "bar")
 
 ```
@@ -199,14 +201,13 @@ Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model.
 pw_red_output = 
   pwl_mod_red %>%
   broom::tidy() %>%
-  dplyr::select(term, estimate, p.value) %>%
-  mutate(exp(estimate)) 
+  dplyr::select(term, estimate, p.value)
 
 pw_red_output %>% 
-  knitr::kable(digits = 3)
+  knitr::kable()
 ```
 
-Based on the piecewise model, to describe the relationship between price and red wine,
+Based on the piecewise model, to describe the relationship between price and red wine, the slope of different segments reveals the relationship between 
 **HOW TO INTERPRET?**
 
 ### Fit models for white wine points
@@ -335,9 +336,6 @@ The following binary variables are identified by the key description scale from 
 
 
 ```{r}
-red_df_reg %>%
-  relevel(price_seg, ref = "Value")
-
 fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
 
 ## how to set ref group for price_seg?
@@ -389,6 +387,6 @@ There are several large limitations to this analysis:
 
 * **Price**: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.
 
-* **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% is.na(price) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% is.na(price) %>% nrow()` in the white wine dataset.
+* **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% filter(is.na(price)) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% filter(is.na(price)) %>% nrow()` in the white wine dataset.
 
 
