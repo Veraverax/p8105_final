@@ -259,7 +259,7 @@ smooth_mod_white = gam(points ~ s(price), data = white_df_reg)
 white_df_reg %>% 
   gather_predictions(linear_mod_white, pwl_mod_white, smooth_mod_white) %>%
   mutate(model = fct_inorder(model)) %>%
-  ggplot(aes(x = price, y = points)) + 
+  ggplot(aes(x = price, y = points, color = price_seg)) + 
   geom_point(alpha = .05) +
   geom_line(aes(y = pred), color = "yellow") + 
   facet_grid(~model) +
@@ -345,6 +345,8 @@ pw_white_output %>%
 
 Based on the coefficient estimates of the piecewise model, the model is actually revealing the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the rating change is less sensitive as the wine of this price segment is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury segment the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
 
+<br>
+
 #### Key takeaway message 
 
 * Among the value wine segment, paying more is very likely to enjoy a better bottle of wine
@@ -358,13 +360,11 @@ Based on the coefficient estimates of the piecewise model, the model is actually
 
 ## II. Multivariate Models for Rating
 
-<br></br>
+<br>
 
 The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Price Segment and key taste notes are used as predictor variables in this section. 
 
-**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
-
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_words.jpg" style="width:70%"></h6>
+<br>
 
 
 ### Red Wine
@@ -442,6 +442,7 @@ fit_white %>%
 
 * The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
+<br>
 
 ### Limitations
 

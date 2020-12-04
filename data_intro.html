@@ -19,9 +19,6 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -253,69 +250,6 @@ $(document).ready(function () {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -323,16 +257,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -407,39 +331,51 @@ div.tocify {
 </div>
 
 
-<p><br></br></p>
+<p><br></p>
 <div id="dataset" class="section level2">
 <h2>Dataset</h2>
+<p><br></p>
 <p>The data for this project is downloaded from <a href="https://www.kaggle.com/zynicide/wine-reviews">Kaggle</a>. It was scraped on November 22nd, 2017 from the <a href="https://www.winemag.com/?s=&amp;drink_type=wine">Wine Enthusiast Rating</a> database. Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine.</p>
 <p>This dataset contains 130k wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste.</p>
 <p>At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on <a href="https://winefolly.com/deep-dive/different-types-of-wine/">Wine Folly</a>.</p>
-<p><br></br></p>
+<p><br></p>
 <h6 style="text-align: center;">
-<img src="image/wine_types.jpg" style="width:75%">
+<img src="image/wine_types.jpg" style="width:60%">
 </h6>
 <p><br></br></p>
 </div>
 <div id="capturing-wine-vintage" class="section level2">
 <h2>Capturing Wine Vintage</h2>
+<p><br></p>
 <p>Year, also known as wine vintage, is the year when the grapes were harvested. This piece information is crucial for a bottle of wine, as the year of harvest greatly affects the taste and quality of a bottle of wine. Since the information is not ready to use in the raw dataset, we used a function to extract year information from the wine name. We later examined the change of price and rating over time.</p>
 <h6 style="text-align: center;">
-<img src="image/wine_year.jpg" style="width:50%">
+<img src="image/wine_year.jpg" style="width:45%">
 </h6>
 <p><br></br></p>
 </div>
 <div id="old-vs-new-world" class="section level2">
 <h2>Old vs New World</h2>
+<p><br></p>
 <p>Wines are also categorized by new and old world, based on region of origin (Wine History 101 Time). The general distribution is shown below.</p>
 <h6 style="text-align: center;">
 <img src="image/wine_world_distribution.jpg" style="width:50%">
 </h6>
 <p>We also categorized our wine dataset using country list from <a href="https://winefolly.com/deep-dive/new-world-vs-old-world-wine/">Wine Folly</a>. The “world of origin” categorical variable is a 3-level variable, and coded into two dummy variables (old world, new world). We will examine the characteristic difference and rating difference between old and new world wines in later analyses.</p>
+<p><br></br></p>
+</div>
+<div id="wine-tasting-notes" class="section level2">
+<h2>Wine Tasting Notes</h2>
+<p><br></p>
+<p><strong>Why tasting notes?</strong> These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great <a href="https://winefolly.com/tips/wine-descriptions-chart-infographic/">article</a> and the summary graph.</p>
+<h6 style="text-align: center;">
+<img src="image/wine_words.jpg" style="width:60%">
+</h6>
+<p>In our analyses, we firstly used word cloud tools to capture the wine tasting description from the raw dataset. For more information about wine key words, please visit our <a href="word_cloud.html">word cloud page</a>.</p>
+<p>Additionally, we generated several new variables capturing key words of red or white wines using a realtively simplified way to describe wines. For more information the analysis results, please visit our <a href="regression.html">regression analysis page</a>.</p>
 </div>
 
 
 
-</div>
-</div>
 
 </div>
 
@@ -472,32 +408,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

@@ -1,12 +1,14 @@
 ---
-title: "Project Report"
+title: ""
 output: 
   html_document:
     code_folding: hide
     toc: true
     toc_float: true
 ---
-<h6 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
+<h1 style="text-align: center;" markdown="1">Project Report
+
+<h4 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
 <br>
 
@@ -97,11 +99,7 @@ To understand the information that customers could get from the ratings, price a
 
 The data for this project is downloaded [here](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k wine reviews with variety, location, winery, price, description and reviewer information. 
 
-## Importing and Cleaning
-
-#### Year extracting function
-
-This function is used to extract the wine vintage information from the wine name.
+We firstly imported the raw dataset, and created a **Year extracting function**. This function is used to extract the wine vintage information from the wine name.
 
 ```{r extract_year_function, echo = FALSE, message = FALSE, warning = FALSE}
 year_extract <- function(string) {
@@ -114,11 +112,7 @@ year_extract <- function(string) {
     }
   })
 }
-```
 
-#### Read in the wine data
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
 wine_df = 
   read_csv(
   "./wine_data/winemag-data-130k-v2.csv") %>% 
@@ -126,9 +120,7 @@ wine_df =
   mutate(year = year_extract(title))
 ```
 
-#### New vs Old World
-
-Code new dummy variables for old/new world wine. The new-world and old-world wines are categorized mainly by the country of origin. The detailed introduction can be found [here](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.)
+We also coded new variables for wines from **New vs Old World**. The new-world and old-world wines are categorized mainly by the country of origin. The detailed introduction can be found [here](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.)
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 old_world_country = c("France", "Italy", "Portugal", "Spain", "Germany", "Hungary", "Croatia", "England")
@@ -146,9 +138,7 @@ wine_df =
   "./wine_data/tidy/wine_all.csv")
 ```
 
-#### Red, white, rose and sparkling
-
-To separate wine types by four major types: white, red, sparkling baesd on the categorzing method from [Wine Folly](https://media.winefolly.com/Different-Types-of-Wine-v2.jpg): we firstly created a excel sheet that mathes all grape types with wine >200 to the four category, and then subset the data using the following code chunk:
+In terms of wine type, we separated wine types by four major types: **red, white, sparkling and rose** baesd on the categorzing method from [Wine Folly](https://media.winefolly.com/Different-Types-of-Wine-v2.jpg): we firstly created a excel sheet that mathes all grape types with wine >200 to the four category, and then subset the data using the following code chunk:
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 wine_type = 
@@ -183,17 +173,8 @@ rose_df =
            type == "rose")
 ```
 
-#### Save tidy data
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
-write.csv(red_df, file = "./wine_data/tidy/wine_red.csv")
-write.csv(white_df, file = "./wine_data/tidy/wine_white.csv")
-write.csv(sparkling_df, file = "./wine_data/tidy/wine_sparkling.csv")
-write.csv(rose_df, file = "./wine_data/tidy/wine_rose.csv")
-```
-
-#### Variables
+## Variables
 
 * **title**: wine name
 
@@ -221,7 +202,7 @@ write.csv(rose_df, file = "./wine_data/tidy/wine_rose.csv")
 
 <br>
 
-# Exploratory analysis: 
+# Exploratory analysis
 
 <br><br>
 
@@ -254,7 +235,9 @@ wine_price =
   wine_df %>% 
   filter(price <= 100)
 res.aov <- aov(price ~ type, data = wine_price)
-summary(res.aov)
+res.aov %>%
+  broom::tidy() %>% 
+  knitr::kable()
 
 
 wine_df %>% 
@@ -264,7 +247,9 @@ wine_df %>%
   geom_boxplot()
 
 res.aov <- aov(points ~ type, data = wine_df)
-summary(res.aov)
+res.aov %>%
+  broom::tidy() %>% 
+  knitr::kable()
 
 ```
 
@@ -428,8 +413,6 @@ wine_df %>%
   arrange(desc(mean)) %>% 
   head(n = 10) %>% 
   knitr::kable()
-
-
 ```
 
 <br><br>
@@ -454,7 +437,9 @@ wine_df %>%
 wine_new_old=
 wine_df %>% 
   mutate(new_old = ifelse(new_world == 0, "old_world", "new_world"))
-t.test(price ~ new_old, data = wine_new_old)
+t.test(price ~ new_old, data = wine_new_old) %>%
+  broom::tidy() %>% 
+  knitr::kable()
 
 wine_df %>% 
   mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
@@ -468,9 +453,9 @@ wine_price =
 wine_df %>% 
   mutate(new_old = ifelse(new_world == 0, "old_world", "new_world")) %>% 
   filter(price<=100)
-t.test(price ~ new_old, data = wine_price)
-
-
+t.test(price ~ new_old, data = wine_price) %>%
+  broom::tidy() %>% 
+  knitr::kable()
 
 ```
 
@@ -649,7 +634,15 @@ world_map_labels = countries_merged_wine %>%
 
 <br><img src="./image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br>
 
+<br></br>
+
 # Additional analysis
+
+<br>
+
+## I. Understanding Price and Rating 
+
+### The more expensive, the better?
 
 ```{r, message = FALSE, warning = FALSE}
 red_df =  
@@ -696,12 +689,6 @@ white_df_reg =
          price_cp2 = (price < 30) * (price - 30))
 ```
 
-
-## I. Understanding Price and Rating 
-
-### The more expensive, the better?
-
-<br></br>
 
 There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
 
@@ -854,7 +841,7 @@ smooth_mod_white = gam(points ~ s(price), data = white_df_reg)
 white_df_reg %>% 
   gather_predictions(linear_mod_white, pwl_mod_white, smooth_mod_white) %>%
   mutate(model = fct_inorder(model)) %>%
-  ggplot(aes(x = price, y = points)) + 
+  ggplot(aes(x = price, y = points, color = price_seg)) + 
   geom_point(alpha = .05) +
   geom_line(aes(y = pred), color = "yellow") + 
   facet_grid(~model) +
@@ -1036,11 +1023,13 @@ fit_white %>%
 
 # Discussion
 
-## World Map - main findings
+<br>
 
-## Word cloud - main findings
+### Limitations of Word Cloud Analyses
 
-## Limitations of Regression Analyses
+<br>
+
+### Limitations of Regression Analyses
 
 There are several large limitations to this analysis:   
 
@@ -1054,5 +1043,13 @@ There are several large limitations to this analysis:
 
 * **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% filter(is.na(price)) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% filter(is.na(price)) %>% nrow()` in the white wine dataset.
 
+<br>
 
-## Summary
+### Final Words
+
+Using data science toolkit to approach the world of wines has been a trendy topic, yet there are many challenges throughout the process. The key reason behind this is that wine tasting and rating is a more subject matter; despite influencers sharing their thoughts, each person has their preferences. 
+
+With the dataset we have, the massive number of observations enabled us to explore using tools, including word cloud, interactive maps, and regression analyses.  However, the extent to which we can dig into more information is limited by the currently available variables and information without too much space to expand. All the quantitative analyses results are generated from this dataset, but might not truly reflect the real wine world's pattern.
+
+Lastly, we hope that this project serves as a great opportunity for wine beginners to know more about wine information. We also sincerely hope that some of our key findings will help you make better or more informative purchase choices during the upcoming holiday season!
+

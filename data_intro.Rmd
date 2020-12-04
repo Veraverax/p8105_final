@@ -3,12 +3,15 @@ title: "About the data"
 output: 
   html_document:
     
-    toc: true
-    toc_float: true
+    toc: false
+    toc_float: false
+    fontsize: 14px
 ---
-<br></br>
+<br>
 
 ## Dataset
+
+<br>
 
 The data for this project is downloaded from [Kaggle](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [Wine Enthusiast Rating ](https://www.winemag.com/?s=&drink_type=wine) database. Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine. 
 
@@ -16,21 +19,25 @@ This dataset contains 130k wine reviews with variety, location, winery, price, d
 
 At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on [Wine Folly](https://winefolly.com/deep-dive/different-types-of-wine/).
 
-<br></br>
+<br>
 
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_types.jpg" style="width:75%"></h6>
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_types.jpg" style="width:60%"></h6>
 
 <br></br>
 
 ## Capturing Wine Vintage
 
+<br>
+
 Year, also known as wine vintage, is the year when the grapes were harvested. This piece information is crucial for a bottle of wine, as the year of harvest greatly affects the taste and quality of a bottle of wine. Since the information is not ready to use in the raw dataset, we used a function to extract year information from the wine name. We later examined the change of price and rating over time.
 
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_year.jpg" style="width:50%"></h6>
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_year.jpg" style="width:45%"></h6>
 
 <br></br>
 
 ## Old vs New World
+
+<br>
 
 Wines are also categorized by new and old world, based on region of origin (Wine History 101 Time). The general distribution is shown below. 
 
@@ -38,7 +45,17 @@ Wines are also categorized by new and old world, based on region of origin (Wine
 
 We also categorized our wine dataset using country list from [Wine Folly](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/). The "world of origin" categorical variable is a 3-level variable, and coded into two dummy variables (old world, new world). We will examine the characteristic difference and rating difference between old and new world wines in later analyses.
 
+<br></br>
 
+## Wine Tasting Notes
 
+<br>
 
+**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
+
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_words.jpg" style="width:60%"></h6>
+
+In our analyses, we firstly used word cloud tools to capture the wine tasting description from the raw dataset. For more information about wine key words, please visit our [word cloud page](word_cloud.html).
+
+Additionally, we generated several new variables capturing key words of red or white wines using a realtively simplified way to describe wines. For more information the analysis results, please visit our [regression analysis page](regression.html).
 

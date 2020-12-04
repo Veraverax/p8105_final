@@ -5,30 +5,26 @@ output: html_document
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/jady.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
+# <a href=""><img src="image/jady.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu
  
 I'm Jady, a second year MPH student in Biostatistics at Columbia University Mailman School of Public Health. I received my BS in Statistics and Economics from Boston University. My professional interests include data science and clinical trial methodology. My favorite wine is called Josh and wine type is rose.
 
 <br></br>
 
-# <a href=""><img class="circle" src="image/vera.jpg"></a><span style="padding-left:25px"> Veru Xu
+# <a href=""><img class="circle" src="image/vera.png"></a><span style="padding-left:25px"> Veru Xu
 
 I'm Vera, also a 2nd year MPH student in Biostatistics. My professional interest is in healthcare and management consulting. In my spare time, I actually drink wine very frequently. My favorite bottle of wine is Hess Select Cabernet Sauvignon 2016 - it's not pricy, of great structure and a good choice to pair with red meat.
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/helen.jpg"></a><span style="padding-left:25px">Helen Zhang
+# <a href=""><img src="image/helen.png"></a><span style="padding-left:25px">Helen Zhang
 
 My name is Helen and I'm in the Epidemiology Department with a certificate in CEOR. Prior to graduate school, I received my BS in Microbiology from University of Wisconsin-Madison. My professional interests are real-world data and outcomes research. 
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Yuanxin (Yolanda) Zhang
+# <a href=""><img src="image/yolanda.png"></a><span style="padding-left:25px">Yuanxin (Yolanda) Zhang
 
 I'm Yolanda, a second year MPH student in Biostatistics, pursuing a certificate in Advanced Epidemiology. I obtained my BS in Statistics from University of California, Davis. I am interested in clinical research and my career goal is to become a biostatistician in pharmaceutical industry. My favorite wine type is reisling.
 
-<br></br>
 
-ABOUT
-
-<br></br>

@@ -6,9 +6,12 @@ output:
     toc: true
     toc_float: true
 ---
+
+<br>
+
 Below are several choropleth maps depicting where wines are made and the average ratings and prices for each country.
 
-The static map depicts the average rating of each countries' wines. England leads in terms of average wine ratings, with Austria, Germany, and India close behind. It is important to note that there were a much smaller sample size for wines from England India, with only 69 and 9 wines sampled respectively, as compared to other countries with high rankings. On the lower end of the averages cores is Peru and Ukraine.
+
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -157,6 +160,10 @@ world_map_labels = countries_merged_wine %>%
 ```
 
 ## Static Map
+
+<br>
+
+The static map depicts the average rating of each countries' wines. England leads in terms of average wine ratings, with Austria, Germany, and India close behind. It is important to note that there were a much smaller sample size for wines from England India, with only 69 and 9 wines sampled respectively, as compared to other countries with high rankings. On the lower end of the averages cores is Peru and Ukraine.
 
 ```{r static_map}
 wine_by_country_static = wine_by_country %>% 
