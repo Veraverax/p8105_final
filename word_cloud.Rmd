@@ -118,18 +118,58 @@ wine_word_cloud <- function(wine_subset, color1, color2) {
   
   # plot word cloud
   wine_word %>% head(100) %>% 
-    wordcloud2(size = 0.58, color = color1, backgroundColor =   color2)
+    wordcloud2(size = 0.58, color = color1, backgroundColor = color2)
 }
 
-#par(mfrow = c(3,2))
-wine_word_cloud(red_df, "red", "white") 
-wine_word_cloud(white_df, "orange", "white")
+
+#wine_word_cloud(white_df, "orange", "white")
 #wine_word_cloud(rose_df, "pink", "white")
 #wine_word_cloud(sparkling_df, "green", "white")
 
 #wine_word_cloud(high_red, "blue", "white")
 #wine_word_cloud(low_red, "purple", "white")
 ```
+
+# Red wine
+```{r message = FALSE}
+wine_word_cloud(red_df, "red", "white")
+```
+
+## New-world red wine
+```{r message = FALSE}
+wine_word_cloud(new_red, "red", "white")
+```
+
+## Old-world red wine
+```{r message = FALSE}
+wine_word_cloud(old_red, "red", "white")
+```
+
+# White wine
+```{r message = FALSE}
+wine_word_cloud(white_df, "red", "white")
+```
+
+## New-world white wine
+```{r message = FALSE}
+wine_word_cloud(new_white, "red", "white")
+```
+
+## Old-world white wine
+```{r message = FALSE}
+wine_word_cloud(old_white, "red", "white")
+```
+
+# Rose
+```{r message = FALSE}
+wine_word_cloud(rose_df, "red", "white")
+```
+
+# Sparkling
+```{r message = FALSE}
+wine_word_cloud(sparkling_df, "red", "white")
+```
+
 
 ```{r export, include = FALSE}
 library(webshot)
@@ -139,5 +179,5 @@ saveWidget(red_word, "tmp.html", selfcontained = F)
 webshot("tmp.html", "./image/red_word.png", delay = 5, vwidth = 500, vheight = 500)
 file.remove("tmp.html")
 ```
-![](./image/red_word.png)
+
 
