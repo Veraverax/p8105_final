@@ -11,7 +11,7 @@
 
 
 
-<title>Report</title>
+<title>Project Report</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -261,6 +264,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -268,6 +334,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -294,6 +370,9 @@ $(document).ready(function () {
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_intro.html">About the Data</a>
+    </li>
     <li>
       <a href="plotly.html">Exploratory Graphs</a>
     </li>
@@ -342,90 +421,36 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Report</h1>
+<h1 class="title toc-ignore">Project Report</h1>
 
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
-## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
-## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(leaflet)
-library(ggplot2)
-library(plotly)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;plotly&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     last_plot</code></pre>
-<pre><code>## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter</code></pre>
-<pre><code>## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     layout</code></pre>
-<pre class="r"><code>library(readxl)
-
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = &quot;90%&quot;
-)
-theme_set(theme_minimal() + theme(legend.position = &quot;bottom&quot;))
-options(
-  ggplot2.continuous.colour = &quot;viridis&quot;,
-  ggplot2.continuous.fill = &quot;viridis&quot;
-)
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d</code></pre>
-<pre class="r"><code>wine_df = 
-  read_csv(
-  &quot;./wine_data/tidy/wine_all.csv&quot;)</code></pre>
-<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   X1 = col_double(),
-##   country = col_character(),
-##   description = col_character(),
-##   designation = col_character(),
-##   points = col_double(),
-##   price = col_double(),
-##   province = col_character(),
-##   region_1 = col_character(),
-##   taster_name = col_character(),
-##   title = col_character(),
-##   variety = col_character(),
-##   winery = col_character(),
-##   year = col_double(),
-##   new_world = col_logical(),
-##   old_world = col_logical(),
-##   type = col_character()
-## )</code></pre>
-<pre class="r"><code>### remove region 2, taster twitter and missing values in region 1.
-
-#wine_type &lt;- read_csv(&quot;./wine_data/winemag-data-130k-v2.csv&quot;) %&gt;% 
-#            group_by(variety) %&gt;% 
-#            count() %&gt;% 
-#            arrange(desc(n)) %&gt;% 
-#            as.tibble()</code></pre>
-<p>Your report should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:</p>
+<h6 style="text-align: center;">
+Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)
+</h6>
+<p><br></p>
+<p>This is the report of our wine data project.</p>
+<p><br></p>
 <div id="motivation" class="section level1">
-<h1>Motivation:</h1>
+<h1>Motivation</h1>
+<p>Wine is one of the most commonly seen alcoholic drinks, and there is a great amount of knowledge about wine history, wine categories and what characterizes a great bottle of wine.</p>
 <p>This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.</p>
+<p><br></p>
 </div>
 <div id="related-work" class="section level1">
-<h1>Related work:</h1>
-<p>Anything that inspired you, such as a paper, a web site, or something we discussed in class.</p>
+<h1>Related work</h1>
+<p>Interesting projects that inspired us can be found below.</p>
+<ul>
+<li><p>A <a href="https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html">project</a> that aims to analyze the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlationally related to each other</p></li>
+<li><p>A <a href="http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html">project</a> that examined Red Wine Quality using a red wine dataset from Kaggle.</p></li>
+</ul>
+<p><br></p>
 </div>
 <div id="initial-questions" class="section level1">
-<h1>Initial questions:</h1>
-<p>We are trying to answer some questions from exploratory analysis. To understand the information that customers could get from the ratings, price among different wine type and region, we want to answer the following questions:</p>
+<h1>Initial questions</h1>
+<p>We are trying to answer some questions from exploratory analysis.</p>
+<p>To understand the information that customers could get from the ratings, price among different wine type and region, we want to answer the following questions:</p>
 <ol style="list-style-type: decimal">
 <li><p>What is the distribution of prices among four types of wine? Is at least one wine type’s price different from the others?</p></li>
 <li><p>What is the distribution of ratings among four types of wine? Is at least one wine type’s rating different from the others?</p></li>
@@ -437,63 +462,56 @@ scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <li><p>Which winery has the top average ratings wine?</p></li>
 <li><p>Is there any differences in prices between new world and old world wine?</p></li>
 <li><p>Is there any differences in ratings between new world and old world wine?</p></li>
-<li><p>Wine distribution worldwide:</p></li>
+<li><p>What is the relationship between wine rating and wine prices?</p></li>
+<li><p>What are the predictor variables that can be used to assess the quality of wine?</p></li>
+<li><p>What is the worldwide distribution of wine quality and price using interactive demonstration?</p></li>
+<li><p>What is the distribution of wine quality and price within US using interactive demonstration?</p></li>
 </ol>
-<ul>
-<li>correspond to the world map</li>
-<li>correspond to the word cloud</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li>Linear model - predict Based on the information we have about a bottle of wine, how can we predict the price and points?</li>
-</ol>
-<p>What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Didn’t address yet - interactive plot (shiny)</li>
-</ol>
-<ul>
-<li>filter by price</li>
-<li>filter by country</li>
-<li>filter by wine type</li>
-</ul>
+<p><br></p>
 </div>
 <div id="data" class="section level1">
-<h1>Data:</h1>
-<p>Source, scraping method, cleaning, etc.</p>
-<p>The data for this project is downloaded from <a href="https://www.kaggle.com/zynicide/wine-reviews">Kaggle</a>. It was scraped on November 22nd, 2017 from the <a href="https://www.winemag.com/?s=&amp;drink_type=wine">WineEnthusiast Rating database</a>. Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine.</p>
-<p>This dataset contains 129971 wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste.</p>
-<div id="variables-of-interest" class="section level3">
-<h3><em>Variables of interest</em></h3>
-<pre class="r"><code>## Vera in charge of editing this sector</code></pre>
-<div id="outcomes" class="section level5">
-<h5><strong>Outcomes</strong></h5>
-<ul>
-<li><code>price</code> . Count of evictions (or eviction filings) per year at the census tract level.</li>
-<li><code>rating</code>. Calculated using number of evictions or eviction filings divided by the number of <code>renter_occupied_households</code> and multiplied by 100, to be interpreted as a percentage.</li>
-</ul>
+<h1>Data</h1>
+<div id="dataset" class="section level2">
+<h2>Dataset</h2>
+<p>The data for this project is downloaded <a href="https://www.kaggle.com/zynicide/wine-reviews">here</a>. It was scraped on November 22nd, 2017 from the <a href="https://www.winemag.com/?s=&amp;drink_type=wine">WineEnthusiast Rating database</a>. It contains 130k wine reviews with variety, location, winery, price, description and reviewer information.</p>
 </div>
-<div id="candidate-predictors" class="section level5">
-<h5><strong>Candidate Predictors</strong></h5>
+<div id="importing-and-cleaning" class="section level2">
+<h2>Importing and Cleaning</h2>
+<div id="year-extracting-function" class="section level4">
+<h4>Year extracting function</h4>
+<p>This function is used to extract the wine vintage information from the wine name.</p>
+</div>
+<div id="read-in-the-wine-data" class="section level4">
+<h4>Read in the wine data</h4>
+</div>
+<div id="new-vs-old-world" class="section level4">
+<h4>New vs Old World</h4>
+<p>Code new dummy variables for old/new world wine. The new-world and old-world wines are categorized mainly by the country of origin. The detailed introduction can be found <a href="https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.">here</a></p>
+</div>
+<div id="red-white-rose-and-sparkling" class="section level4">
+<h4>Red, white, rose and sparkling</h4>
+<p>To separate wine types by four major types: white, red, sparkling baesd on the categorzing method from <a href="https://media.winefolly.com/Different-Types-of-Wine-v2.jpg">Wine Folly</a>: we firstly created a excel sheet that mathes all grape types with wine &gt;200 to the four category, and then subset the data using the following code chunk:</p>
+</div>
+<div id="save-tidy-data" class="section level4">
+<h4>Save tidy data</h4>
+</div>
+<div id="variables" class="section level4">
+<h4>Variables</h4>
 <ul>
-<li><code>years_since_2010</code>. Since our data range from 2010 to 2016, and we did not want to assume a constant effect of time, we included year as a set of indicator variables in all models except our empty model (see below).</li>
-<li><code>hisp</code>. Percent of population (at census tract level, for all race/ethnicity variables) that self-report Hispanic ethnicity.</li>
-<li><code>white</code>. Percent self-reporting White race.</li>
-<li><code>black</code>. Percent self-reporting Black race.</li>
-<li><code>asian</code>. Percent self-reporting Asian race.</li>
-<li><code>aian</code>. Percent self-reporting American Indian / Alaska Native race.</li>
-<li><code>nhpi</code>. Percent self-reporting Native Hawaiian / Pacific Islander race.</li>
-<li><code>other</code>. Percent self-reporting other race.</li>
-<li><code>rent_burden</code>. Average percent of income spent on rent.</li>
-<li><code>density</code>. Population density.</li>
-<li><code>pct_eng</code>. Percent of population who speak English less than ‘Very Well’. This is interpreted as a proxy for percent English as a second language (ESL) speakers.</li>
-<li><code>median_household_income</code>. Median census tract household income in USD.</li>
-<li><code>poverty_rate</code>. Percent living below Federal Poverty Line (FPL).</li>
-<li><code>median_gross_rent</code>. Median census tract gross rent in USD.</li>
-<li><code>pct_renter_occupied</code>. Percent of census tract occupied by renters.</li>
-<li><code>median_property_value</code>. Median census tract property value in USD.</li>
-<li><code>family_size</code>. Average family size in census tract.</li>
-<li><code>pct_fam_households</code>. Percentage of census tract households that contain families.</li>
+<li><p><strong>title</strong>: wine name</p></li>
+<li><p><strong>price</strong>: price in USD</p></li>
+<li><p><strong>points</strong>: rating score on a 100 scale</p></li>
+<li><p><strong>taster_name</strong>: the taster who rated the wine</p></li>
+<li><p><strong>country</strong>: country of origin</p></li>
+<li><p><strong>province</strong>：province of origin</p></li>
+<li><p><strong>winery</strong>: winery name</p></li>
+<li><p><strong>description</strong>: a paragraph to describe the wine tasting notes</p></li>
+<li><p><strong>variety</strong>: grape type</p></li>
+<li><p><strong>type</strong>: red, white, rose or sparkling</p></li>
+<li><p><strong>year</strong>: wine vintage</p></li>
+<li><p><strong>new_world</strong> and <strong>old_world</strong>: world categorization of origin</p></li>
 </ul>
-<p>At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on <a href="https://winefolly.com/deep-dive/different-types-of-wine/">Wine Folly</a>.</p>
+<p><br></p>
 </div>
 </div>
 </div>
@@ -520,7 +538,7 @@ Sparkling <img src="image/sparkling_word.png" /></p>
          price &lt;= 100) %&gt;% 
   ggplot(aes(x = type, y = price, color = type)) +
   geom_boxplot()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-7-1.png" width="90%" /></p>
 <pre class="r"><code>wine_price = 
   wine_df %&gt;% 
   filter(price &lt;= 100)
@@ -537,7 +555,7 @@ summary(res.aov)</code></pre>
   rename(rating = points) %&gt;% 
   ggplot(aes(x = type, y = rating, color = type)) +
   geom_boxplot()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-4-2.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-7-2.png" width="90%" /></p>
 <pre class="r"><code>res.aov &lt;- aov(points ~ type, data = wine_df)
 summary(res.aov)</code></pre>
 <pre><code>##                 Df  Sum Sq Mean Sq F value Pr(&gt;F)    
@@ -567,8 +585,8 @@ wine_df %&gt;%
   x = ~country, y = ~mean, color = ~country, text = ~text_label, 
   type = &quot;bar&quot;, colors = &quot;viridis&quot;) %&gt;% 
   layout(yaxis = y)</code></pre>
-<div id="htmlwidget-04f8ff2a7ed1654deade" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-04f8ff2a7ed1654deade">{"x":{"visdat":{"11edd6b3e1b11":["function () ","plotlyVisDat"]},"cur_data":"11edd6b3e1b11","attrs":{"11edd6b3e1b11":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"title":"Mean Price"},"xaxis":{"domain":[0,1],"automargin":true,"title":"country","type":"category","categoryorder":"array","categoryarray":["Ukraine","Bosnia and Herzegovina","India","Armenia","Bulgaria","Romania","Macedonia","Slovakia","Cyprus","Moldova","China","Peru","Georgia","Morocco","Chile","Greece","Luxembourg","Brazil","Czech Republic","Serbia","Argentina","Turkey","South Africa","Slovenia","Croatia","Portugal","Uruguay","Mexico","New Zealand","Spain","Lebanon","Austria","Israel","Australia","Canada","US","Italy","Hungary","France","Germany","England","Switzerland"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Ukraine"],"y":[9.21],"text":"Country:Ukraine<br />mean price:9.21","type":"bar","name":"Ukraine","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bosnia and Herzegovina"],"y":[12.5],"text":"Country:Bosnia and Herzegovina<br />mean price:12.5","type":"bar","name":"Bosnia and Herzegovina","marker":{"color":"rgba(70,10,93,1)","line":{"color":"rgba(70,10,93,1)"}},"textfont":{"color":"rgba(70,10,93,1)"},"error_y":{"color":"rgba(70,10,93,1)"},"error_x":{"color":"rgba(70,10,93,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["India"],"y":[13.33],"text":"Country:India<br />mean price:13.33","type":"bar","name":"India","marker":{"color":"rgba(71,19,102,1)","line":{"color":"rgba(71,19,102,1)"}},"textfont":{"color":"rgba(71,19,102,1)"},"error_y":{"color":"rgba(71,19,102,1)"},"error_x":{"color":"rgba(71,19,102,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Armenia"],"y":[14.5],"text":"Country:Armenia<br />mean price:14.5","type":"bar","name":"Armenia","marker":{"color":"rgba(72,28,110,1)","line":{"color":"rgba(72,28,110,1)"}},"textfont":{"color":"rgba(72,28,110,1)"},"error_y":{"color":"rgba(72,28,110,1)"},"error_x":{"color":"rgba(72,28,110,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bulgaria"],"y":[14.65],"text":"Country:Bulgaria<br />mean price:14.65","type":"bar","name":"Bulgaria","marker":{"color":"rgba(72,36,117,1)","line":{"color":"rgba(72,36,117,1)"}},"textfont":{"color":"rgba(72,36,117,1)"},"error_y":{"color":"rgba(72,36,117,1)"},"error_x":{"color":"rgba(72,36,117,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Romania"],"y":[15.24],"text":"Country:Romania<br />mean price:15.24","type":"bar","name":"Romania","marker":{"color":"rgba(71,44,122,1)","line":{"color":"rgba(71,44,122,1)"}},"textfont":{"color":"rgba(71,44,122,1)"},"error_y":{"color":"rgba(71,44,122,1)"},"error_x":{"color":"rgba(71,44,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Macedonia"],"y":[15.58],"text":"Country:Macedonia<br />mean price:15.58","type":"bar","name":"Macedonia","marker":{"color":"rgba(70,51,127,1)","line":{"color":"rgba(70,51,127,1)"}},"textfont":{"color":"rgba(70,51,127,1)"},"error_y":{"color":"rgba(70,51,127,1)"},"error_x":{"color":"rgba(70,51,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovakia"],"y":[16],"text":"Country:Slovakia<br />mean price:16","type":"bar","name":"Slovakia","marker":{"color":"rgba(68,59,132,1)","line":{"color":"rgba(68,59,132,1)"}},"textfont":{"color":"rgba(68,59,132,1)"},"error_y":{"color":"rgba(68,59,132,1)"},"error_x":{"color":"rgba(68,59,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cyprus"],"y":[16.27],"text":"Country:Cyprus<br />mean price:16.27","type":"bar","name":"Cyprus","marker":{"color":"rgba(65,66,135,1)","line":{"color":"rgba(65,66,135,1)"}},"textfont":{"color":"rgba(65,66,135,1)"},"error_y":{"color":"rgba(65,66,135,1)"},"error_x":{"color":"rgba(65,66,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Moldova"],"y":[16.75],"text":"Country:Moldova<br />mean price:16.75","type":"bar","name":"Moldova","marker":{"color":"rgba(62,73,137,1)","line":{"color":"rgba(62,73,137,1)"}},"textfont":{"color":"rgba(62,73,137,1)"},"error_y":{"color":"rgba(62,73,137,1)"},"error_x":{"color":"rgba(62,73,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["China"],"y":[18],"text":"Country:China<br />mean price:18","type":"bar","name":"China","marker":{"color":"rgba(60,80,139,1)","line":{"color":"rgba(60,80,139,1)"}},"textfont":{"color":"rgba(60,80,139,1)"},"error_y":{"color":"rgba(60,80,139,1)"},"error_x":{"color":"rgba(60,80,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Peru"],"y":[18.06],"text":"Country:Peru<br />mean price:18.06","type":"bar","name":"Peru","marker":{"color":"rgba(57,87,140,1)","line":{"color":"rgba(57,87,140,1)"}},"textfont":{"color":"rgba(57,87,140,1)"},"error_y":{"color":"rgba(57,87,140,1)"},"error_x":{"color":"rgba(57,87,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Georgia"],"y":[19.32],"text":"Country:Georgia<br />mean price:19.32","type":"bar","name":"Georgia","marker":{"color":"rgba(53,94,141,1)","line":{"color":"rgba(53,94,141,1)"}},"textfont":{"color":"rgba(53,94,141,1)"},"error_y":{"color":"rgba(53,94,141,1)"},"error_x":{"color":"rgba(53,94,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morocco"],"y":[19.5],"text":"Country:Morocco<br />mean price:19.5","type":"bar","name":"Morocco","marker":{"color":"rgba(50,100,142,1)","line":{"color":"rgba(50,100,142,1)"}},"textfont":{"color":"rgba(50,100,142,1)"},"error_y":{"color":"rgba(50,100,142,1)"},"error_x":{"color":"rgba(50,100,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chile"],"y":[20.79],"text":"Country:Chile<br />mean price:20.79","type":"bar","name":"Chile","marker":{"color":"rgba(48,106,142,1)","line":{"color":"rgba(48,106,142,1)"}},"textfont":{"color":"rgba(48,106,142,1)"},"error_y":{"color":"rgba(48,106,142,1)"},"error_x":{"color":"rgba(48,106,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greece"],"y":[22.36],"text":"Country:Greece<br />mean price:22.36","type":"bar","name":"Greece","marker":{"color":"rgba(45,112,142,1)","line":{"color":"rgba(45,112,142,1)"}},"textfont":{"color":"rgba(45,112,142,1)"},"error_y":{"color":"rgba(45,112,142,1)"},"error_x":{"color":"rgba(45,112,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Luxembourg"],"y":[23.33],"text":"Country:Luxembourg<br />mean price:23.33","type":"bar","name":"Luxembourg","marker":{"color":"rgba(42,118,142,1)","line":{"color":"rgba(42,118,142,1)"}},"textfont":{"color":"rgba(42,118,142,1)"},"error_y":{"color":"rgba(42,118,142,1)"},"error_x":{"color":"rgba(42,118,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brazil"],"y":[23.77],"text":"Country:Brazil<br />mean price:23.77","type":"bar","name":"Brazil","marker":{"color":"rgba(40,124,142,1)","line":{"color":"rgba(40,124,142,1)"}},"textfont":{"color":"rgba(40,124,142,1)"},"error_y":{"color":"rgba(40,124,142,1)"},"error_x":{"color":"rgba(40,124,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Czech Republic"],"y":[24.25],"text":"Country:Czech Republic<br />mean price:24.25","type":"bar","name":"Czech Republic","marker":{"color":"rgba(38,130,142,1)","line":{"color":"rgba(38,130,142,1)"}},"textfont":{"color":"rgba(38,130,142,1)"},"error_y":{"color":"rgba(38,130,142,1)"},"error_x":{"color":"rgba(38,130,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Serbia"],"y":[24.5],"text":"Country:Serbia<br />mean price:24.5","type":"bar","name":"Serbia","marker":{"color":"rgba(36,135,142,1)","line":{"color":"rgba(36,135,142,1)"}},"textfont":{"color":"rgba(36,135,142,1)"},"error_y":{"color":"rgba(36,135,142,1)"},"error_x":{"color":"rgba(36,135,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Argentina"],"y":[24.51],"text":"Country:Argentina<br />mean price:24.51","type":"bar","name":"Argentina","marker":{"color":"rgba(34,141,141,1)","line":{"color":"rgba(34,141,141,1)"}},"textfont":{"color":"rgba(34,141,141,1)"},"error_y":{"color":"rgba(34,141,141,1)"},"error_x":{"color":"rgba(34,141,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Turkey"],"y":[24.63],"text":"Country:Turkey<br />mean price:24.63","type":"bar","name":"Turkey","marker":{"color":"rgba(32,147,140,1)","line":{"color":"rgba(32,147,140,1)"}},"textfont":{"color":"rgba(32,147,140,1)"},"error_y":{"color":"rgba(32,147,140,1)"},"error_x":{"color":"rgba(32,147,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Africa"],"y":[24.67],"text":"Country:South Africa<br />mean price:24.67","type":"bar","name":"South Africa","marker":{"color":"rgba(31,153,138,1)","line":{"color":"rgba(31,153,138,1)"}},"textfont":{"color":"rgba(31,153,138,1)"},"error_y":{"color":"rgba(31,153,138,1)"},"error_x":{"color":"rgba(31,153,138,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovenia"],"y":[24.81],"text":"Country:Slovenia<br />mean price:24.81","type":"bar","name":"Slovenia","marker":{"color":"rgba(31,159,136,1)","line":{"color":"rgba(31,159,136,1)"}},"textfont":{"color":"rgba(31,159,136,1)"},"error_y":{"color":"rgba(31,159,136,1)"},"error_x":{"color":"rgba(31,159,136,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Croatia"],"y":[25.45],"text":"Country:Croatia<br />mean price:25.45","type":"bar","name":"Croatia","marker":{"color":"rgba(32,164,134,1)","line":{"color":"rgba(32,164,134,1)"}},"textfont":{"color":"rgba(32,164,134,1)"},"error_y":{"color":"rgba(32,164,134,1)"},"error_x":{"color":"rgba(32,164,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Portugal"],"y":[26.22],"text":"Country:Portugal<br />mean price:26.22","type":"bar","name":"Portugal","marker":{"color":"rgba(36,170,131,1)","line":{"color":"rgba(36,170,131,1)"}},"textfont":{"color":"rgba(36,170,131,1)"},"error_y":{"color":"rgba(36,170,131,1)"},"error_x":{"color":"rgba(36,170,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Uruguay"],"y":[26.4],"text":"Country:Uruguay<br />mean price:26.4","type":"bar","name":"Uruguay","marker":{"color":"rgba(42,176,127,1)","line":{"color":"rgba(42,176,127,1)"}},"textfont":{"color":"rgba(42,176,127,1)"},"error_y":{"color":"rgba(42,176,127,1)"},"error_x":{"color":"rgba(42,176,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexico"],"y":[26.79],"text":"Country:Mexico<br />mean price:26.79","type":"bar","name":"Mexico","marker":{"color":"rgba(50,182,122,1)","line":{"color":"rgba(50,182,122,1)"}},"textfont":{"color":"rgba(50,182,122,1)"},"error_y":{"color":"rgba(50,182,122,1)"},"error_x":{"color":"rgba(50,182,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Zealand"],"y":[26.93],"text":"Country:New Zealand<br />mean price:26.93","type":"bar","name":"New Zealand","marker":{"color":"rgba(59,187,117,1)","line":{"color":"rgba(59,187,117,1)"}},"textfont":{"color":"rgba(59,187,117,1)"},"error_y":{"color":"rgba(59,187,117,1)"},"error_x":{"color":"rgba(59,187,117,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Spain"],"y":[28.22],"text":"Country:Spain<br />mean price:28.22","type":"bar","name":"Spain","marker":{"color":"rgba(71,192,111,1)","line":{"color":"rgba(71,192,111,1)"}},"textfont":{"color":"rgba(71,192,111,1)"},"error_y":{"color":"rgba(71,192,111,1)"},"error_x":{"color":"rgba(71,192,111,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lebanon"],"y":[30.69],"text":"Country:Lebanon<br />mean price:30.69","type":"bar","name":"Lebanon","marker":{"color":"rgba(83,197,104,1)","line":{"color":"rgba(83,197,104,1)"}},"textfont":{"color":"rgba(83,197,104,1)"},"error_y":{"color":"rgba(83,197,104,1)"},"error_x":{"color":"rgba(83,197,104,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Austria"],"y":[30.76],"text":"Country:Austria<br />mean price:30.76","type":"bar","name":"Austria","marker":{"color":"rgba(96,202,96,1)","line":{"color":"rgba(96,202,96,1)"}},"textfont":{"color":"rgba(96,202,96,1)"},"error_y":{"color":"rgba(96,202,96,1)"},"error_x":{"color":"rgba(96,202,96,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Israel"],"y":[31.77],"text":"Country:Israel<br />mean price:31.77","type":"bar","name":"Israel","marker":{"color":"rgba(110,206,88,1)","line":{"color":"rgba(110,206,88,1)"}},"textfont":{"color":"rgba(110,206,88,1)"},"error_y":{"color":"rgba(110,206,88,1)"},"error_x":{"color":"rgba(110,206,88,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Australia"],"y":[35.44],"text":"Country:Australia<br />mean price:35.44","type":"bar","name":"Australia","marker":{"color":"rgba(125,210,80,1)","line":{"color":"rgba(125,210,80,1)"}},"textfont":{"color":"rgba(125,210,80,1)"},"error_y":{"color":"rgba(125,210,80,1)"},"error_x":{"color":"rgba(125,210,80,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Canada"],"y":[35.71],"text":"Country:Canada<br />mean price:35.71","type":"bar","name":"Canada","marker":{"color":"rgba(140,214,70,1)","line":{"color":"rgba(140,214,70,1)"}},"textfont":{"color":"rgba(140,214,70,1)"},"error_y":{"color":"rgba(140,214,70,1)"},"error_x":{"color":"rgba(140,214,70,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["US"],"y":[36.57],"text":"Country:US<br />mean price:36.57","type":"bar","name":"US","marker":{"color":"rgba(156,217,59,1)","line":{"color":"rgba(156,217,59,1)"}},"textfont":{"color":"rgba(156,217,59,1)"},"error_y":{"color":"rgba(156,217,59,1)"},"error_x":{"color":"rgba(156,217,59,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Italy"],"y":[39.66],"text":"Country:Italy<br />mean price:39.66","type":"bar","name":"Italy","marker":{"color":"rgba(173,220,48,1)","line":{"color":"rgba(173,220,48,1)"}},"textfont":{"color":"rgba(173,220,48,1)"},"error_y":{"color":"rgba(173,220,48,1)"},"error_x":{"color":"rgba(173,220,48,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hungary"],"y":[40.65],"text":"Country:Hungary<br />mean price:40.65","type":"bar","name":"Hungary","marker":{"color":"rgba(189,223,38,1)","line":{"color":"rgba(189,223,38,1)"}},"textfont":{"color":"rgba(189,223,38,1)"},"error_y":{"color":"rgba(189,223,38,1)"},"error_x":{"color":"rgba(189,223,38,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["France"],"y":[41.14],"text":"Country:France<br />mean price:41.14","type":"bar","name":"France","marker":{"color":"rgba(206,225,29,1)","line":{"color":"rgba(206,225,29,1)"}},"textfont":{"color":"rgba(206,225,29,1)"},"error_y":{"color":"rgba(206,225,29,1)"},"error_x":{"color":"rgba(206,225,29,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Germany"],"y":[42.26],"text":"Country:Germany<br />mean price:42.26","type":"bar","name":"Germany","marker":{"color":"rgba(222,227,24,1)","line":{"color":"rgba(222,227,24,1)"}},"textfont":{"color":"rgba(222,227,24,1)"},"error_y":{"color":"rgba(222,227,24,1)"},"error_x":{"color":"rgba(222,227,24,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["England"],"y":[51.68],"text":"Country:England<br />mean price:51.68","type":"bar","name":"England","marker":{"color":"rgba(238,229,28,1)","line":{"color":"rgba(238,229,28,1)"}},"textfont":{"color":"rgba(238,229,28,1)"},"error_y":{"color":"rgba(238,229,28,1)"},"error_x":{"color":"rgba(238,229,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Switzerland"],"y":[85.29],"text":"Country:Switzerland<br />mean price:85.29","type":"bar","name":"Switzerland","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8067643357a77486750f" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8067643357a77486750f">{"x":{"visdat":{"1c1e2f3df726":["function () ","plotlyVisDat"]},"cur_data":"1c1e2f3df726","attrs":{"1c1e2f3df726":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"title":"Mean Price"},"xaxis":{"domain":[0,1],"automargin":true,"title":"country","type":"category","categoryorder":"array","categoryarray":["Ukraine","Bosnia and Herzegovina","India","Armenia","Bulgaria","Romania","Macedonia","Slovakia","Cyprus","Moldova","China","Peru","Georgia","Morocco","Chile","Greece","Luxembourg","Brazil","Czech Republic","Serbia","Argentina","Turkey","South Africa","Slovenia","Croatia","Portugal","Uruguay","Mexico","New Zealand","Spain","Lebanon","Austria","Israel","Australia","Canada","US","Italy","Hungary","France","Germany","England","Switzerland"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Ukraine"],"y":[9.21],"text":"Country:Ukraine<br />mean price:9.21","type":"bar","name":"Ukraine","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bosnia and Herzegovina"],"y":[12.5],"text":"Country:Bosnia and Herzegovina<br />mean price:12.5","type":"bar","name":"Bosnia and Herzegovina","marker":{"color":"rgba(70,10,93,1)","line":{"color":"rgba(70,10,93,1)"}},"textfont":{"color":"rgba(70,10,93,1)"},"error_y":{"color":"rgba(70,10,93,1)"},"error_x":{"color":"rgba(70,10,93,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["India"],"y":[13.33],"text":"Country:India<br />mean price:13.33","type":"bar","name":"India","marker":{"color":"rgba(71,19,102,1)","line":{"color":"rgba(71,19,102,1)"}},"textfont":{"color":"rgba(71,19,102,1)"},"error_y":{"color":"rgba(71,19,102,1)"},"error_x":{"color":"rgba(71,19,102,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Armenia"],"y":[14.5],"text":"Country:Armenia<br />mean price:14.5","type":"bar","name":"Armenia","marker":{"color":"rgba(72,28,110,1)","line":{"color":"rgba(72,28,110,1)"}},"textfont":{"color":"rgba(72,28,110,1)"},"error_y":{"color":"rgba(72,28,110,1)"},"error_x":{"color":"rgba(72,28,110,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bulgaria"],"y":[14.65],"text":"Country:Bulgaria<br />mean price:14.65","type":"bar","name":"Bulgaria","marker":{"color":"rgba(72,36,117,1)","line":{"color":"rgba(72,36,117,1)"}},"textfont":{"color":"rgba(72,36,117,1)"},"error_y":{"color":"rgba(72,36,117,1)"},"error_x":{"color":"rgba(72,36,117,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Romania"],"y":[15.24],"text":"Country:Romania<br />mean price:15.24","type":"bar","name":"Romania","marker":{"color":"rgba(71,44,122,1)","line":{"color":"rgba(71,44,122,1)"}},"textfont":{"color":"rgba(71,44,122,1)"},"error_y":{"color":"rgba(71,44,122,1)"},"error_x":{"color":"rgba(71,44,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Macedonia"],"y":[15.58],"text":"Country:Macedonia<br />mean price:15.58","type":"bar","name":"Macedonia","marker":{"color":"rgba(70,51,127,1)","line":{"color":"rgba(70,51,127,1)"}},"textfont":{"color":"rgba(70,51,127,1)"},"error_y":{"color":"rgba(70,51,127,1)"},"error_x":{"color":"rgba(70,51,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovakia"],"y":[16],"text":"Country:Slovakia<br />mean price:16","type":"bar","name":"Slovakia","marker":{"color":"rgba(68,59,132,1)","line":{"color":"rgba(68,59,132,1)"}},"textfont":{"color":"rgba(68,59,132,1)"},"error_y":{"color":"rgba(68,59,132,1)"},"error_x":{"color":"rgba(68,59,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cyprus"],"y":[16.27],"text":"Country:Cyprus<br />mean price:16.27","type":"bar","name":"Cyprus","marker":{"color":"rgba(65,66,135,1)","line":{"color":"rgba(65,66,135,1)"}},"textfont":{"color":"rgba(65,66,135,1)"},"error_y":{"color":"rgba(65,66,135,1)"},"error_x":{"color":"rgba(65,66,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Moldova"],"y":[16.75],"text":"Country:Moldova<br />mean price:16.75","type":"bar","name":"Moldova","marker":{"color":"rgba(62,73,137,1)","line":{"color":"rgba(62,73,137,1)"}},"textfont":{"color":"rgba(62,73,137,1)"},"error_y":{"color":"rgba(62,73,137,1)"},"error_x":{"color":"rgba(62,73,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["China"],"y":[18],"text":"Country:China<br />mean price:18","type":"bar","name":"China","marker":{"color":"rgba(60,80,139,1)","line":{"color":"rgba(60,80,139,1)"}},"textfont":{"color":"rgba(60,80,139,1)"},"error_y":{"color":"rgba(60,80,139,1)"},"error_x":{"color":"rgba(60,80,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Peru"],"y":[18.06],"text":"Country:Peru<br />mean price:18.06","type":"bar","name":"Peru","marker":{"color":"rgba(57,87,140,1)","line":{"color":"rgba(57,87,140,1)"}},"textfont":{"color":"rgba(57,87,140,1)"},"error_y":{"color":"rgba(57,87,140,1)"},"error_x":{"color":"rgba(57,87,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Georgia"],"y":[19.32],"text":"Country:Georgia<br />mean price:19.32","type":"bar","name":"Georgia","marker":{"color":"rgba(53,94,141,1)","line":{"color":"rgba(53,94,141,1)"}},"textfont":{"color":"rgba(53,94,141,1)"},"error_y":{"color":"rgba(53,94,141,1)"},"error_x":{"color":"rgba(53,94,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morocco"],"y":[19.5],"text":"Country:Morocco<br />mean price:19.5","type":"bar","name":"Morocco","marker":{"color":"rgba(50,100,142,1)","line":{"color":"rgba(50,100,142,1)"}},"textfont":{"color":"rgba(50,100,142,1)"},"error_y":{"color":"rgba(50,100,142,1)"},"error_x":{"color":"rgba(50,100,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chile"],"y":[20.79],"text":"Country:Chile<br />mean price:20.79","type":"bar","name":"Chile","marker":{"color":"rgba(48,106,142,1)","line":{"color":"rgba(48,106,142,1)"}},"textfont":{"color":"rgba(48,106,142,1)"},"error_y":{"color":"rgba(48,106,142,1)"},"error_x":{"color":"rgba(48,106,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greece"],"y":[22.36],"text":"Country:Greece<br />mean price:22.36","type":"bar","name":"Greece","marker":{"color":"rgba(45,112,142,1)","line":{"color":"rgba(45,112,142,1)"}},"textfont":{"color":"rgba(45,112,142,1)"},"error_y":{"color":"rgba(45,112,142,1)"},"error_x":{"color":"rgba(45,112,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Luxembourg"],"y":[23.33],"text":"Country:Luxembourg<br />mean price:23.33","type":"bar","name":"Luxembourg","marker":{"color":"rgba(42,118,142,1)","line":{"color":"rgba(42,118,142,1)"}},"textfont":{"color":"rgba(42,118,142,1)"},"error_y":{"color":"rgba(42,118,142,1)"},"error_x":{"color":"rgba(42,118,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brazil"],"y":[23.77],"text":"Country:Brazil<br />mean price:23.77","type":"bar","name":"Brazil","marker":{"color":"rgba(40,124,142,1)","line":{"color":"rgba(40,124,142,1)"}},"textfont":{"color":"rgba(40,124,142,1)"},"error_y":{"color":"rgba(40,124,142,1)"},"error_x":{"color":"rgba(40,124,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Czech Republic"],"y":[24.25],"text":"Country:Czech Republic<br />mean price:24.25","type":"bar","name":"Czech Republic","marker":{"color":"rgba(38,130,142,1)","line":{"color":"rgba(38,130,142,1)"}},"textfont":{"color":"rgba(38,130,142,1)"},"error_y":{"color":"rgba(38,130,142,1)"},"error_x":{"color":"rgba(38,130,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Serbia"],"y":[24.5],"text":"Country:Serbia<br />mean price:24.5","type":"bar","name":"Serbia","marker":{"color":"rgba(36,135,142,1)","line":{"color":"rgba(36,135,142,1)"}},"textfont":{"color":"rgba(36,135,142,1)"},"error_y":{"color":"rgba(36,135,142,1)"},"error_x":{"color":"rgba(36,135,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Argentina"],"y":[24.51],"text":"Country:Argentina<br />mean price:24.51","type":"bar","name":"Argentina","marker":{"color":"rgba(34,141,141,1)","line":{"color":"rgba(34,141,141,1)"}},"textfont":{"color":"rgba(34,141,141,1)"},"error_y":{"color":"rgba(34,141,141,1)"},"error_x":{"color":"rgba(34,141,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Turkey"],"y":[24.63],"text":"Country:Turkey<br />mean price:24.63","type":"bar","name":"Turkey","marker":{"color":"rgba(32,147,140,1)","line":{"color":"rgba(32,147,140,1)"}},"textfont":{"color":"rgba(32,147,140,1)"},"error_y":{"color":"rgba(32,147,140,1)"},"error_x":{"color":"rgba(32,147,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Africa"],"y":[24.67],"text":"Country:South Africa<br />mean price:24.67","type":"bar","name":"South Africa","marker":{"color":"rgba(31,153,138,1)","line":{"color":"rgba(31,153,138,1)"}},"textfont":{"color":"rgba(31,153,138,1)"},"error_y":{"color":"rgba(31,153,138,1)"},"error_x":{"color":"rgba(31,153,138,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovenia"],"y":[24.81],"text":"Country:Slovenia<br />mean price:24.81","type":"bar","name":"Slovenia","marker":{"color":"rgba(31,159,136,1)","line":{"color":"rgba(31,159,136,1)"}},"textfont":{"color":"rgba(31,159,136,1)"},"error_y":{"color":"rgba(31,159,136,1)"},"error_x":{"color":"rgba(31,159,136,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Croatia"],"y":[25.45],"text":"Country:Croatia<br />mean price:25.45","type":"bar","name":"Croatia","marker":{"color":"rgba(32,164,134,1)","line":{"color":"rgba(32,164,134,1)"}},"textfont":{"color":"rgba(32,164,134,1)"},"error_y":{"color":"rgba(32,164,134,1)"},"error_x":{"color":"rgba(32,164,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Portugal"],"y":[26.22],"text":"Country:Portugal<br />mean price:26.22","type":"bar","name":"Portugal","marker":{"color":"rgba(36,170,131,1)","line":{"color":"rgba(36,170,131,1)"}},"textfont":{"color":"rgba(36,170,131,1)"},"error_y":{"color":"rgba(36,170,131,1)"},"error_x":{"color":"rgba(36,170,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Uruguay"],"y":[26.4],"text":"Country:Uruguay<br />mean price:26.4","type":"bar","name":"Uruguay","marker":{"color":"rgba(42,176,127,1)","line":{"color":"rgba(42,176,127,1)"}},"textfont":{"color":"rgba(42,176,127,1)"},"error_y":{"color":"rgba(42,176,127,1)"},"error_x":{"color":"rgba(42,176,127,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexico"],"y":[26.79],"text":"Country:Mexico<br />mean price:26.79","type":"bar","name":"Mexico","marker":{"color":"rgba(50,182,122,1)","line":{"color":"rgba(50,182,122,1)"}},"textfont":{"color":"rgba(50,182,122,1)"},"error_y":{"color":"rgba(50,182,122,1)"},"error_x":{"color":"rgba(50,182,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Zealand"],"y":[26.93],"text":"Country:New Zealand<br />mean price:26.93","type":"bar","name":"New Zealand","marker":{"color":"rgba(59,187,117,1)","line":{"color":"rgba(59,187,117,1)"}},"textfont":{"color":"rgba(59,187,117,1)"},"error_y":{"color":"rgba(59,187,117,1)"},"error_x":{"color":"rgba(59,187,117,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Spain"],"y":[28.22],"text":"Country:Spain<br />mean price:28.22","type":"bar","name":"Spain","marker":{"color":"rgba(71,192,111,1)","line":{"color":"rgba(71,192,111,1)"}},"textfont":{"color":"rgba(71,192,111,1)"},"error_y":{"color":"rgba(71,192,111,1)"},"error_x":{"color":"rgba(71,192,111,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lebanon"],"y":[30.69],"text":"Country:Lebanon<br />mean price:30.69","type":"bar","name":"Lebanon","marker":{"color":"rgba(83,197,104,1)","line":{"color":"rgba(83,197,104,1)"}},"textfont":{"color":"rgba(83,197,104,1)"},"error_y":{"color":"rgba(83,197,104,1)"},"error_x":{"color":"rgba(83,197,104,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Austria"],"y":[30.76],"text":"Country:Austria<br />mean price:30.76","type":"bar","name":"Austria","marker":{"color":"rgba(96,202,96,1)","line":{"color":"rgba(96,202,96,1)"}},"textfont":{"color":"rgba(96,202,96,1)"},"error_y":{"color":"rgba(96,202,96,1)"},"error_x":{"color":"rgba(96,202,96,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Israel"],"y":[31.77],"text":"Country:Israel<br />mean price:31.77","type":"bar","name":"Israel","marker":{"color":"rgba(110,206,88,1)","line":{"color":"rgba(110,206,88,1)"}},"textfont":{"color":"rgba(110,206,88,1)"},"error_y":{"color":"rgba(110,206,88,1)"},"error_x":{"color":"rgba(110,206,88,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Australia"],"y":[35.44],"text":"Country:Australia<br />mean price:35.44","type":"bar","name":"Australia","marker":{"color":"rgba(125,210,80,1)","line":{"color":"rgba(125,210,80,1)"}},"textfont":{"color":"rgba(125,210,80,1)"},"error_y":{"color":"rgba(125,210,80,1)"},"error_x":{"color":"rgba(125,210,80,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Canada"],"y":[35.71],"text":"Country:Canada<br />mean price:35.71","type":"bar","name":"Canada","marker":{"color":"rgba(140,214,70,1)","line":{"color":"rgba(140,214,70,1)"}},"textfont":{"color":"rgba(140,214,70,1)"},"error_y":{"color":"rgba(140,214,70,1)"},"error_x":{"color":"rgba(140,214,70,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["US"],"y":[36.57],"text":"Country:US<br />mean price:36.57","type":"bar","name":"US","marker":{"color":"rgba(156,217,59,1)","line":{"color":"rgba(156,217,59,1)"}},"textfont":{"color":"rgba(156,217,59,1)"},"error_y":{"color":"rgba(156,217,59,1)"},"error_x":{"color":"rgba(156,217,59,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Italy"],"y":[39.66],"text":"Country:Italy<br />mean price:39.66","type":"bar","name":"Italy","marker":{"color":"rgba(173,220,48,1)","line":{"color":"rgba(173,220,48,1)"}},"textfont":{"color":"rgba(173,220,48,1)"},"error_y":{"color":"rgba(173,220,48,1)"},"error_x":{"color":"rgba(173,220,48,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hungary"],"y":[40.65],"text":"Country:Hungary<br />mean price:40.65","type":"bar","name":"Hungary","marker":{"color":"rgba(189,223,38,1)","line":{"color":"rgba(189,223,38,1)"}},"textfont":{"color":"rgba(189,223,38,1)"},"error_y":{"color":"rgba(189,223,38,1)"},"error_x":{"color":"rgba(189,223,38,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["France"],"y":[41.14],"text":"Country:France<br />mean price:41.14","type":"bar","name":"France","marker":{"color":"rgba(206,225,29,1)","line":{"color":"rgba(206,225,29,1)"}},"textfont":{"color":"rgba(206,225,29,1)"},"error_y":{"color":"rgba(206,225,29,1)"},"error_x":{"color":"rgba(206,225,29,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Germany"],"y":[42.26],"text":"Country:Germany<br />mean price:42.26","type":"bar","name":"Germany","marker":{"color":"rgba(222,227,24,1)","line":{"color":"rgba(222,227,24,1)"}},"textfont":{"color":"rgba(222,227,24,1)"},"error_y":{"color":"rgba(222,227,24,1)"},"error_x":{"color":"rgba(222,227,24,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["England"],"y":[51.68],"text":"Country:England<br />mean price:51.68","type":"bar","name":"England","marker":{"color":"rgba(238,229,28,1)","line":{"color":"rgba(238,229,28,1)"}},"textfont":{"color":"rgba(238,229,28,1)"},"error_y":{"color":"rgba(238,229,28,1)"},"error_x":{"color":"rgba(238,229,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Switzerland"],"y":[85.29],"text":"Country:Switzerland<br />mean price:85.29","type":"bar","name":"Switzerland","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>y &lt;- list(
   title = &quot;Mean rating&quot;
 )
@@ -583,8 +601,8 @@ wine_df %&gt;%
   x = ~country, y = ~avg_rating, color = ~country, text = ~text_label, 
   type = &quot;bar&quot;, colors = &quot;viridis&quot;) %&gt;% 
   layout(yaxis = list(range = c(80,95)))</code></pre>
-<div id="htmlwidget-9ce10cc7c5dfafdb3f85" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9ce10cc7c5dfafdb3f85">{"x":{"visdat":{"11edd3a633018":["function () ","plotlyVisDat"]},"cur_data":"11edd3a633018","attrs":{"11edd3a633018":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"range":[80,95],"title":"avg_rating"},"xaxis":{"domain":[0,1],"automargin":true,"title":"country","type":"category","categoryorder":"array","categoryarray":["Peru","Egypt","Ukraine","Brazil","Mexico","Romania","Chile","Bosnia and Herzegovina","Argentina","Uruguay","Macedonia","Slovakia","Cyprus","Moldova","Croatia","Czech Republic","Greece","Spain","Armenia","Serbia","Lebanon","Georgia","Bulgaria","South Africa","Slovenia","Turkey","Portugal","New Zealand","Israel","Italy","US","Morocco","Switzerland","Australia","Luxembourg","France","China","Hungary","Canada","Germany","Austria","India","England"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Peru"],"y":[83.56],"text":"Country:Peru<br />mean rating:83.5625","type":"bar","name":"Peru","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Egypt"],"y":[84],"text":"Country:Egypt<br />mean rating:84","type":"bar","name":"Egypt","marker":{"color":"rgba(70,10,93,1)","line":{"color":"rgba(70,10,93,1)"}},"textfont":{"color":"rgba(70,10,93,1)"},"error_y":{"color":"rgba(70,10,93,1)"},"error_x":{"color":"rgba(70,10,93,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ukraine"],"y":[84.07],"text":"Country:Ukraine<br />mean rating:84.0714285714286","type":"bar","name":"Ukraine","marker":{"color":"rgba(71,19,101,1)","line":{"color":"rgba(71,19,101,1)"}},"textfont":{"color":"rgba(71,19,101,1)"},"error_y":{"color":"rgba(71,19,101,1)"},"error_x":{"color":"rgba(71,19,101,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brazil"],"y":[84.67],"text":"Country:Brazil<br />mean rating:84.6730769230769","type":"bar","name":"Brazil","marker":{"color":"rgba(72,27,109,1)","line":{"color":"rgba(72,27,109,1)"}},"textfont":{"color":"rgba(72,27,109,1)"},"error_y":{"color":"rgba(72,27,109,1)"},"error_x":{"color":"rgba(72,27,109,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexico"],"y":[85.26],"text":"Country:Mexico<br />mean rating:85.2571428571429","type":"bar","name":"Mexico","marker":{"color":"rgba(72,35,116,1)","line":{"color":"rgba(72,35,116,1)"}},"textfont":{"color":"rgba(72,35,116,1)"},"error_y":{"color":"rgba(72,35,116,1)"},"error_x":{"color":"rgba(72,35,116,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Romania"],"y":[86.4],"text":"Country:Romania<br />mean rating:86.4","type":"bar","name":"Romania","marker":{"color":"rgba(71,43,122,1)","line":{"color":"rgba(71,43,122,1)"}},"textfont":{"color":"rgba(71,43,122,1)"},"error_y":{"color":"rgba(71,43,122,1)"},"error_x":{"color":"rgba(71,43,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chile"],"y":[86.49],"text":"Country:Chile<br />mean rating:86.4935152057245","type":"bar","name":"Chile","marker":{"color":"rgba(70,50,126,1)","line":{"color":"rgba(70,50,126,1)"}},"textfont":{"color":"rgba(70,50,126,1)"},"error_y":{"color":"rgba(70,50,126,1)"},"error_x":{"color":"rgba(70,50,126,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bosnia and Herzegovina"],"y":[86.5],"text":"Country:Bosnia and Herzegovina<br />mean rating:86.5","type":"bar","name":"Bosnia and Herzegovina","marker":{"color":"rgba(68,58,131,1)","line":{"color":"rgba(68,58,131,1)"}},"textfont":{"color":"rgba(68,58,131,1)"},"error_y":{"color":"rgba(68,58,131,1)"},"error_x":{"color":"rgba(68,58,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Argentina"],"y":[86.71],"text":"Country:Argentina<br />mean rating:86.7102631578947","type":"bar","name":"Argentina","marker":{"color":"rgba(66,65,134,1)","line":{"color":"rgba(66,65,134,1)"}},"textfont":{"color":"rgba(66,65,134,1)"},"error_y":{"color":"rgba(66,65,134,1)"},"error_x":{"color":"rgba(66,65,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Uruguay"],"y":[86.75],"text":"Country:Uruguay<br />mean rating:86.7522935779816","type":"bar","name":"Uruguay","marker":{"color":"rgba(63,72,137,1)","line":{"color":"rgba(63,72,137,1)"}},"textfont":{"color":"rgba(63,72,137,1)"},"error_y":{"color":"rgba(63,72,137,1)"},"error_x":{"color":"rgba(63,72,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Macedonia"],"y":[86.83],"text":"Country:Macedonia<br />mean rating:86.8333333333333","type":"bar","name":"Macedonia","marker":{"color":"rgba(60,79,138,1)","line":{"color":"rgba(60,79,138,1)"}},"textfont":{"color":"rgba(60,79,138,1)"},"error_y":{"color":"rgba(60,79,138,1)"},"error_x":{"color":"rgba(60,79,138,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovakia"],"y":[87],"text":"Country:Slovakia<br />mean rating:87","type":"bar","name":"Slovakia","marker":{"color":"rgba(57,85,140,1)","line":{"color":"rgba(57,85,140,1)"}},"textfont":{"color":"rgba(57,85,140,1)"},"error_y":{"color":"rgba(57,85,140,1)"},"error_x":{"color":"rgba(57,85,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cyprus"],"y":[87.18],"text":"Country:Cyprus<br />mean rating:87.1818181818182","type":"bar","name":"Cyprus","marker":{"color":"rgba(54,92,141,1)","line":{"color":"rgba(54,92,141,1)"}},"textfont":{"color":"rgba(54,92,141,1)"},"error_y":{"color":"rgba(54,92,141,1)"},"error_x":{"color":"rgba(54,92,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Moldova"],"y":[87.2],"text":"Country:Moldova<br />mean rating:87.2033898305085","type":"bar","name":"Moldova","marker":{"color":"rgba(51,98,141,1)","line":{"color":"rgba(51,98,141,1)"}},"textfont":{"color":"rgba(51,98,141,1)"},"error_y":{"color":"rgba(51,98,141,1)"},"error_x":{"color":"rgba(51,98,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Croatia"],"y":[87.22],"text":"Country:Croatia<br />mean rating:87.2191780821918","type":"bar","name":"Croatia","marker":{"color":"rgba(49,104,142,1)","line":{"color":"rgba(49,104,142,1)"}},"textfont":{"color":"rgba(49,104,142,1)"},"error_y":{"color":"rgba(49,104,142,1)"},"error_x":{"color":"rgba(49,104,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Czech Republic"],"y":[87.25],"text":"Country:Czech Republic<br />mean rating:87.25","type":"bar","name":"Czech Republic","marker":{"color":"rgba(46,110,142,1)","line":{"color":"rgba(46,110,142,1)"}},"textfont":{"color":"rgba(46,110,142,1)"},"error_y":{"color":"rgba(46,110,142,1)"},"error_x":{"color":"rgba(46,110,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greece"],"y":[87.28],"text":"Country:Greece<br />mean rating:87.2832618025751","type":"bar","name":"Greece","marker":{"color":"rgba(44,115,142,1)","line":{"color":"rgba(44,115,142,1)"}},"textfont":{"color":"rgba(44,115,142,1)"},"error_y":{"color":"rgba(44,115,142,1)"},"error_x":{"color":"rgba(44,115,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Spain"],"y":[87.29],"text":"Country:Spain<br />mean rating:87.2883370955606","type":"bar","name":"Spain","marker":{"color":"rgba(41,121,142,1)","line":{"color":"rgba(41,121,142,1)"}},"textfont":{"color":"rgba(41,121,142,1)"},"error_y":{"color":"rgba(41,121,142,1)"},"error_x":{"color":"rgba(41,121,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Armenia"],"y":[87.5],"text":"Country:Armenia<br />mean rating:87.5","type":"bar","name":"Armenia","marker":{"color":"rgba(39,127,142,1)","line":{"color":"rgba(39,127,142,1)"}},"textfont":{"color":"rgba(39,127,142,1)"},"error_y":{"color":"rgba(39,127,142,1)"},"error_x":{"color":"rgba(39,127,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Serbia"],"y":[87.5],"text":"Country:Serbia<br />mean rating:87.5","type":"bar","name":"Serbia","marker":{"color":"rgba(37,132,142,1)","line":{"color":"rgba(37,132,142,1)"}},"textfont":{"color":"rgba(37,132,142,1)"},"error_y":{"color":"rgba(37,132,142,1)"},"error_x":{"color":"rgba(37,132,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lebanon"],"y":[87.69],"text":"Country:Lebanon<br />mean rating:87.6857142857143","type":"bar","name":"Lebanon","marker":{"color":"rgba(35,138,141,1)","line":{"color":"rgba(35,138,141,1)"}},"textfont":{"color":"rgba(35,138,141,1)"},"error_y":{"color":"rgba(35,138,141,1)"},"error_x":{"color":"rgba(35,138,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Georgia"],"y":[87.69],"text":"Country:Georgia<br />mean rating:87.6860465116279","type":"bar","name":"Georgia","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bulgaria"],"y":[87.94],"text":"Country:Bulgaria<br />mean rating:87.936170212766","type":"bar","name":"Bulgaria","marker":{"color":"rgba(31,150,139,1)","line":{"color":"rgba(31,150,139,1)"}},"textfont":{"color":"rgba(31,150,139,1)"},"error_y":{"color":"rgba(31,150,139,1)"},"error_x":{"color":"rgba(31,150,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Africa"],"y":[88.06],"text":"Country:South Africa<br />mean rating:88.0563882940757","type":"bar","name":"South Africa","marker":{"color":"rgba(30,156,137,1)","line":{"color":"rgba(30,156,137,1)"}},"textfont":{"color":"rgba(30,156,137,1)"},"error_y":{"color":"rgba(30,156,137,1)"},"error_x":{"color":"rgba(30,156,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovenia"],"y":[88.07],"text":"Country:Slovenia<br />mean rating:88.0689655172414","type":"bar","name":"Slovenia","marker":{"color":"rgba(31,161,135,1)","line":{"color":"rgba(31,161,135,1)"}},"textfont":{"color":"rgba(31,161,135,1)"},"error_y":{"color":"rgba(31,161,135,1)"},"error_x":{"color":"rgba(31,161,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Turkey"],"y":[88.09],"text":"Country:Turkey<br />mean rating:88.0888888888889","type":"bar","name":"Turkey","marker":{"color":"rgba(34,167,133,1)","line":{"color":"rgba(34,167,133,1)"}},"textfont":{"color":"rgba(34,167,133,1)"},"error_y":{"color":"rgba(34,167,133,1)"},"error_x":{"color":"rgba(34,167,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Portugal"],"y":[88.25],"text":"Country:Portugal<br />mean rating:88.2502196450536","type":"bar","name":"Portugal","marker":{"color":"rgba(38,173,129,1)","line":{"color":"rgba(38,173,129,1)"}},"textfont":{"color":"rgba(38,173,129,1)"},"error_y":{"color":"rgba(38,173,129,1)"},"error_x":{"color":"rgba(38,173,129,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Zealand"],"y":[88.3],"text":"Country:New Zealand<br />mean rating:88.3030303030303","type":"bar","name":"New Zealand","marker":{"color":"rgba(45,178,125,1)","line":{"color":"rgba(45,178,125,1)"}},"textfont":{"color":"rgba(45,178,125,1)"},"error_y":{"color":"rgba(45,178,125,1)"},"error_x":{"color":"rgba(45,178,125,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Israel"],"y":[88.47],"text":"Country:Israel<br />mean rating:88.4712871287129","type":"bar","name":"Israel","marker":{"color":"rgba(53,183,121,1)","line":{"color":"rgba(53,183,121,1)"}},"textfont":{"color":"rgba(53,183,121,1)"},"error_y":{"color":"rgba(53,183,121,1)"},"error_x":{"color":"rgba(53,183,121,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Italy"],"y":[88.56],"text":"Country:Italy<br />mean rating:88.5622313203685","type":"bar","name":"Italy","marker":{"color":"rgba(63,188,115,1)","line":{"color":"rgba(63,188,115,1)"}},"textfont":{"color":"rgba(63,188,115,1)"},"error_y":{"color":"rgba(63,188,115,1)"},"error_x":{"color":"rgba(63,188,115,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["US"],"y":[88.56],"text":"Country:US<br />mean rating:88.5637200939381","type":"bar","name":"US","marker":{"color":"rgba(74,193,109,1)","line":{"color":"rgba(74,193,109,1)"}},"textfont":{"color":"rgba(74,193,109,1)"},"error_y":{"color":"rgba(74,193,109,1)"},"error_x":{"color":"rgba(74,193,109,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morocco"],"y":[88.57],"text":"Country:Morocco<br />mean rating:88.5714285714286","type":"bar","name":"Morocco","marker":{"color":"rgba(86,198,103,1)","line":{"color":"rgba(86,198,103,1)"}},"textfont":{"color":"rgba(86,198,103,1)"},"error_y":{"color":"rgba(86,198,103,1)"},"error_x":{"color":"rgba(86,198,103,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Switzerland"],"y":[88.57],"text":"Country:Switzerland<br />mean rating:88.5714285714286","type":"bar","name":"Switzerland","marker":{"color":"rgba(100,203,95,1)","line":{"color":"rgba(100,203,95,1)"}},"textfont":{"color":"rgba(100,203,95,1)"},"error_y":{"color":"rgba(100,203,95,1)"},"error_x":{"color":"rgba(100,203,95,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Australia"],"y":[88.58],"text":"Country:Australia<br />mean rating:88.5805066552168","type":"bar","name":"Australia","marker":{"color":"rgba(113,207,87,1)","line":{"color":"rgba(113,207,87,1)"}},"textfont":{"color":"rgba(113,207,87,1)"},"error_y":{"color":"rgba(113,207,87,1)"},"error_x":{"color":"rgba(113,207,87,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Luxembourg"],"y":[88.67],"text":"Country:Luxembourg<br />mean rating:88.6666666666667","type":"bar","name":"Luxembourg","marker":{"color":"rgba(128,211,78,1)","line":{"color":"rgba(128,211,78,1)"}},"textfont":{"color":"rgba(128,211,78,1)"},"error_y":{"color":"rgba(128,211,78,1)"},"error_x":{"color":"rgba(128,211,78,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["France"],"y":[88.85],"text":"Country:France<br />mean rating:88.8451093106414","type":"bar","name":"France","marker":{"color":"rgba(143,214,68,1)","line":{"color":"rgba(143,214,68,1)"}},"textfont":{"color":"rgba(143,214,68,1)"},"error_y":{"color":"rgba(143,214,68,1)"},"error_x":{"color":"rgba(143,214,68,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["China"],"y":[89],"text":"Country:China<br />mean rating:89","type":"bar","name":"China","marker":{"color":"rgba(159,218,58,1)","line":{"color":"rgba(159,218,58,1)"}},"textfont":{"color":"rgba(159,218,58,1)"},"error_y":{"color":"rgba(159,218,58,1)"},"error_x":{"color":"rgba(159,218,58,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hungary"],"y":[89.19],"text":"Country:Hungary<br />mean rating:89.1917808219178","type":"bar","name":"Hungary","marker":{"color":"rgba(175,221,47,1)","line":{"color":"rgba(175,221,47,1)"}},"textfont":{"color":"rgba(175,221,47,1)"},"error_y":{"color":"rgba(175,221,47,1)"},"error_x":{"color":"rgba(175,221,47,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Canada"],"y":[89.37],"text":"Country:Canada<br />mean rating:89.3696498054475","type":"bar","name":"Canada","marker":{"color":"rgba(191,223,37,1)","line":{"color":"rgba(191,223,37,1)"}},"textfont":{"color":"rgba(191,223,37,1)"},"error_y":{"color":"rgba(191,223,37,1)"},"error_x":{"color":"rgba(191,223,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Germany"],"y":[89.85],"text":"Country:Germany<br />mean rating:89.8517321016166","type":"bar","name":"Germany","marker":{"color":"rgba(207,225,28,1)","line":{"color":"rgba(207,225,28,1)"}},"textfont":{"color":"rgba(207,225,28,1)"},"error_y":{"color":"rgba(207,225,28,1)"},"error_x":{"color":"rgba(207,225,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Austria"],"y":[90.1],"text":"Country:Austria<br />mean rating:90.1013452914798","type":"bar","name":"Austria","marker":{"color":"rgba(223,227,24,1)","line":{"color":"rgba(223,227,24,1)"}},"textfont":{"color":"rgba(223,227,24,1)"},"error_y":{"color":"rgba(223,227,24,1)"},"error_x":{"color":"rgba(223,227,24,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["India"],"y":[90.22],"text":"Country:India<br />mean rating:90.2222222222222","type":"bar","name":"India","marker":{"color":"rgba(239,229,28,1)","line":{"color":"rgba(239,229,28,1)"}},"textfont":{"color":"rgba(239,229,28,1)"},"error_y":{"color":"rgba(239,229,28,1)"},"error_x":{"color":"rgba(239,229,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["England"],"y":[91.58],"text":"Country:England<br />mean rating:91.5810810810811","type":"bar","name":"England","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ba326b5cd0f9eff5c6d3" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ba326b5cd0f9eff5c6d3">{"x":{"visdat":{"1c1ed2cf805":["function () ","plotlyVisDat"]},"cur_data":"1c1ed2cf805","attrs":{"1c1ed2cf805":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"range":[80,95],"title":"avg_rating"},"xaxis":{"domain":[0,1],"automargin":true,"title":"country","type":"category","categoryorder":"array","categoryarray":["Peru","Egypt","Ukraine","Brazil","Mexico","Romania","Chile","Bosnia and Herzegovina","Argentina","Uruguay","Macedonia","Slovakia","Cyprus","Moldova","Croatia","Czech Republic","Greece","Spain","Armenia","Serbia","Lebanon","Georgia","Bulgaria","South Africa","Slovenia","Turkey","Portugal","New Zealand","Israel","Italy","US","Morocco","Switzerland","Australia","Luxembourg","France","China","Hungary","Canada","Germany","Austria","India","England"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Peru"],"y":[83.56],"text":"Country:Peru<br />mean rating:83.5625","type":"bar","name":"Peru","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Egypt"],"y":[84],"text":"Country:Egypt<br />mean rating:84","type":"bar","name":"Egypt","marker":{"color":"rgba(70,10,93,1)","line":{"color":"rgba(70,10,93,1)"}},"textfont":{"color":"rgba(70,10,93,1)"},"error_y":{"color":"rgba(70,10,93,1)"},"error_x":{"color":"rgba(70,10,93,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ukraine"],"y":[84.07],"text":"Country:Ukraine<br />mean rating:84.0714285714286","type":"bar","name":"Ukraine","marker":{"color":"rgba(71,19,101,1)","line":{"color":"rgba(71,19,101,1)"}},"textfont":{"color":"rgba(71,19,101,1)"},"error_y":{"color":"rgba(71,19,101,1)"},"error_x":{"color":"rgba(71,19,101,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Brazil"],"y":[84.67],"text":"Country:Brazil<br />mean rating:84.6730769230769","type":"bar","name":"Brazil","marker":{"color":"rgba(72,27,109,1)","line":{"color":"rgba(72,27,109,1)"}},"textfont":{"color":"rgba(72,27,109,1)"},"error_y":{"color":"rgba(72,27,109,1)"},"error_x":{"color":"rgba(72,27,109,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mexico"],"y":[85.26],"text":"Country:Mexico<br />mean rating:85.2571428571429","type":"bar","name":"Mexico","marker":{"color":"rgba(72,35,116,1)","line":{"color":"rgba(72,35,116,1)"}},"textfont":{"color":"rgba(72,35,116,1)"},"error_y":{"color":"rgba(72,35,116,1)"},"error_x":{"color":"rgba(72,35,116,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Romania"],"y":[86.4],"text":"Country:Romania<br />mean rating:86.4","type":"bar","name":"Romania","marker":{"color":"rgba(71,43,122,1)","line":{"color":"rgba(71,43,122,1)"}},"textfont":{"color":"rgba(71,43,122,1)"},"error_y":{"color":"rgba(71,43,122,1)"},"error_x":{"color":"rgba(71,43,122,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chile"],"y":[86.49],"text":"Country:Chile<br />mean rating:86.4935152057245","type":"bar","name":"Chile","marker":{"color":"rgba(70,50,126,1)","line":{"color":"rgba(70,50,126,1)"}},"textfont":{"color":"rgba(70,50,126,1)"},"error_y":{"color":"rgba(70,50,126,1)"},"error_x":{"color":"rgba(70,50,126,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bosnia and Herzegovina"],"y":[86.5],"text":"Country:Bosnia and Herzegovina<br />mean rating:86.5","type":"bar","name":"Bosnia and Herzegovina","marker":{"color":"rgba(68,58,131,1)","line":{"color":"rgba(68,58,131,1)"}},"textfont":{"color":"rgba(68,58,131,1)"},"error_y":{"color":"rgba(68,58,131,1)"},"error_x":{"color":"rgba(68,58,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Argentina"],"y":[86.71],"text":"Country:Argentina<br />mean rating:86.7102631578947","type":"bar","name":"Argentina","marker":{"color":"rgba(66,65,134,1)","line":{"color":"rgba(66,65,134,1)"}},"textfont":{"color":"rgba(66,65,134,1)"},"error_y":{"color":"rgba(66,65,134,1)"},"error_x":{"color":"rgba(66,65,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Uruguay"],"y":[86.75],"text":"Country:Uruguay<br />mean rating:86.7522935779816","type":"bar","name":"Uruguay","marker":{"color":"rgba(63,72,137,1)","line":{"color":"rgba(63,72,137,1)"}},"textfont":{"color":"rgba(63,72,137,1)"},"error_y":{"color":"rgba(63,72,137,1)"},"error_x":{"color":"rgba(63,72,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Macedonia"],"y":[86.83],"text":"Country:Macedonia<br />mean rating:86.8333333333333","type":"bar","name":"Macedonia","marker":{"color":"rgba(60,79,138,1)","line":{"color":"rgba(60,79,138,1)"}},"textfont":{"color":"rgba(60,79,138,1)"},"error_y":{"color":"rgba(60,79,138,1)"},"error_x":{"color":"rgba(60,79,138,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovakia"],"y":[87],"text":"Country:Slovakia<br />mean rating:87","type":"bar","name":"Slovakia","marker":{"color":"rgba(57,85,140,1)","line":{"color":"rgba(57,85,140,1)"}},"textfont":{"color":"rgba(57,85,140,1)"},"error_y":{"color":"rgba(57,85,140,1)"},"error_x":{"color":"rgba(57,85,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Cyprus"],"y":[87.18],"text":"Country:Cyprus<br />mean rating:87.1818181818182","type":"bar","name":"Cyprus","marker":{"color":"rgba(54,92,141,1)","line":{"color":"rgba(54,92,141,1)"}},"textfont":{"color":"rgba(54,92,141,1)"},"error_y":{"color":"rgba(54,92,141,1)"},"error_x":{"color":"rgba(54,92,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Moldova"],"y":[87.2],"text":"Country:Moldova<br />mean rating:87.2033898305085","type":"bar","name":"Moldova","marker":{"color":"rgba(51,98,141,1)","line":{"color":"rgba(51,98,141,1)"}},"textfont":{"color":"rgba(51,98,141,1)"},"error_y":{"color":"rgba(51,98,141,1)"},"error_x":{"color":"rgba(51,98,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Croatia"],"y":[87.22],"text":"Country:Croatia<br />mean rating:87.2191780821918","type":"bar","name":"Croatia","marker":{"color":"rgba(49,104,142,1)","line":{"color":"rgba(49,104,142,1)"}},"textfont":{"color":"rgba(49,104,142,1)"},"error_y":{"color":"rgba(49,104,142,1)"},"error_x":{"color":"rgba(49,104,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Czech Republic"],"y":[87.25],"text":"Country:Czech Republic<br />mean rating:87.25","type":"bar","name":"Czech Republic","marker":{"color":"rgba(46,110,142,1)","line":{"color":"rgba(46,110,142,1)"}},"textfont":{"color":"rgba(46,110,142,1)"},"error_y":{"color":"rgba(46,110,142,1)"},"error_x":{"color":"rgba(46,110,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Greece"],"y":[87.28],"text":"Country:Greece<br />mean rating:87.2832618025751","type":"bar","name":"Greece","marker":{"color":"rgba(44,115,142,1)","line":{"color":"rgba(44,115,142,1)"}},"textfont":{"color":"rgba(44,115,142,1)"},"error_y":{"color":"rgba(44,115,142,1)"},"error_x":{"color":"rgba(44,115,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Spain"],"y":[87.29],"text":"Country:Spain<br />mean rating:87.2883370955606","type":"bar","name":"Spain","marker":{"color":"rgba(41,121,142,1)","line":{"color":"rgba(41,121,142,1)"}},"textfont":{"color":"rgba(41,121,142,1)"},"error_y":{"color":"rgba(41,121,142,1)"},"error_x":{"color":"rgba(41,121,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Armenia"],"y":[87.5],"text":"Country:Armenia<br />mean rating:87.5","type":"bar","name":"Armenia","marker":{"color":"rgba(39,127,142,1)","line":{"color":"rgba(39,127,142,1)"}},"textfont":{"color":"rgba(39,127,142,1)"},"error_y":{"color":"rgba(39,127,142,1)"},"error_x":{"color":"rgba(39,127,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Serbia"],"y":[87.5],"text":"Country:Serbia<br />mean rating:87.5","type":"bar","name":"Serbia","marker":{"color":"rgba(37,132,142,1)","line":{"color":"rgba(37,132,142,1)"}},"textfont":{"color":"rgba(37,132,142,1)"},"error_y":{"color":"rgba(37,132,142,1)"},"error_x":{"color":"rgba(37,132,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lebanon"],"y":[87.69],"text":"Country:Lebanon<br />mean rating:87.6857142857143","type":"bar","name":"Lebanon","marker":{"color":"rgba(35,138,141,1)","line":{"color":"rgba(35,138,141,1)"}},"textfont":{"color":"rgba(35,138,141,1)"},"error_y":{"color":"rgba(35,138,141,1)"},"error_x":{"color":"rgba(35,138,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Georgia"],"y":[87.69],"text":"Country:Georgia<br />mean rating:87.6860465116279","type":"bar","name":"Georgia","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bulgaria"],"y":[87.94],"text":"Country:Bulgaria<br />mean rating:87.936170212766","type":"bar","name":"Bulgaria","marker":{"color":"rgba(31,150,139,1)","line":{"color":"rgba(31,150,139,1)"}},"textfont":{"color":"rgba(31,150,139,1)"},"error_y":{"color":"rgba(31,150,139,1)"},"error_x":{"color":"rgba(31,150,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Africa"],"y":[88.06],"text":"Country:South Africa<br />mean rating:88.0563882940757","type":"bar","name":"South Africa","marker":{"color":"rgba(30,156,137,1)","line":{"color":"rgba(30,156,137,1)"}},"textfont":{"color":"rgba(30,156,137,1)"},"error_y":{"color":"rgba(30,156,137,1)"},"error_x":{"color":"rgba(30,156,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Slovenia"],"y":[88.07],"text":"Country:Slovenia<br />mean rating:88.0689655172414","type":"bar","name":"Slovenia","marker":{"color":"rgba(31,161,135,1)","line":{"color":"rgba(31,161,135,1)"}},"textfont":{"color":"rgba(31,161,135,1)"},"error_y":{"color":"rgba(31,161,135,1)"},"error_x":{"color":"rgba(31,161,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Turkey"],"y":[88.09],"text":"Country:Turkey<br />mean rating:88.0888888888889","type":"bar","name":"Turkey","marker":{"color":"rgba(34,167,133,1)","line":{"color":"rgba(34,167,133,1)"}},"textfont":{"color":"rgba(34,167,133,1)"},"error_y":{"color":"rgba(34,167,133,1)"},"error_x":{"color":"rgba(34,167,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Portugal"],"y":[88.25],"text":"Country:Portugal<br />mean rating:88.2502196450536","type":"bar","name":"Portugal","marker":{"color":"rgba(38,173,129,1)","line":{"color":"rgba(38,173,129,1)"}},"textfont":{"color":"rgba(38,173,129,1)"},"error_y":{"color":"rgba(38,173,129,1)"},"error_x":{"color":"rgba(38,173,129,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Zealand"],"y":[88.3],"text":"Country:New Zealand<br />mean rating:88.3030303030303","type":"bar","name":"New Zealand","marker":{"color":"rgba(45,178,125,1)","line":{"color":"rgba(45,178,125,1)"}},"textfont":{"color":"rgba(45,178,125,1)"},"error_y":{"color":"rgba(45,178,125,1)"},"error_x":{"color":"rgba(45,178,125,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Israel"],"y":[88.47],"text":"Country:Israel<br />mean rating:88.4712871287129","type":"bar","name":"Israel","marker":{"color":"rgba(53,183,121,1)","line":{"color":"rgba(53,183,121,1)"}},"textfont":{"color":"rgba(53,183,121,1)"},"error_y":{"color":"rgba(53,183,121,1)"},"error_x":{"color":"rgba(53,183,121,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Italy"],"y":[88.56],"text":"Country:Italy<br />mean rating:88.5622313203685","type":"bar","name":"Italy","marker":{"color":"rgba(63,188,115,1)","line":{"color":"rgba(63,188,115,1)"}},"textfont":{"color":"rgba(63,188,115,1)"},"error_y":{"color":"rgba(63,188,115,1)"},"error_x":{"color":"rgba(63,188,115,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["US"],"y":[88.56],"text":"Country:US<br />mean rating:88.5637200939381","type":"bar","name":"US","marker":{"color":"rgba(74,193,109,1)","line":{"color":"rgba(74,193,109,1)"}},"textfont":{"color":"rgba(74,193,109,1)"},"error_y":{"color":"rgba(74,193,109,1)"},"error_x":{"color":"rgba(74,193,109,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Morocco"],"y":[88.57],"text":"Country:Morocco<br />mean rating:88.5714285714286","type":"bar","name":"Morocco","marker":{"color":"rgba(86,198,103,1)","line":{"color":"rgba(86,198,103,1)"}},"textfont":{"color":"rgba(86,198,103,1)"},"error_y":{"color":"rgba(86,198,103,1)"},"error_x":{"color":"rgba(86,198,103,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Switzerland"],"y":[88.57],"text":"Country:Switzerland<br />mean rating:88.5714285714286","type":"bar","name":"Switzerland","marker":{"color":"rgba(100,203,95,1)","line":{"color":"rgba(100,203,95,1)"}},"textfont":{"color":"rgba(100,203,95,1)"},"error_y":{"color":"rgba(100,203,95,1)"},"error_x":{"color":"rgba(100,203,95,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Australia"],"y":[88.58],"text":"Country:Australia<br />mean rating:88.5805066552168","type":"bar","name":"Australia","marker":{"color":"rgba(113,207,87,1)","line":{"color":"rgba(113,207,87,1)"}},"textfont":{"color":"rgba(113,207,87,1)"},"error_y":{"color":"rgba(113,207,87,1)"},"error_x":{"color":"rgba(113,207,87,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Luxembourg"],"y":[88.67],"text":"Country:Luxembourg<br />mean rating:88.6666666666667","type":"bar","name":"Luxembourg","marker":{"color":"rgba(128,211,78,1)","line":{"color":"rgba(128,211,78,1)"}},"textfont":{"color":"rgba(128,211,78,1)"},"error_y":{"color":"rgba(128,211,78,1)"},"error_x":{"color":"rgba(128,211,78,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["France"],"y":[88.85],"text":"Country:France<br />mean rating:88.8451093106414","type":"bar","name":"France","marker":{"color":"rgba(143,214,68,1)","line":{"color":"rgba(143,214,68,1)"}},"textfont":{"color":"rgba(143,214,68,1)"},"error_y":{"color":"rgba(143,214,68,1)"},"error_x":{"color":"rgba(143,214,68,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["China"],"y":[89],"text":"Country:China<br />mean rating:89","type":"bar","name":"China","marker":{"color":"rgba(159,218,58,1)","line":{"color":"rgba(159,218,58,1)"}},"textfont":{"color":"rgba(159,218,58,1)"},"error_y":{"color":"rgba(159,218,58,1)"},"error_x":{"color":"rgba(159,218,58,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Hungary"],"y":[89.19],"text":"Country:Hungary<br />mean rating:89.1917808219178","type":"bar","name":"Hungary","marker":{"color":"rgba(175,221,47,1)","line":{"color":"rgba(175,221,47,1)"}},"textfont":{"color":"rgba(175,221,47,1)"},"error_y":{"color":"rgba(175,221,47,1)"},"error_x":{"color":"rgba(175,221,47,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Canada"],"y":[89.37],"text":"Country:Canada<br />mean rating:89.3696498054475","type":"bar","name":"Canada","marker":{"color":"rgba(191,223,37,1)","line":{"color":"rgba(191,223,37,1)"}},"textfont":{"color":"rgba(191,223,37,1)"},"error_y":{"color":"rgba(191,223,37,1)"},"error_x":{"color":"rgba(191,223,37,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Germany"],"y":[89.85],"text":"Country:Germany<br />mean rating:89.8517321016166","type":"bar","name":"Germany","marker":{"color":"rgba(207,225,28,1)","line":{"color":"rgba(207,225,28,1)"}},"textfont":{"color":"rgba(207,225,28,1)"},"error_y":{"color":"rgba(207,225,28,1)"},"error_x":{"color":"rgba(207,225,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Austria"],"y":[90.1],"text":"Country:Austria<br />mean rating:90.1013452914798","type":"bar","name":"Austria","marker":{"color":"rgba(223,227,24,1)","line":{"color":"rgba(223,227,24,1)"}},"textfont":{"color":"rgba(223,227,24,1)"},"error_y":{"color":"rgba(223,227,24,1)"},"error_x":{"color":"rgba(223,227,24,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["India"],"y":[90.22],"text":"Country:India<br />mean rating:90.2222222222222","type":"bar","name":"India","marker":{"color":"rgba(239,229,28,1)","line":{"color":"rgba(239,229,28,1)"}},"textfont":{"color":"rgba(239,229,28,1)"},"error_y":{"color":"rgba(239,229,28,1)"},"error_x":{"color":"rgba(239,229,28,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["England"],"y":[91.58],"text":"Country:England<br />mean rating:91.5810810810811","type":"bar","name":"England","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <p><br><br></p>
 </div>
 <div id="trend-of-pricerating-over-time" class="section level3">
@@ -606,7 +624,7 @@ wine_df %&gt;%
   geom_line() +
   labs(y = &quot;Mean price&quot;,
       x = &quot;Year&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
 <pre class="r"><code>wine_df %&gt;% 
   filter(!is.na(points),
          !is.na(type),
@@ -619,7 +637,7 @@ wine_df %&gt;%
   geom_line() +
   labs(y = &quot;Mean rating&quot;,
       x = &quot;Year&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-6-2.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-9-2.png" width="90%" /></p>
 <p><br><br></p>
 </div>
 <div id="price-and-ratings-by-taster." class="section level3">
@@ -641,8 +659,8 @@ wine_df %&gt;%
   x = ~taster_name, y = ~mean, color = ~taster_name, text = ~text_label, 
   type = &quot;bar&quot;, colors = &quot;viridis&quot;) %&gt;% 
  layout(yaxis = list(range = c(80,95)))</code></pre>
-<div id="htmlwidget-943f406e3acda924bcd6" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-943f406e3acda924bcd6">{"x":{"visdat":{"11edd2faa1111":["function () ","plotlyVisDat"]},"cur_data":"11edd2faa1111","attrs":{"11edd2faa1111":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"range":[80,95],"title":"mean"},"xaxis":{"domain":[0,1],"automargin":true,"title":"taster_name","type":"category","categoryorder":"array","categoryarray":["Alexander Peartree","Carrie Dykes","Susan Kostrzewa","Fiona Adams","Michael Schachner","Lauren Buzzeo","Christina Pickard","Jeff Jenssen","Anna Lee C. Iijima","Joe Czerwinski","Jim Gordon","Roger Voss","Sean P. Sullivan","Kerin O’Keefe","Paul Gregutt","Mike DeSimone","Virginie Boone","Matt Kettmann","Anne Krebiehl MW"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Alexander Peartree"],"y":[85.86],"text":"Taster:Alexander Peartree<br />mean rating:85.86","type":"bar","name":"Alexander Peartree","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Carrie Dykes"],"y":[86.4],"text":"Taster:Carrie Dykes<br />mean rating:86.4","type":"bar","name":"Carrie Dykes","marker":{"color":"rgba(72,22,104,1)","line":{"color":"rgba(72,22,104,1)"}},"textfont":{"color":"rgba(72,22,104,1)"},"error_y":{"color":"rgba(72,22,104,1)"},"error_x":{"color":"rgba(72,22,104,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Susan Kostrzewa"],"y":[86.61],"text":"Taster:Susan Kostrzewa<br />mean rating:86.61","type":"bar","name":"Susan Kostrzewa","marker":{"color":"rgba(72,40,120,1)","line":{"color":"rgba(72,40,120,1)"}},"textfont":{"color":"rgba(72,40,120,1)"},"error_y":{"color":"rgba(72,40,120,1)"},"error_x":{"color":"rgba(72,40,120,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fiona Adams"],"y":[86.89],"text":"Taster:Fiona Adams<br />mean rating:86.89","type":"bar","name":"Fiona Adams","marker":{"color":"rgba(68,58,131,1)","line":{"color":"rgba(68,58,131,1)"}},"textfont":{"color":"rgba(68,58,131,1)"},"error_y":{"color":"rgba(68,58,131,1)"},"error_x":{"color":"rgba(68,58,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Michael Schachner"],"y":[86.91],"text":"Taster:Michael Schachner<br />mean rating:86.91","type":"bar","name":"Michael Schachner","marker":{"color":"rgba(62,74,137,1)","line":{"color":"rgba(62,74,137,1)"}},"textfont":{"color":"rgba(62,74,137,1)"},"error_y":{"color":"rgba(62,74,137,1)"},"error_x":{"color":"rgba(62,74,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lauren Buzzeo"],"y":[87.74],"text":"Taster:Lauren Buzzeo<br />mean rating:87.74","type":"bar","name":"Lauren Buzzeo","marker":{"color":"rgba(55,90,140,1)","line":{"color":"rgba(55,90,140,1)"}},"textfont":{"color":"rgba(55,90,140,1)"},"error_y":{"color":"rgba(55,90,140,1)"},"error_x":{"color":"rgba(55,90,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Christina Pickard"],"y":[87.83],"text":"Taster:Christina Pickard<br />mean rating:87.83","type":"bar","name":"Christina Pickard","marker":{"color":"rgba(49,104,142,1)","line":{"color":"rgba(49,104,142,1)"}},"textfont":{"color":"rgba(49,104,142,1)"},"error_y":{"color":"rgba(49,104,142,1)"},"error_x":{"color":"rgba(49,104,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jeff Jenssen"],"y":[88.32],"text":"Taster:Jeff Jenssen<br />mean rating:88.32","type":"bar","name":"Jeff Jenssen","marker":{"color":"rgba(43,117,142,1)","line":{"color":"rgba(43,117,142,1)"}},"textfont":{"color":"rgba(43,117,142,1)"},"error_y":{"color":"rgba(43,117,142,1)"},"error_x":{"color":"rgba(43,117,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Anna Lee C. Iijima"],"y":[88.42],"text":"Taster:Anna Lee C. Iijima<br />mean rating:88.42","type":"bar","name":"Anna Lee C. Iijima","marker":{"color":"rgba(38,130,142,1)","line":{"color":"rgba(38,130,142,1)"}},"textfont":{"color":"rgba(38,130,142,1)"},"error_y":{"color":"rgba(38,130,142,1)"},"error_x":{"color":"rgba(38,130,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Joe Czerwinski"],"y":[88.54],"text":"Taster:Joe Czerwinski<br />mean rating:88.54","type":"bar","name":"Joe Czerwinski","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jim Gordon"],"y":[88.63],"text":"Taster:Jim Gordon<br />mean rating:88.63","type":"bar","name":"Jim Gordon","marker":{"color":"rgba(31,158,137,1)","line":{"color":"rgba(31,158,137,1)"}},"textfont":{"color":"rgba(31,158,137,1)"},"error_y":{"color":"rgba(31,158,137,1)"},"error_x":{"color":"rgba(31,158,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Roger Voss"],"y":[88.71],"text":"Taster:Roger Voss<br />mean rating:88.71","type":"bar","name":"Roger Voss","marker":{"color":"rgba(37,171,130,1)","line":{"color":"rgba(37,171,130,1)"}},"textfont":{"color":"rgba(37,171,130,1)"},"error_y":{"color":"rgba(37,171,130,1)"},"error_x":{"color":"rgba(37,171,130,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sean P. Sullivan"],"y":[88.76],"text":"Taster:Sean P. Sullivan<br />mean rating:88.76","type":"bar","name":"Sean P. Sullivan","marker":{"color":"rgba(53,183,121,1)","line":{"color":"rgba(53,183,121,1)"}},"textfont":{"color":"rgba(53,183,121,1)"},"error_y":{"color":"rgba(53,183,121,1)"},"error_x":{"color":"rgba(53,183,121,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kerin O’Keefe"],"y":[88.87],"text":"Taster:Kerin O’Keefe<br />mean rating:88.87","type":"bar","name":"Kerin O’Keefe","marker":{"color":"rgba(78,195,107,1)","line":{"color":"rgba(78,195,107,1)"}},"textfont":{"color":"rgba(78,195,107,1)"},"error_y":{"color":"rgba(78,195,107,1)"},"error_x":{"color":"rgba(78,195,107,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Paul Gregutt"],"y":[89.08],"text":"Taster:Paul Gregutt<br />mean rating:89.08","type":"bar","name":"Paul Gregutt","marker":{"color":"rgba(109,205,89,1)","line":{"color":"rgba(109,205,89,1)"}},"textfont":{"color":"rgba(109,205,89,1)"},"error_y":{"color":"rgba(109,205,89,1)"},"error_x":{"color":"rgba(109,205,89,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mike DeSimone"],"y":[89.1],"text":"Taster:Mike DeSimone<br />mean rating:89.1","type":"bar","name":"Mike DeSimone","marker":{"color":"rgba(143,214,68,1)","line":{"color":"rgba(143,214,68,1)"}},"textfont":{"color":"rgba(143,214,68,1)"},"error_y":{"color":"rgba(143,214,68,1)"},"error_x":{"color":"rgba(143,214,68,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Virginie Boone"],"y":[89.21],"text":"Taster:Virginie Boone<br />mean rating:89.21","type":"bar","name":"Virginie Boone","marker":{"color":"rgba(180,222,44,1)","line":{"color":"rgba(180,222,44,1)"}},"textfont":{"color":"rgba(180,222,44,1)"},"error_y":{"color":"rgba(180,222,44,1)"},"error_x":{"color":"rgba(180,222,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Matt Kettmann"],"y":[90.01],"text":"Taster:Matt Kettmann<br />mean rating:90.01","type":"bar","name":"Matt Kettmann","marker":{"color":"rgba(218,227,25,1)","line":{"color":"rgba(218,227,25,1)"}},"textfont":{"color":"rgba(218,227,25,1)"},"error_y":{"color":"rgba(218,227,25,1)"},"error_x":{"color":"rgba(218,227,25,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Anne Krebiehl MW"],"y":[90.56],"text":"Taster:Anne Krebiehl MW<br />mean rating:90.56","type":"bar","name":"Anne Krebiehl MW","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e55d36bd5332b9815e41" style="width:90%;height:345.6px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e55d36bd5332b9815e41">{"x":{"visdat":{"1c1e17493a56":["function () ","plotlyVisDat"]},"cur_data":"1c1e17493a56","attrs":{"1c1e17493a56":{"x":{},"y":{},"text":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"yaxis":{"domain":[0,1],"automargin":true,"range":[80,95],"title":"mean"},"xaxis":{"domain":[0,1],"automargin":true,"title":"taster_name","type":"category","categoryorder":"array","categoryarray":["Alexander Peartree","Carrie Dykes","Susan Kostrzewa","Fiona Adams","Michael Schachner","Lauren Buzzeo","Christina Pickard","Jeff Jenssen","Anna Lee C. Iijima","Joe Czerwinski","Jim Gordon","Roger Voss","Sean P. Sullivan","Kerin O’Keefe","Paul Gregutt","Mike DeSimone","Virginie Boone","Matt Kettmann","Anne Krebiehl MW"]},"hovermode":"closest","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"x":["Alexander Peartree"],"y":[85.86],"text":"Taster:Alexander Peartree<br />mean rating:85.86","type":"bar","name":"Alexander Peartree","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Carrie Dykes"],"y":[86.4],"text":"Taster:Carrie Dykes<br />mean rating:86.4","type":"bar","name":"Carrie Dykes","marker":{"color":"rgba(72,22,104,1)","line":{"color":"rgba(72,22,104,1)"}},"textfont":{"color":"rgba(72,22,104,1)"},"error_y":{"color":"rgba(72,22,104,1)"},"error_x":{"color":"rgba(72,22,104,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Susan Kostrzewa"],"y":[86.61],"text":"Taster:Susan Kostrzewa<br />mean rating:86.61","type":"bar","name":"Susan Kostrzewa","marker":{"color":"rgba(72,40,120,1)","line":{"color":"rgba(72,40,120,1)"}},"textfont":{"color":"rgba(72,40,120,1)"},"error_y":{"color":"rgba(72,40,120,1)"},"error_x":{"color":"rgba(72,40,120,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Fiona Adams"],"y":[86.89],"text":"Taster:Fiona Adams<br />mean rating:86.89","type":"bar","name":"Fiona Adams","marker":{"color":"rgba(68,58,131,1)","line":{"color":"rgba(68,58,131,1)"}},"textfont":{"color":"rgba(68,58,131,1)"},"error_y":{"color":"rgba(68,58,131,1)"},"error_x":{"color":"rgba(68,58,131,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Michael Schachner"],"y":[86.91],"text":"Taster:Michael Schachner<br />mean rating:86.91","type":"bar","name":"Michael Schachner","marker":{"color":"rgba(62,74,137,1)","line":{"color":"rgba(62,74,137,1)"}},"textfont":{"color":"rgba(62,74,137,1)"},"error_y":{"color":"rgba(62,74,137,1)"},"error_x":{"color":"rgba(62,74,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Lauren Buzzeo"],"y":[87.74],"text":"Taster:Lauren Buzzeo<br />mean rating:87.74","type":"bar","name":"Lauren Buzzeo","marker":{"color":"rgba(55,90,140,1)","line":{"color":"rgba(55,90,140,1)"}},"textfont":{"color":"rgba(55,90,140,1)"},"error_y":{"color":"rgba(55,90,140,1)"},"error_x":{"color":"rgba(55,90,140,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Christina Pickard"],"y":[87.83],"text":"Taster:Christina Pickard<br />mean rating:87.83","type":"bar","name":"Christina Pickard","marker":{"color":"rgba(49,104,142,1)","line":{"color":"rgba(49,104,142,1)"}},"textfont":{"color":"rgba(49,104,142,1)"},"error_y":{"color":"rgba(49,104,142,1)"},"error_x":{"color":"rgba(49,104,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jeff Jenssen"],"y":[88.32],"text":"Taster:Jeff Jenssen<br />mean rating:88.32","type":"bar","name":"Jeff Jenssen","marker":{"color":"rgba(43,117,142,1)","line":{"color":"rgba(43,117,142,1)"}},"textfont":{"color":"rgba(43,117,142,1)"},"error_y":{"color":"rgba(43,117,142,1)"},"error_x":{"color":"rgba(43,117,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Anna Lee C. Iijima"],"y":[88.42],"text":"Taster:Anna Lee C. Iijima<br />mean rating:88.42","type":"bar","name":"Anna Lee C. Iijima","marker":{"color":"rgba(38,130,142,1)","line":{"color":"rgba(38,130,142,1)"}},"textfont":{"color":"rgba(38,130,142,1)"},"error_y":{"color":"rgba(38,130,142,1)"},"error_x":{"color":"rgba(38,130,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Joe Czerwinski"],"y":[88.54],"text":"Taster:Joe Czerwinski<br />mean rating:88.54","type":"bar","name":"Joe Czerwinski","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Jim Gordon"],"y":[88.63],"text":"Taster:Jim Gordon<br />mean rating:88.63","type":"bar","name":"Jim Gordon","marker":{"color":"rgba(31,158,137,1)","line":{"color":"rgba(31,158,137,1)"}},"textfont":{"color":"rgba(31,158,137,1)"},"error_y":{"color":"rgba(31,158,137,1)"},"error_x":{"color":"rgba(31,158,137,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Roger Voss"],"y":[88.71],"text":"Taster:Roger Voss<br />mean rating:88.71","type":"bar","name":"Roger Voss","marker":{"color":"rgba(37,171,130,1)","line":{"color":"rgba(37,171,130,1)"}},"textfont":{"color":"rgba(37,171,130,1)"},"error_y":{"color":"rgba(37,171,130,1)"},"error_x":{"color":"rgba(37,171,130,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Sean P. Sullivan"],"y":[88.76],"text":"Taster:Sean P. Sullivan<br />mean rating:88.76","type":"bar","name":"Sean P. Sullivan","marker":{"color":"rgba(53,183,121,1)","line":{"color":"rgba(53,183,121,1)"}},"textfont":{"color":"rgba(53,183,121,1)"},"error_y":{"color":"rgba(53,183,121,1)"},"error_x":{"color":"rgba(53,183,121,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kerin O’Keefe"],"y":[88.87],"text":"Taster:Kerin O’Keefe<br />mean rating:88.87","type":"bar","name":"Kerin O’Keefe","marker":{"color":"rgba(78,195,107,1)","line":{"color":"rgba(78,195,107,1)"}},"textfont":{"color":"rgba(78,195,107,1)"},"error_y":{"color":"rgba(78,195,107,1)"},"error_x":{"color":"rgba(78,195,107,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Paul Gregutt"],"y":[89.08],"text":"Taster:Paul Gregutt<br />mean rating:89.08","type":"bar","name":"Paul Gregutt","marker":{"color":"rgba(109,205,89,1)","line":{"color":"rgba(109,205,89,1)"}},"textfont":{"color":"rgba(109,205,89,1)"},"error_y":{"color":"rgba(109,205,89,1)"},"error_x":{"color":"rgba(109,205,89,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mike DeSimone"],"y":[89.1],"text":"Taster:Mike DeSimone<br />mean rating:89.1","type":"bar","name":"Mike DeSimone","marker":{"color":"rgba(143,214,68,1)","line":{"color":"rgba(143,214,68,1)"}},"textfont":{"color":"rgba(143,214,68,1)"},"error_y":{"color":"rgba(143,214,68,1)"},"error_x":{"color":"rgba(143,214,68,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Virginie Boone"],"y":[89.21],"text":"Taster:Virginie Boone<br />mean rating:89.21","type":"bar","name":"Virginie Boone","marker":{"color":"rgba(180,222,44,1)","line":{"color":"rgba(180,222,44,1)"}},"textfont":{"color":"rgba(180,222,44,1)"},"error_y":{"color":"rgba(180,222,44,1)"},"error_x":{"color":"rgba(180,222,44,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Matt Kettmann"],"y":[90.01],"text":"Taster:Matt Kettmann<br />mean rating:90.01","type":"bar","name":"Matt Kettmann","marker":{"color":"rgba(218,227,25,1)","line":{"color":"rgba(218,227,25,1)"}},"textfont":{"color":"rgba(218,227,25,1)"},"error_y":{"color":"rgba(218,227,25,1)"},"error_x":{"color":"rgba(218,227,25,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Anne Krebiehl MW"],"y":[90.56],"text":"Taster:Anne Krebiehl MW<br />mean rating:90.56","type":"bar","name":"Anne Krebiehl MW","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <p>We also want to know the tasters that rated wines with price greater than $800 and most of the most expensive wine are rated by Roger Voss.</p>
 <pre class="r"><code>wine_df %&gt;% 
   filter(price &gt;= 800,
@@ -863,7 +881,7 @@ wine_df %&gt;%
   geom_boxplot() +
     labs(y = &quot;Mean rating&quot;,
       x = &quot;new vs old world wine&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-11-1.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
 <pre class="r"><code>wine_new_old=
 wine_df %&gt;% 
   mutate(new_old = ifelse(new_world == 0, &quot;old_world&quot;, &quot;new_world&quot;))
@@ -886,7 +904,7 @@ t.test(price ~ new_old, data = wine_new_old)</code></pre>
   geom_boxplot() +
     labs(y = &quot;Mean price&quot;,
       x = &quot;new vs old world wine&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-11-2.png" width="90%" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-14-2.png" width="90%" /></p>
 <pre class="r"><code>wine_price = 
 wine_df %&gt;% 
   mutate(new_old = ifelse(new_world == 0, &quot;old_world&quot;, &quot;new_world&quot;)) %&gt;% 
@@ -1052,49 +1070,434 @@ world_map_labels = countries_merged_wine %&gt;%
             title = &quot;Wines&quot;)</code></pre>
 <p><br><img src="image/us_map.png" alt="us_map" style="width:65%; border:2px solid"><br></p>
 <p><br><img src="image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br></p>
-<p>Static Map???</p>
-<pre class="r"><code># world_static = map_data(&quot;world&quot;) %&gt;%
-#   left_join(wine_by_country, by = c(&quot;region&quot; = &quot;country&quot;))
-# 
-# ggplot(data = world_static, 
-#                mapping = aes(x = long, y = lat, group = group)) +
-#   geom_polygon(aes(fill = avg_rating)) +
-#   scale_fill_continuous(low = &quot;rosybrown1&quot;, high = &quot;darkred&quot;, 
-#                         na.value = &quot;snow2&quot;) +
-#   coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
-#   theme(
-#     axis.title.x = element_blank(),
-#     axis.text.x  = element_blank(),
-#     axis.ticks.x = element_blank(),
-#     axis.title.y = element_blank(),
-#     axis.text.y  = element_blank(),
-#     axis.ticks.y = element_blank(),
-#     panel.background = element_rect(fill = &quot;white&quot;))</code></pre>
 </div>
-<div id="summaries-and" class="section level3">
-<h3>summaries, and</h3>
 </div>
-<div id="exploratory-statistical-analyses" class="section level3">
-<h3>exploratory statistical analyses</h3>
-<p>anova 2-sample ttest.</p>
-<p>Justify the steps you took, and show any major changes to your ideas.</p>
-<p>#Additional analysis: If you undertake formal statistical analyses, describe these in detail</p>
 </div>
-<div id="linear-model---multivariate" class="section level3">
-<h3>linear model - multivariate</h3>
+<div id="additional-analysis" class="section level1">
+<h1>Additional analysis</h1>
+<pre class="r"><code>red_df =  
+  read_csv(&quot;./wine_data/tidy/wine_red.csv&quot;) %&gt;%
+  select(-X1) %&gt;%
+  drop_na(price) %&gt;%
+  mutate(price_seg = case_when(price &lt; 30 ~ &quot;Value&quot;, 
+                               30&lt;= price &amp; price &lt;100 ~ &quot;Premium&quot;,
+                               price &gt;=100 ~ &quot;Luxury&quot;),
+         price_seg = as.factor(price_seg))
+
+white_df = 
+  read_csv(&quot;./wine_data/tidy/wine_white.csv&quot;) %&gt;%
+  select(-X1) %&gt;%
+  drop_na(price) %&gt;%
+  mutate(price_seg = case_when(price &lt; 30 ~ &quot;Value&quot;, 
+                               30&lt;= price &amp; price &lt;100 ~ &quot;Premium&quot;,
+                               price &gt;=100 ~ &quot;Luxury&quot;),
+         price_seg = as.factor(price_seg))</code></pre>
+<pre class="r"><code>red_df_reg =
+  red_df %&gt;%
+  filter(year&gt;=2000) %&gt;%
+  mutate(
+         bold = str_detect(description, &quot;bold&quot;),
+         tannin = str_detect(description, &quot;tanni&quot;),
+         dry = str_detect(description, &quot;dry&quot;),
+         acidity = str_detect(description, &quot;acidi&quot;),
+         full_body = str_detect(tolower(description), paste(c(&quot;full body&quot;, &quot;full in body&quot;),collapse = &#39;|&#39;)),
+         price_cp1 = (price &gt; 100) * (price - 100),
+         price_cp2 = (price &lt; 30) * (price - 30)
+    )
+
+white_df_reg = 
+  white_df %&gt;%
+  filter(year&gt;=2000) %&gt;%
+  mutate(bold = str_detect(description, &quot;bold&quot;),
+         sweet = str_detect(description, &quot;sweet&quot;),
+         acidity = str_detect(description, &quot;acidi&quot;),
+         price_cp1 = (price &gt; 100) * (price - 100),
+         price_cp2 = (price &lt; 30) * (price - 30))</code></pre>
+<div id="i.-understanding-price-and-rating" class="section level2">
+<h2>I. Understanding Price and Rating</h2>
+<div id="the-more-expensive-the-better" class="section level3">
+<h3>The more expensive, the better?</h3>
+<p><br></br></p>
+<p>There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?</p>
+<p>The price of wine ranges from value purchase to luxury. This <a href="https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/">article</a> from Wine Folly provides more comprehensive discussion about price and quality.</p>
+<p>In the analysis of our dataset, we segmented the wine price at two cutoffs - $30 and $100. The distribution of price-rating for white and red wines is show below:</p>
+<p><img src="report_files/figure-html/unnamed-chunk-17-1.png" width="90%" /><img src="report_files/figure-html/unnamed-chunk-17-2.png" width="90%" /></p>
 </div>
-<div id="linear-model---name-tbd" class="section level3">
-<h3>linear model - name TBD</h3>
+<div id="fit-models-for-rating---candidates" class="section level3">
+<h3>Fit models for rating - candidates</h3>
+<p>To better capture the relationship between wine price and points, we aim to fit different models and pick the best one using cross validation. The three candidate models are:</p>
+<ul>
+<li><p>Simple linear model</p></li>
+<li><p>Piecewise linear model using the $30 and $100 cutoff</p></li>
+<li><p>Smooth model</p></li>
+</ul>
 </div>
-<div id="linear-model---cross-validation" class="section level3">
-<h3>linear model - cross validation</h3>
-<p>#Discussion: What were your findings? Are they what you expect? What insights into the data can you make?</p>
+<div id="analyses-for-red-wines" class="section level3">
+<h3>Analyses for Red Wines</h3>
+<p><img src="report_files/figure-html/unnamed-chunk-18-1.png" width="90%" /></p>
+<p><strong>Cross Validation: fit models and obtain RMSEs to select the best model</strong></p>
+<p><img src="report_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p><strong>Simple linear model - Red Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">329236.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Piecewise Model - Red Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">311640.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Smooth Model - Red Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">313753.3</td>
+</tr>
+</tbody>
+</table>
+<p>Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">87.2770108</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">price</td>
+<td align="right">0.0521123</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">price_cp1</td>
+<td align="right">-0.0483637</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">price_cp2</td>
+<td align="right">0.1097418</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><br></br></p>
 </div>
+<div id="analyses-of-white-wines" class="section level3">
+<h3>Analyses of White Wines</h3>
+<p><img src="report_files/figure-html/unnamed-chunk-24-1.png" width="90%" /></p>
+<p><strong>Cross Validation: fit models and obtain RMSEs to select the best model</strong></p>
+<p><img src="report_files/figure-html/unnamed-chunk-25-1.png" width="90%" /></p>
+<p><strong>Simple linear model - White Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">158477.6</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Piecewise Model - White Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">147768.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Smooth Model - White Wine</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">148518.8</td>
+</tr>
+</tbody>
+</table>
+<p>Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+<th align="right">exp(estimate)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">87.2770108</td>
+<td align="right">0</td>
+<td align="right">8.015381e+37</td>
+</tr>
+<tr class="even">
+<td align="left">price</td>
+<td align="right">0.0521123</td>
+<td align="right">0</td>
+<td align="right">1.053494e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">price_cp1</td>
+<td align="right">-0.0483637</td>
+<td align="right">0</td>
+<td align="right">9.527872e-01</td>
+</tr>
+<tr class="even">
+<td align="left">price_cp2</td>
+<td align="right">0.1097418</td>
+<td align="right">0</td>
+<td align="right">1.115990e+00</td>
+</tr>
+</tbody>
+</table>
+<p><br></br></p>
+</div>
+<div id="summarizing-the-findings" class="section level3">
+<h3>Summarizing the findings</h3>
+<p>Based on the coefficient estimates of the piecewise model, the model is actually revealing the truth behind the price - rating change trend. Among the <strong>Value Wines</strong>, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to <strong>Premium Wines</strong>, the rating change is less sensitive as the wine of this price segment is, to some extent, of satisfactory rating in the first place. In <strong>Luxury Wines</strong>, however, the estimated slope value is close to 0, and it’s true that among the luxury segment the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.</p>
+<div id="key-takeaway-message" class="section level4">
+<h4>Key takeaway message</h4>
+<ul>
+<li><p>Among the value wine segment, paying more is very likely to enjoy a better bottle of wine</p></li>
+<li><p>Among the premium wine segment, you’ll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.</p></li>
+<li><p>Among the luxury wine segment, don’t rely too much on the price tag to expect for a better bottle of wine. Better choice would be study its reviews for more informative decision.</p></li>
+</ul>
+<p><br></br></p>
+</div>
+</div>
+</div>
+<div id="ii.-multivariate-models-for-rating" class="section level2">
+<h2>II. Multivariate Models for Rating</h2>
+<p><br></br></p>
+<p>The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Price Segment and key taste notes are used as predictor variables in this section.</p>
+<p><strong>Why tasting notes?</strong> These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great <a href="https://winefolly.com/tips/wine-descriptions-chart-infographic/">article</a> and the summary graph.</p>
+<div id="red-wine" class="section level3">
+<h3>Red Wine</h3>
+<p>For red wine, predictor variables are:</p>
+<ul>
+<li><p><strong>price_seg</strong>: Price segment, as described in the previous part of analyses.</p></li>
+<li><p><strong>old_world</strong> and <strong>new_world</strong>: two dummy variables coded based on the country listed on Wine Folly. If neither is true then it refers to the reference category - other.</p></li>
+</ul>
+<p>The following binary variables are identified by the key description scale from <a href="https://www.vivino.com">Vivino</a> - also highly recommend to install the Mobile App to know more about the wine before purchasing.</p>
+<ul>
+<li><p><strong>Bold</strong>: TRUE if contains description of boldness.</p></li>
+<li><p><strong>Tannin</strong> TRUE if contains description of tannic-related words.</p></li>
+<li><p><strong>Dry</strong> TRUE if contains description related dryness.</p></li>
+<li><p><strong>Acidity</strong> TRUE if contains description related to acidic taste.</p></li>
+<li><p><strong>full_body</strong> TRUE if contains description related to full body.</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">92.02883</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">price_segPremium</td>
+<td align="right">-2.56897</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">price_segValue</td>
+<td align="right">-5.39814</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">boldTRUE</td>
+<td align="right">0.93039</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">tanninTRUE</td>
+<td align="right">0.41225</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">dryTRUE</td>
+<td align="right">-0.58747</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">acidityTRUE</td>
+<td align="right">0.25555</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">full_bodyTRUE</td>
+<td align="right">0.55476</td>
+<td align="right">0.00006</td>
+</tr>
+<tr class="odd">
+<td align="left">old_worldTRUE</td>
+<td align="right">0.38396</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">new_worldTRUE</td>
+<td align="right">0.13767</td>
+<td align="right">0.00165</td>
+</tr>
+</tbody>
+</table>
+<div id="summarizing-the-findings-for-red-wines" class="section level4">
+<h4>Summarizing the findings for red wines:</h4>
+<ul>
+<li><p>The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment 5.40 points lower than the luxury on average.</p></li>
+<li><p>Bold, tannin, acidity and full body are the key words for higher rating as compared to without these key words. While dry is the key words that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters are leaning toward dry as a sign of better quality.</p></li>
+<li><p>The old world wines are, on average 0.38 pts higher than the unidentified category, while the new world wines are 0.14 pts higher than the unidentified category.</p></li>
+</ul>
+</div>
+</div>
+<div id="white-wine" class="section level3">
+<h3>White Wine</h3>
+<p>For white wine, predictor variables are:</p>
+<ul>
+<li><p><strong>price_seg</strong>: Price segment, as described in the previous part of analyses.</p></li>
+<li><p><strong>old_world</strong> and <strong>new_world</strong>: two dummy variables coded based on the country list by Wine Folly. If neither is true then it refers to the reference category - other.</p></li>
+<li><p><strong>Bold</strong>: TRUE if contains description of boldness.</p></li>
+<li><p><strong>Sweet</strong> TRUE if contains description related sweetness.</p></li>
+<li><p><strong>Acidity</strong> TRUE if contains description related to acidic taste.</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">93.81040</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">price_segPremium</td>
+<td align="right">-3.07416</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">price_segValue</td>
+<td align="right">-6.27041</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">boldTRUE</td>
+<td align="right">0.64070</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">sweetTRUE</td>
+<td align="right">-0.46648</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">acidityTRUE</td>
+<td align="right">0.20605</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">old_worldTRUE</td>
+<td align="right">-0.18716</td>
+<td align="right">0.00014</td>
+</tr>
+<tr class="even">
+<td align="left">new_worldTRUE</td>
+<td align="right">-0.42866</td>
+<td align="right">0.00000</td>
+</tr>
+</tbody>
+</table>
+<div id="summarizing-the-findings-for-white-wines" class="section level4">
+<h4>Summarizing the findings for white wines:</h4>
+<ul>
+<li><p>The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.</p></li>
+<li><p>Bold and acidity are the key words for higher rating as compared to without these key words. While sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.</p></li>
+<li><p>The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn’t expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.</p></li>
+</ul>
+<p><br></p>
+</div>
+</div>
+</div>
+</div>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<div id="world-map---main-findings" class="section level2">
+<h2>World Map - main findings</h2>
+</div>
+<div id="word-cloud---main-findings" class="section level2">
+<h2>Word cloud - main findings</h2>
+</div>
+<div id="limitations-of-regression-analyses" class="section level2">
+<h2>Limitations of Regression Analyses</h2>
+<p>There are several large limitations to this analysis:</p>
+<ul>
+<li><p><strong>Year</strong>: Although there is a general perception that the certain older wines are better, but that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to discribe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is sucpectable to bias when assessing the association.</p></li>
+<li><p><strong>Word Descriptions</strong>: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.</p></li>
+<li><p><strong>Old vs New World</strong>: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).</p></li>
+<li><p><strong>Price</strong>: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.</p></li>
+<li><p><strong>Missing Data</strong>: There were 4990 in the red wine dataset and 2563 in the white wine dataset.</p></li>
+</ul>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
 </div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -1132,6 +1535,32 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

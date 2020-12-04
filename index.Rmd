@@ -15,13 +15,11 @@ output:
 
 (Wordcloud)
 
-(screencast)
-
 
 
 ## Introduction
 
-With wine consumption in the U.S. at an all-time high, there are a huge amount of varieties of wine on the market. Consumers are more eager to learn about how to pick a good wine. There are many review systems online such as Vinno, Wine Enthusiasts. It is important for the consumers to learn what is behind those ratings. This data offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region to see if there are significant differences among these factors.The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices. 
+Wine is one of the most commonly seen alcoholic drinks. With wine consumption in the U.S. at an all-time high, there are a huge amount of varieties of wine on the market. Consumers are more eager to learn about how to pick a good wine. There are many review systems online such as Vinno, Wine Enthusiasts. It is important for the consumers to learn what is behind those ratings. This data offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region to see if there are significant differences among these factors.The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices. 
 
 
 ## Fun facts
