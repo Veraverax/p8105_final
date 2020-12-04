@@ -7,7 +7,7 @@ output:
     toc_float: true
 ---
 
-```{r}
+```{r message = FALSE}
 library(tidyverse)
 library(plotly)
 library(tidytext)
@@ -20,7 +20,7 @@ library(webshot)
 
 Read in tidy wine data and generate subsets for new world, old world, higher-rating (>=90), and lower-rating (<90) wines.
 
-```{r extract_year_function}
+```{r subset, message = FALSE, warning = FALSE}
 red_df =  read_csv("./wine_data/tidy/wine_red.csv")
 white_df = read_csv("./wine_data/tidy/wine_white.csv")
 rose_df = read_csv("./wine_data/tidy/wine_rose.csv")
@@ -47,7 +47,7 @@ low_sparkling = sparkling_df %>% filter(points < 90)
 
 * find out top 10 wine notes from description - to each type (red, white, rose, and sparkling)
 
-```{r}
+```{r top10, message = FALSE}
 wine_top10_word <- function(wine_subset){
   # reshape the .txt data frame into one column
   wine_word = 
@@ -63,7 +63,7 @@ wine_top10_word <- function(wine_subset){
     anti_join(wine_word, stop_words)
   
   # remove more uninformative words in our study
-  other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "structure", "blend", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "aromas", "black", "red", "wine", "rose", "rosé", "sparkling"))
+  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
   wine_word = 
     wine_word %>% 
     anti_join(other_meaningless, by = "word")
@@ -90,7 +90,7 @@ wine_top10_word <- function(wine_subset){
 
 * Create word cloud for each type (red, white, rose, and sparkling)
 
-```{r}
+```{r wordcloud, message = FALSE}
 wine_word_cloud <- function(wine_subset, color1, color2) {
   # reshape the .txt data frame into one column
   wine_word = 
@@ -106,7 +106,7 @@ wine_word_cloud <- function(wine_subset, color1, color2) {
     anti_join(wine_word, stop_words)
   
   # remove more uninformative words in our study
-  other_meaningless <- data.frame(word = c("wine","drink","flavors","notes","finish", "structure", "blend", "age",  "palate", "cabernet", "pinot", "noir", "chardonnay", "aromas", "black", "red", "wine", "rose", "rosé", "sparkling"))
+  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
   wine_word = 
     wine_word %>% 
     anti_join(other_meaningless, by = "word")
@@ -131,7 +131,7 @@ wine_word_cloud(white_df, "orange", "white")
 #wine_word_cloud(low_red, "purple", "white")
 ```
 
-```{r include = FALSE}
+```{r export, include = FALSE}
 library(webshot)
 library("htmlwidgets")
 red_word <- wine_word_cloud(red_df, "red", "white")
