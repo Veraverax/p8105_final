@@ -160,7 +160,7 @@ wine_df %>%
 <br><br>
 
 
-# Trend of wine prices over time
+# Trend of wine prices over wine vintage
 We can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparling wine and 2004 is a good year for white wine.
 
 ```{r, message=FALSE, warning=FALSE}
@@ -182,7 +182,7 @@ wine_df %>%
 
 <br><br>
 
-# Trend of wine ratings over time
+# Trend of wine ratings over wine vintage
 We can see a trend that sparkling wines that are older have higher ratings. For other types of wine, the ratings are stable. Therefore, the age of the wine does not affect the rating much for red, rose and white wines. Among the wine that were produced before 2010, Sparkling wine have the highest ratings among all types but the ratings decreases with the year closer to present.
 
 ```{r, message=FALSE, warning=FALSE}

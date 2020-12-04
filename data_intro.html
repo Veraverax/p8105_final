@@ -11,7 +11,7 @@
 
 
 
-<title>About Us</title>
+<title>About the data</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -250,6 +253,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -257,6 +323,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -326,33 +402,44 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">About Us</h1>
+<h1 class="title toc-ignore">About the data</h1>
 
 </div>
 
 
 <p><br></br></p>
-<div id="tianheng-jady-hu" class="section level1">
-<h1><a href=""><img class="cat_circle" src="image/wine_words.jpg"></a><span style="padding-left:25px">Tianheng (Jady) Hu</h1>
-<p>I’m Jady, a second year MPH student in Biostatistics at Columbia University Mailman School of Public Health. My professional interests include data science, clinical trial methodology and health policy management. My favorite wine is called Josh and wine type is rose.</p>
+<div id="dataset" class="section level2">
+<h2>Dataset</h2>
+<p>The data for this project is downloaded from <a href="https://www.kaggle.com/zynicide/wine-reviews">Kaggle</a>. It was scraped on November 22nd, 2017 from the <a href="https://www.winemag.com/?s=&amp;drink_type=wine">Wine Enthusiast Rating</a> database. Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine.</p>
+<p>This dataset contains 130k wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste.</p>
+<p>At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on <a href="https://winefolly.com/deep-dive/different-types-of-wine/">Wine Folly</a>.</p>
 <p><br></br></p>
-<p>#<a href=""><img class="circle" src="image/vera.jpg"></a><span style="padding-left:25px"> Veru Xu</p>
-<p>I’m Vera, also a 2nd year MPH student in Biostatistics. My professional interest is in healthcare and management consulting. In my spare time, I actually drink wine very frequently. My favorite bottle of wine is Hess Select Cabernet Sauvignon 2016 - it’s not pricy, of great structure and a good choice to pair with red meat.</p>
-<p><br></br></p>
-</div>
-<div id="helen-zhang" class="section level1">
-<h1><a href=""><img class="cat_circle" src="image/helen.jpg"></a><span style="padding-left:25px">Helen Zhang</h1>
-<p>My name is Helen and I’m in the Epidemiology Department with a certificate in CEOR. Prior to graduate school, I received my BS in Microbiology from University of Wisconsin-Madison. My professional interests are real-world data and outcomes research.</p>
+<h6 style="text-align: center;">
+<img src="image/wine_types.jpg" style="width:75%">
+</h6>
 <p><br></br></p>
 </div>
-<div id="yuanxin-yolanda-zhang" class="section level1">
-<h1><a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Yuanxin (Yolanda) Zhang</h1>
-<p>ABOUT</p>
+<div id="capturing-wine-vintage" class="section level2">
+<h2>Capturing Wine Vintage</h2>
+<p>Year, also known as wine vintage, is the year when the grapes were harvested. This piece information is crucial for a bottle of wine, as the year of harvest greatly affects the taste and quality of a bottle of wine. Since the information is not ready to use in the raw dataset, we used a function to extract year information from the wine name. We later examined the change of price and rating over time.</p>
+<h6 style="text-align: center;">
+<img src="image/wine_year.jpg" style="width:50%">
+</h6>
 <p><br></br></p>
+</div>
+<div id="old-vs-new-world" class="section level2">
+<h2>Old vs New World</h2>
+<p>Wines are also categorized by new and old world, based on region of origin (Wine History 101 Time). The general distribution is shown below.</p>
+<h6 style="text-align: center;">
+<img src="image/wine_world_distribution.jpg" style="width:50%">
+</h6>
+<p>We also categorized our wine dataset using country list from <a href="https://winefolly.com/deep-dive/new-world-vs-old-world-wine/">Wine Folly</a>. The “world of origin” categorical variable is a 3-level variable, and coded into two dummy variables (old world, new world). We will examine the characteristic difference and rating difference between old and new world wines in later analyses.</p>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -385,6 +472,32 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

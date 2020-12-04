@@ -7,6 +7,8 @@ navbar:
       href: about.html
     - text: "Exploratory Analysis"
       menu:
+      - text: "About the Data"
+        href: data_intro.html
       - text: "Exploratory Graphs"
         href: plotly.html
       - text: "Word Cloud"

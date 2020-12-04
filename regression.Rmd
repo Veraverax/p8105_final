@@ -2,22 +2,25 @@
 title: "Regression Models"
 output: 
   html_document:
+    code_folding: hide 
     toc: true
     toc_float: true
 ---
 
-```{r, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(modelr)
 library(mgcv)
 library(plotly)
 ```
 
-In this page, we'll take a deeper examine into the price and rating of red wines and white wines. The goal is to fit proper linear models that better describe:
+<br></br>
 
-* Price and Rating: what's the best model for their relationship?
+**Let's take a deeper look into the price and rating of red wines and white wines. The goal is to fit proper linear models that better describe:**
 
-* Predictors of the rating of a bottle of wine
+* **Price and Rating: what's the best model for their relationship?**
+
+* **Predictors of the rating of a bottle of wine - for red and white wines**
 
 ```{r, message = FALSE, warning = FALSE}
 red_df =  
@@ -65,24 +68,32 @@ white_df_reg =
 ```
 
 
-## Relationship between price and rating - the more expensive the better?
+## I. Understanding Price and Rating 
+
+### The more expensive, the better?
+
+<br></br>
 
 There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
 
 The price of wine ranges from value purchase to luxury. The picture summary below shows a general price segmentation of wine. For more information, we highly recommend this [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides more comprehensive discussion about price and quality. 
 
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_types.jpg" style="width:50%"></h6>
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_price.jpg" style="width:50%"></h6>
 
 In the analysis of our dataset, we segmented the wine price at two cutoffs - \$30 and \$100. The price distribution of red and white wine prices is shown below.
 
+##### Price distribution of red wines
 
 ```{r, message = FALSE, warning = FALSE}
 red_df %>%
   group_by(price, price_seg) %>%
   summarize(n = n()) %>%
   plot_ly(x = ~price, y = ~n, color = ~price_seg, type = "bar")
+```
 
+##### Price distribution of white wines
 
+```{r, message = FALSE, warning = FALSE}
 white_df %>% 
   group_by(price, price_seg) %>%
   summarize(n = n()) %>%
@@ -90,10 +101,13 @@ white_df %>%
 
 ```
 
-Bearing this general picture of the price distribution in mind, let's visit the relationship between wine price and rating. We have dicided to focus on wine that was produced after year 2000, as these wines are more likely to be the ones people have access to in wine shops.
+Bearing this general picture of the price distribution in mind, let's visit the relationship between wine price and rating. We have decided to focus on wine that was produced after year 2000, as these wines are more likely to be the ones people have access to in wine shops.
 
-```{r}
-red_df %>% 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(patchwork)
+
+red_plot = 
+  red_df %>% 
   filter(year>=2000) %>%
   ggplot(aes(x= price, y = points, color = price_seg)) +
   geom_point(alpha = 0.2, size = 0.3) +
@@ -104,6 +118,7 @@ red_df %>%
         panel.background = element_blank(), 
         axis.line = element_line(colour = "black"))
 
+white_plot = 
 white_df %>%
   filter(year>=2000) %>%
   ggplot(aes(x= price, y = points, color = price_seg)) +
@@ -114,14 +129,26 @@ white_df %>%
         panel.grid.minor = element_blank(),
         panel.background = element_blank(), 
         axis.line = element_line(colour = "black"))
+
+red_plot +white_plot
 ```
 
 
-To better capture the relationship between wine price and points, we aim to fit different linear models.
 
-### Fit models for red wine points using cross-validation
+### Fit models for rating - candidates
 
-```{r}
+To better capture the relationship between wine price and points, we aim to fit different models and pick the best one using cross validation. The three candidate models are:
+
+* Simple linear model
+
+* Piecewise linear model using the \$30 and \$100 cutoff
+
+* Smooth model
+
+
+### Analyses for Red Wines
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 linear_mod_red = lm(points ~ price, data = red_df_reg)
 
 pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)
@@ -135,11 +162,13 @@ red_df_reg %>%
   geom_point(alpha = 0.03) +
   geom_line(aes(y = pred), color = "dark red") +
   xlim(0, 500) +
-  ylim(80,110)+
+  ylim(80,103)+
   facet_grid(~model)
 ```
 
-```{r}
+**Cross Validation: fit models and obtain RMSEs to select the best model**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 red_cv_df =
   crossv_mc(red_df_reg, 100) %>% 
   mutate(
@@ -188,7 +217,7 @@ pwl_mod_red %>%
 
 **Smooth Model - Red Wine**
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 smooth_mod_red %>% 
   broom::glance() %>% 
   dplyr::select(AIC) %>% 
@@ -197,7 +226,7 @@ smooth_mod_red %>%
 
 Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model. 
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 pw_red_output = 
   pwl_mod_red %>%
   broom::tidy() %>%
@@ -207,12 +236,11 @@ pw_red_output %>%
   knitr::kable()
 ```
 
-Based on the piecewise model, to describe the relationship between price and red wine, the slope of different segments reveals the relationship between 
-**HOW TO INTERPRET?**
+<br></br>
 
-### Fit models for white wine points
+### Analyses of White Wines
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 linear_mod_white = lm(points ~ price, data = white_df_reg)
 
 pwl_mod_white = lm(points ~ price + price_cp1 + price_cp2,  data = white_df_reg)
@@ -230,7 +258,9 @@ white_df_reg %>%
   ylim(80,100)
 ```
 
-```{r}
+**Cross Validation: fit models and obtain RMSEs to select the best model**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 white_cv_df =
   crossv_mc(white_df_reg, 100) %>% 
   mutate(
@@ -279,7 +309,7 @@ pwl_mod_white %>%
 
 **Smooth Model - White Wine**
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 smooth_mod_white %>% 
   broom::glance() %>% 
   dplyr::select(AIC) %>% 
@@ -288,7 +318,7 @@ smooth_mod_white %>%
 
 Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model. 
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 pw_white_output = 
   pwl_mod_red %>%
   broom::tidy() %>%
@@ -299,18 +329,33 @@ pw_white_output %>%
   knitr::kable(digits = 3)
 ```
 
-Based on the piecewise model, to describe the relationship between price and red wine,
-**HOW TO INTERPRET?**
+<br></br>
 
-## Fit multivariate models for points
+### Summarizing the findings
 
-The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Year, Price Segment and key tasting terms are used as predictor variables in this section. Why tasting terms - these words are the only way we can quantify what a wine tastes like before we buy it. The who universe of wine taste description is fascinating and easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
+Based on the coefficient estimates of the piecewise model, the model is actually revealing the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the rating change is less sensitive as the wine of this price segment is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury segment the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
 
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_words.jpg" style="width:50%"></h6>
+#### Key takeaway message 
 
-In addition to tasting description, it is noteworthy that the wine are also categorized by new and old world wines, based on region of origin (Wine History 101 Time). The general distribution is shown below. We also categorized our wine dataset using country list from [Wine Folly](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/) and hope to identify whether the rating of "world" of origin differs.
+* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine
 
-<h6 style="text-align: center;" markdown="1"><img src="image/wine_world_distribution.jpg" style="width:50%"></h6>
+* Among the premium wine segment, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.
+
+* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be study its reviews for more informative decision.
+
+<br></br>
+
+
+## II. Multivariate Models for Rating
+
+<br></br>
+
+The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Price Segment and key taste notes are used as predictor variables in this section. 
+
+**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
+
+<h6 style="text-align: center;" markdown="1"><img src="image/wine_words.jpg" style="width:70%"></h6>
+
 
 ### Red Wine
 
@@ -318,7 +363,7 @@ For red wine, predictor variables are:
  
 + **price_seg**: Price segment, as described in the previous part of analyses.
  
-+ **old_world** and **new_world**: two dummy variables coded based on the coutry list by Wine Folly. If neither is true then it refers to the reference category - other.
++ **old_world** and **new_world**: two dummy variables coded based on the country listed on Wine Folly. If neither is true then it refers to the reference category - other.
  
 The following binary variables are identified by the key description scale from [Vivino](https://www.vivino.com) - also highly recommend to install the Mobile App to know more about the wine before purchasing.
 
@@ -333,7 +378,7 @@ The following binary variables are identified by the key description scale from 
 + **full_body** TRUE if contains description related to full body.
 
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
 
 ## how to set ref group for price_seg?
@@ -344,8 +389,16 @@ fit_red %>%
   knitr::kable(digits = 5)
 ```
 
-*Interpretation*
+#### Summarizing the findings for red wines:
 
+* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment 5.40 points lower than the luxury on average.
+
+* Bold, tannin, acidity and full body are the key words for higher rating as compared to without these key words. While dry is the key words that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters are leaning toward dry as a sign of better quality.
+
+* The old world wines are, on average 0.38 pts higher than the unidentified category, while the new world wines are 0.14 pts higher than the unidentified category.
+
+
+<br></br>
 
 ### White Wine
 
@@ -353,7 +406,7 @@ For white wine, predictor variables are:
  
 + **price_seg**: Price segment, as described in the previous part of analyses.
  
-+ **old_world** and **new_world**: two dummy variables coded based on the coutry list by Wine Folly. If neither is true then it refers to the reference category - other.
++ **old_world** and **new_world**: two dummy variables coded based on the country list by Wine Folly. If neither is true then it refers to the reference category - other.
 
 + **Bold**: TRUE if contains description of boldness.
 
@@ -362,7 +415,7 @@ For white wine, predictor variables are:
 + **Acidity** TRUE if contains description related to acidic taste.
 
 
-```{r}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_white = lm(points ~ price_seg + bold + sweet + acidity + old_world + new_world, data = white_df_reg)
 
 fit_white %>% 
@@ -371,17 +424,25 @@ fit_white %>%
   knitr::kable(digits = 5)
 ```
 
-*Interpretation*
+#### Summarizing the findings for white wines:
+
+* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.
+
+* Bold and acidity are the key words for higher rating as compared to without these key words. While sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
+
+* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
 
 ### Limitations
+
+
 There are several large limitations to this analysis:   
 
-* **Year**: (change wording)
-
-We omitted year as a predictor in the final multivariate model. This is because the linear relationship with year as a continuous variable is not appropriate. Although it tend to be that the certain older wines are better, in a preliminary analysis the slope of year is actually positive and lacks theoretical support.   
+* **Year**: Although there is a general perception that the certain older wines are better, but that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to discribe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is sucpectable to bias when assessing the association. 
 
 * **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.
+
+* **Old vs New World**: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
 
 * **Price**: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.
 
