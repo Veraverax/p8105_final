@@ -1,16 +1,25 @@
 ---
-title: "Report"
+title: "Project Report"
 output: 
   html_document:
     code_folding: hide
+    toc: true
+    toc_float: true
 ---
+<h6 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
-```{r}
+<br>
+
+This is the report of our wine data project.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(leaflet)
 library(ggplot2)
 library(plotly)
 library(readxl)
+library(modelr)
+library(mgcv)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -26,35 +35,30 @@ scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-```{r}
-wine_df = 
-  read_csv(
-  "./wine_data/tidy/wine_all.csv")
+<br>
 
-### remove region 2, taster twitter and missing values in region 1.
+# Motivation
 
-#wine_type <- read_csv("./wine_data/winemag-data-130k-v2.csv") %>% 
-#            group_by(variety) %>% 
-#            count() %>% 
-#            arrange(desc(n)) %>% 
-#            as.tibble()
-
-```
-
-Your report should include the following topics. Depending on your project type the amount of discussion you devote to each of them will vary:
-
-# Motivation:
+Wine is one of the most commonly seen alcoholic drinks, and there is a great amount of knowledge about wine history, wine categories and what characterizes a great bottle of wine.
 
 This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.
 
-# Related work: 
+<br>
 
-Anything that inspired you, such as a paper, a web site, or something we discussed in class.
+# Related work
 
+Interesting projects that inspired us can be found below.
 
-# Initial questions: 
+* A [project](https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html) that aims to analyze the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlationally related to each other
+
+* A [project](http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html) that examined Red Wine Quality using a red wine dataset from Kaggle.
+
+<br>
+
+# Initial questions
 
 We are trying to answer some questions from exploratory analysis. 
+
 To understand the information that customers could get from the ratings, price among different wine type and region, we want to answer the following questions:
 
 1. What is the distribution of prices among four types of wine? Is at least one wine type's price different from the others?
@@ -77,68 +81,145 @@ To understand the information that customers could get from the ratings, price a
 
 10. Is there any differences in ratings between new world and old world wine?
 
+11. What is the relationship between wine rating and wine prices?
 
+12. What are the predictor variables that can be used to assess the quality of wine?
 
-1. Wine distribution worldwide: 
+13. What is the worldwide distribution of wine quality and price using interactive demonstration?
 
-- correspond to the world map
-- correspond to the word cloud
+13. What is the distribution of wine quality and price within US using interactive demonstration?
 
+<br>
 
-3. Linear model - predict
-Based on the information we have about a bottle of wine, how can we predict the price and points?
+# Data
 
-What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?
+## Dataset
 
-4. Didn't address yet - interactive plot (shiny)
-- filter by price
-- filter by country
-- filter by wine type
+The data for this project is downloaded [here](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k wine reviews with variety, location, winery, price, description and reviewer information. 
 
-# Data: 
-Source, scraping method, cleaning, etc.
+## Importing and Cleaning
 
-The data for this project is downloaded from [Kaggle](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). Wine Enthusiast is a magazine provide information on wine quality, wine variety, tours and events—in short - everything about wine. 
+#### Year extracting function
 
-This dataset contains `r nrow(wine_df)` wine reviews with variety, location, winery, price, description and reviewer information. There is much information on description and title on each wine. We had extracted from the text of useful information such as the year the wine was made in and the characteristics of the taste. 
+This function is used to extract the wine vintage information from the wine name.
 
-### *Variables of interest*
-
-```{r}
-## Vera in charge of editing this sector
+```{r extract_year_function, echo = FALSE, message = FALSE, warning = FALSE}
+year_extract <- function(string) {
+  t <- regmatches(string, regexec("[1][9][4-9][0-9]|[2][0-9][0-9][0-9]", string))
+  sapply(t, function(x) {
+    if (length(x) > 0) {
+      return(as.numeric(x))
+    } else {
+      return(NA)    
+    }
+  })
+}
 ```
 
-##### **Outcomes**
+#### Read in the wine data
 
-  * `price` . Count of evictions (or eviction filings) per year at the census tract level.
-  * `rating`. Calculated using number of evictions or eviction filings divided by the number of `renter_occupied_households` and multiplied by 100, to be interpreted as a percentage. 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+wine_df = 
+  read_csv(
+  "./wine_data/winemag-data-130k-v2.csv") %>% 
+  select(-region_2, -taster_twitter_handle, -X1) %>% 
+  mutate(year = year_extract(title))
+```
 
-##### **Candidate Predictors**
+#### New vs Old World
 
-  * `years_since_2010`. Since our data range from 2010 to 2016, and we did not want to assume a constant effect of time, we included year as a set of indicator variables in all models except our empty model (see below).
-  * `hisp`. Percent of population (at census tract level, for all race/ethnicity variables) that self-report Hispanic ethnicity.
-  * `white`. Percent self-reporting White race.
-  * `black`. Percent self-reporting Black race.
-  * `asian`. Percent self-reporting Asian race.
-  * `aian`. Percent self-reporting American Indian / Alaska Native race.
-  * `nhpi`. Percent self-reporting Native Hawaiian / Pacific Islander race.
-  * `other`. Percent self-reporting other race.
-  * `rent_burden`. Average percent of income spent on rent.
-  * `density`. Population density.
-  * `pct_eng`. Percent of population who speak English less than 'Very Well'. This is interpreted as a proxy for percent English as a second language (ESL) speakers. 
-  * `median_household_income`. Median census tract household income in USD.
-  * `poverty_rate`. Percent living below Federal Poverty Line (FPL).
-  * `median_gross_rent`. Median census tract gross rent in USD.
-  * `pct_renter_occupied`. Percent of census tract occupied by renters.
-  * `median_property_value`. Median census tract property value in USD.
-  * `family_size`. Average family size in census tract.
-  * `pct_fam_households`. Percentage of census tract households that contain families.
+Code new dummy variables for old/new world wine. The new-world and old-world wines are categorized mainly by the country of origin. The detailed introduction can be found [here](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.)
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+old_world_country = c("France", "Italy", "Portugal", "Spain", "Germany", "Hungary", "Croatia", "England")
 
+new_world_country = c("US", "Canada", "Argentina", "Australia", "New Zealand", "South Africa", "China")
 
+wine_df = 
+  wine_df %>% 
+  mutate(new_world = country %in% new_world_country,
+         old_world = country %in% old_world_country)
+```
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wine_df = 
+  read_csv(
+  "./wine_data/tidy/wine_all.csv")
+```
 
+#### Red, white, rose and sparkling
 
-At first, the dataset contains more than 50 wine varieties and it is hard to get useful information. Therefore, we had categorized all varieties to four types of wine: red, white, rose and sparkling according to the following infographics on [Wine Folly](https://winefolly.com/deep-dive/different-types-of-wine/).
+To separate wine types by four major types: white, red, sparkling baesd on the categorzing method from [Wine Folly](https://media.winefolly.com/Different-Types-of-Wine-v2.jpg): we firstly created a excel sheet that mathes all grape types with wine >200 to the four category, and then subset the data using the following code chunk:
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+wine_type = 
+    read_xlsx(
+  "./wine_data/wine type.xlsx")  
+
+wine_df = 
+  wine_df %>% 
+  mutate(type = ifelse(variety %in% wine_type$red, "red", 
+                       ifelse(variety %in% wine_type$white, "white", 
+                              ifelse(variety %in% wine_type$sparkling, "sparkling", 
+                                     ifelse(variety %in% wine_type$rose, "rose", NA )))))
+
+red_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "red")
+  
+white_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "white")
+
+sparkling_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "sparkling")
+
+rose_df = 
+  wine_df %>% 
+    filter(!is.na(type),
+           type == "rose")
+```
+
+#### Save tidy data
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+write.csv(wine_df, file = "./wine_data/tidy/wine_all.csv")
+write.csv(red_df, file = "./wine_data/tidy/wine_red.csv")
+write.csv(white_df, file = "./wine_data/tidy/wine_white.csv")
+write.csv(sparkling_df, file = "./wine_data/tidy/wine_sparkling.csv")
+write.csv(rose_df, file = "./wine_data/tidy/wine_rose.csv")
+```
+
+#### Variables
+
+* **title**: wine name
+
+* **price**: price in USD 
+
+* **points**: rating score on a 100 scale     
+
+* **taster_name**: the taster who rated the wine
+
+* **country**: country of origin
+
+* **province**：province of origin
+
+* **winery**: winery name
+
+* **description**: a paragraph to describe the wine tasting notes
+
+* **variety**: grape type
+
+* **type**: red, white, rose or sparkling    
+    
+* **year**: wine vintage
+
+* **new_world** and **old_world**: world categorization of origin
+
+<br>
 
 # Exploratory analysis: 
 
@@ -568,48 +649,410 @@ world_map_labels = countries_merged_wine %>%
 
 <br><img src="./image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br>
 
-Static Map???
-```{r static_map, eval=F, echo=T}
-# world_static = map_data("world") %>%
-#   left_join(wine_by_country, by = c("region" = "country"))
-# 
-# ggplot(data = world_static, 
-#                mapping = aes(x = long, y = lat, group = group)) +
-#   geom_polygon(aes(fill = avg_rating)) +
-#   scale_fill_continuous(low = "rosybrown1", high = "darkred", 
-#                         na.value = "snow2") +
-#   coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
-#   theme(
-#     axis.title.x = element_blank(),
-#     axis.text.x  = element_blank(),
-#     axis.ticks.x = element_blank(),
-#     axis.title.y = element_blank(),
-#     axis.text.y  = element_blank(),
-#     axis.ticks.y = element_blank(),
-#     panel.background = element_rect(fill = "white"))
+# Additional analysis
+
+```{r, message = FALSE, warning = FALSE}
+red_df =  
+  read_csv("./wine_data/tidy/wine_red.csv") %>%
+  select(-X1) %>%
+  drop_na(price) %>%
+  mutate(price_seg = case_when(price < 30 ~ "Value", 
+                               30<= price & price <100 ~ "Premium",
+                               price >=100 ~ "Luxury"),
+         price_seg = as.factor(price_seg))
+
+white_df = 
+  read_csv("./wine_data/tidy/wine_white.csv") %>%
+  select(-X1) %>%
+  drop_na(price) %>%
+  mutate(price_seg = case_when(price < 30 ~ "Value", 
+                               30<= price & price <100 ~ "Premium",
+                               price >=100 ~ "Luxury"),
+         price_seg = as.factor(price_seg))
 ```
 
-### summaries, and 
 
-### exploratory statistical analyses
-anova
-2-sample ttest. 
+```{r, message = FALSE, warning = FALSE}
+red_df_reg =
+  red_df %>%
+  filter(year>=2000) %>%
+  mutate(
+         bold = str_detect(description, "bold"),
+         tannin = str_detect(description, "tanni"),
+         dry = str_detect(description, "dry"),
+         acidity = str_detect(description, "acidi"),
+         full_body = str_detect(tolower(description), paste(c("full body", "full in body"),collapse = '|')),
+         price_cp1 = (price > 100) * (price - 100),
+         price_cp2 = (price < 30) * (price - 30)
+    )
 
-Justify the steps you took, and show any major changes to your ideas.
-
-#Additional analysis: 
-If you undertake formal statistical analyses, describe these in detail
-
-### linear model - multivariate
-
-### linear model - name TBD
-
-### linear model - cross validation
-
-#Discussion: 
-What were your findings? Are they what you expect? What insights into the data can you make?
+white_df_reg = 
+  white_df %>%
+  filter(year>=2000) %>%
+  mutate(bold = str_detect(description, "bold"),
+         sweet = str_detect(description, "sweet"),
+         acidity = str_detect(description, "acidi"),
+         price_cp1 = (price > 100) * (price - 100),
+         price_cp2 = (price < 30) * (price - 30))
+```
 
 
+## I. Understanding Price and Rating 
+
+### The more expensive, the better?
+
+<br></br>
+
+There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
+
+The price of wine ranges from value purchase to luxury. This [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides more comprehensive discussion about price and quality. 
+
+In the analysis of our dataset, we segmented the wine price at two cutoffs - \$30 and \$100. The distribution of price-rating for white and red wines is show below:
 
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+red_df %>% 
+  filter(year>=2000) %>%
+  ggplot(aes(x= price, y = points, color = price_seg)) +
+  geom_point(alpha = 0.2, size = 0.3) +
+  xlim(0, 300)+
+  ggtitle("Rating - Price Distribution of Red Wine") +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black")) +
+  scale_color_brewer(palette = "Reds")
 
+white_df %>%
+  filter(year>=2000) %>%
+  ggplot(aes(x= price, y = points, color = price_seg)) +
+  geom_point(alpha = 0.2, size = 0.3) +
+  xlim(0, 300)+
+  ggtitle("Rating - Price Distribution of White Wine")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black")) +
+  scale_color_brewer(palette = "Oranges")
+
+```
+
+
+### Fit models for rating - candidates
+
+To better capture the relationship between wine price and points, we aim to fit different models and pick the best one using cross validation. The three candidate models are:
+
+* Simple linear model
+
+* Piecewise linear model using the \$30 and \$100 cutoff
+
+* Smooth model
+
+### Analyses for Red Wines
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+linear_mod_red = lm(points ~ price, data = red_df_reg)
+
+pwl_mod_red = lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)
+
+smooth_mod_red = gam(points ~ s(price), data = red_df_reg)
+
+red_df_reg %>% 
+  gather_predictions(linear_mod_red, pwl_mod_red, smooth_mod_red) %>%
+  mutate(model = fct_inorder(model)) %>%
+  ggplot(aes(x = price, y = points, color = price_seg)) + 
+  geom_point(alpha = 0.03) +
+  geom_line(aes(y = pred), color = "dark red") +
+  xlim(0, 500) +
+  ylim(80,103)+
+  facet_grid(~model) +
+  scale_color_brewer(palette = "Reds")
+```
+
+**Cross Validation: fit models and obtain RMSEs to select the best model**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+red_cv_df =
+  crossv_mc(red_df_reg, 100) %>% 
+  mutate(
+    train = purrr::map(train, as_tibble),
+    test = purrr::map(test, as_tibble))
+
+red_cv_df = 
+  red_cv_df %>% 
+  mutate(
+    linear_mod  = purrr::map(train, ~lm(points ~ price, data = red_df_reg)),
+    pwl_mod     = purrr::map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
+    smooth_mod  = purrr::map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
+  mutate(
+    rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
+    rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
+    rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
+
+red_cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + 
+  geom_violin()
+```
+
+**Simple linear model - Red Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+linear_mod_red %>%
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+**Piecewise Model - Red Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+pwl_mod_red %>% 
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+**Smooth Model - Red Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+smooth_mod_red %>% 
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model. 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+pw_red_output = 
+  pwl_mod_red %>%
+  broom::tidy() %>%
+  dplyr::select(term, estimate, p.value)
+
+pw_red_output %>% 
+  knitr::kable()
+```
+
+<br></br>
+
+### Analyses of White Wines
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+linear_mod_white = lm(points ~ price, data = white_df_reg)
+
+pwl_mod_white = lm(points ~ price + price_cp1 + price_cp2,  data = white_df_reg)
+
+smooth_mod_white = gam(points ~ s(price), data = white_df_reg)
+
+white_df_reg %>% 
+  gather_predictions(linear_mod_white, pwl_mod_white, smooth_mod_white) %>%
+  mutate(model = fct_inorder(model)) %>%
+  ggplot(aes(x = price, y = points)) + 
+  geom_point(alpha = .05) +
+  geom_line(aes(y = pred), color = "yellow") + 
+  facet_grid(~model) +
+  xlim(0, 500) +
+  ylim(80,100) +
+  scale_color_brewer(palette = "Oranges")
+```
+
+**Cross Validation: fit models and obtain RMSEs to select the best model**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+white_cv_df =
+  crossv_mc(white_df_reg, 100) %>% 
+  mutate(
+    train = purrr::map(train, as_tibble),
+    test = purrr::map(test, as_tibble))
+
+white_cv_df = 
+  white_cv_df %>% 
+  mutate(
+    linear_mod  = purrr::map(train, ~lm(points ~ price, data = red_df_reg)),
+    pwl_mod     = purrr::map(train, ~lm(points ~ price + price_cp1 + price_cp2,  data = red_df_reg)),
+    smooth_mod  = purrr::map(train, ~gam(points ~ s(price), data = red_df_reg))) %>% 
+  mutate(
+    rmse_linear = map2_dbl(linear_mod, test, ~rmse(model = .x, data = .y)),
+    rmse_pwl    = map2_dbl(pwl_mod, test, ~rmse(model = .x, data = .y)),
+    rmse_smooth = map2_dbl(smooth_mod, test, ~rmse(model = .x, data = .y)))
+
+white_cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()
+```
+
+**Simple linear model - White Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+linear_mod_white %>%
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+**Piecewise Model - White Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+pwl_mod_white %>% 
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+**Smooth Model - White Wine**
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+smooth_mod_white %>% 
+  broom::glance() %>% 
+  dplyr::select(AIC) %>% 
+  knitr::kable(digits = 5)
+```
+
+Using AIC as a measure for Goodness of Fit, we choose the Piecewise Model. 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+pw_white_output = 
+  pwl_mod_red %>%
+  broom::tidy() %>%
+  dplyr::select(term, estimate, p.value) %>%
+  mutate(exp(estimate)) 
+
+pw_white_output %>% 
+  knitr::kable()
+```
+
+<br></br>
+
+### Summarizing the findings
+
+Based on the coefficient estimates of the piecewise model, the model is actually revealing the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the rating change is less sensitive as the wine of this price segment is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury segment the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
+
+#### Key takeaway message 
+
+* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine
+
+* Among the premium wine segment, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.
+
+* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be study its reviews for more informative decision.
+
+<br></br>
+
+
+## II. Multivariate Models for Rating
+
+<br></br>
+
+The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Price Segment and key taste notes are used as predictor variables in this section. 
+
+**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
+
+### Red Wine
+
+For red wine, predictor variables are:
+ 
++ **price_seg**: Price segment, as described in the previous part of analyses.
+ 
++ **old_world** and **new_world**: two dummy variables coded based on the country listed on Wine Folly. If neither is true then it refers to the reference category - other.
+ 
+The following binary variables are identified by the key description scale from [Vivino](https://www.vivino.com) - also highly recommend to install the Mobile App to know more about the wine before purchasing.
+
++ **Bold**: TRUE if contains description of boldness.
+ 
++ **Tannin** TRUE if contains description of tannic-related words.
+
++ **Dry** TRUE if contains description related dryness.
+
++ **Acidity** TRUE if contains description related to acidic taste.
+
++ **full_body** TRUE if contains description related to full body.
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
+
+## how to set ref group for price_seg?
+
+fit_red %>% 
+  broom::tidy()%>%
+  select(term, estimate, p.value) %>% 
+  knitr::kable(digits = 5)
+```
+
+#### Summarizing the findings for red wines:
+
+* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment 5.40 points lower than the luxury on average.
+
+* Bold, tannin, acidity and full body are the key words for higher rating as compared to without these key words. While dry is the key words that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters are leaning toward dry as a sign of better quality.
+
+* The old world wines are, on average 0.38 pts higher than the unidentified category, while the new world wines are 0.14 pts higher than the unidentified category.
+
+
+### White Wine
+
+For white wine, predictor variables are:
+ 
++ **price_seg**: Price segment, as described in the previous part of analyses.
+ 
++ **old_world** and **new_world**: two dummy variables coded based on the country list by Wine Folly. If neither is true then it refers to the reference category - other.
+
++ **Bold**: TRUE if contains description of boldness.
+
++ **Sweet** TRUE if contains description related sweetness.
+
++ **Acidity** TRUE if contains description related to acidic taste.
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+fit_white = lm(points ~ price_seg + bold + sweet + acidity + old_world + new_world, data = white_df_reg)
+
+fit_white %>% 
+  broom::tidy() %>%
+  select(term, estimate, p.value) %>% 
+  knitr::kable(digits = 5)
+```
+
+#### Summarizing the findings for white wines:
+
+* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.
+
+* Bold and acidity are the key words for higher rating as compared to without these key words. While sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
+
+* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
+
+<br>
+
+# Discussion
+
+## World Map - main findings
+
+## Word cloud - main findings
+
+## Limitations of Regression Analyses
+
+There are several large limitations to this analysis:   
+
+* **Year**: Although there is a general perception that the certain older wines are better, but that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to discribe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is sucpectable to bias when assessing the association. 
+
+* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.
+
+* **Old vs New World**: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
+
+* **Price**: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.
+
+* **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% filter(is.na(price)) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% filter(is.na(price)) %>% nrow()` in the white wine dataset.
+
+
+## Summary
