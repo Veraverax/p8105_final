@@ -16,11 +16,13 @@ library(tidytext)
 library(wordcloud2)
 library(knitr)
 library(webshot)
+library("htmlwidgets")
 ```
 
 Read in tidy wine data and generate subsets for new world, old world, higher-rating (>=90), and lower-rating (<90) wines.
 
 ```{r subset, message = FALSE, warning = FALSE}
+wine_df = read_csv("./wine_data/tidy/wine_all.csv")
 red_df =  read_csv("./wine_data/tidy/wine_red.csv")
 white_df = read_csv("./wine_data/tidy/wine_white.csv")
 rose_df = read_csv("./wine_data/tidy/wine_rose.csv")
@@ -35,6 +37,8 @@ old_rose = rose_df %>% filter(old_world == TRUE)
 new_sparkling = sparkling_df %>% filter(new_world == TRUE)
 old_sparkling = sparkling_df %>% filter(old_world == TRUE)
 
+high_wine = wine_df %>% filter(points >= 90)
+low_wine = wine_df %>% filter(points < 90)
 high_red = red_df %>% filter(points >= 90)
 low_red = red_df %>% filter(points < 90)
 high_white = white_df %>% filter(points >= 90)
@@ -63,7 +67,7 @@ wine_top10_word <- function(wine_subset){
     anti_join(wine_word, stop_words)
   
   # remove more uninformative words in our study
-  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
+  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "offers", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
   wine_word = 
     wine_word %>% 
     anti_join(other_meaningless, by = "word")
@@ -106,7 +110,7 @@ wine_word_cloud <- function(wine_subset, color1, color2) {
     anti_join(wine_word, stop_words)
   
   # remove more uninformative words in our study
-  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
+  other_meaningless <- data.frame(word = c("style", "character", "vineyard", "wine","drink","flavors","notes","note", "finish", "structure", "blend", "touch", "feels", "offers", "nose", "age",  "palate", "cabernet", "pinot","noir", "chardonnay", "sauvignon", "aromas", "black", "red", "white", "rose", "rosé", "sparkling"))
   wine_word = 
     wine_word %>% 
     anti_join(other_meaningless, by = "word")
@@ -120,64 +124,84 @@ wine_word_cloud <- function(wine_subset, color1, color2) {
   wine_word %>% head(100) %>% 
     wordcloud2(size = 0.58, color = color1, backgroundColor = color2)
 }
+```
 
+# All types
+```{r message = FALSE}
+wine_word_cloud(wine_df, "red", "white")
+```
 
-#wine_word_cloud(white_df, "orange", "white")
-#wine_word_cloud(rose_df, "pink", "white")
-#wine_word_cloud(sparkling_df, "green", "white")
+## (1) Higher-rating (>=90)
+```{r message = FALSE}
+wine_word_cloud(high_wine, "blue", "white")
+```
 
-#wine_word_cloud(high_red, "blue", "white")
-#wine_word_cloud(low_red, "purple", "white")
+## (2) Lower-rating (<90)
+```{r message = FALSE}
+wine_word_cloud(low_wine, "green", "white")
 ```
 
 # Red wine
 ```{r message = FALSE}
-wine_word_cloud(red_df, "red", "white")
+red_word <- wine_word_cloud(red_df, "8D021F", "white")
+red_word
 ```
 
-## New-world red wine
+## (1) New-world red wine
 ```{r message = FALSE}
-wine_word_cloud(new_red, "red", "white")
+wine_word_cloud(new_red, "#A1045A", "white")
 ```
 
-## Old-world red wine
+## (2) Old-world red wine
 ```{r message = FALSE}
-wine_word_cloud(old_red, "red", "white")
+wine_word_cloud(old_red, "#67032F", "white")
 ```
 
 # White wine
 ```{r message = FALSE}
-wine_word_cloud(white_df, "red", "white")
+white_word <- wine_word_cloud(white_df, "FEDC56", "white")
+white_word
 ```
 
-## New-world white wine
+## (1) New-world white wine
 ```{r message = FALSE}
-wine_word_cloud(new_white, "red", "white")
+wine_word_cloud(new_white, "#F9E076", "white")
 ```
 
-## Old-world white wine
+## (2) Old-world white wine
 ```{r message = FALSE}
-wine_word_cloud(old_white, "red", "white")
+wine_word_cloud(old_white, "D2B55B", "white")
 ```
 
 # Rose
 ```{r message = FALSE}
-wine_word_cloud(rose_df, "red", "white")
+rose_word <- wine_word_cloud(rose_df, "E75480", "white")
+rose_word
 ```
 
 # Sparkling
 ```{r message = FALSE}
-wine_word_cloud(sparkling_df, "red", "white")
+sparkling_word <- wine_word_cloud(sparkling_df, "F5B799", "white")
+sparkling_word
 ```
 
 
 ```{r export, include = FALSE}
-library(webshot)
-library("htmlwidgets")
-red_word <- wine_word_cloud(red_df, "red", "white")
-saveWidget(red_word, "tmp.html", selfcontained = F)
-webshot("tmp.html", "./image/red_word.png", delay = 5, vwidth = 500, vheight = 500)
-file.remove("tmp.html")
+saveWidget(red_word, "tmp1.html", selfcontained = F)
+webshot("tmp1.html", "./image/red_word.png", delay = 5, vwidth = 500, vheight = 500)
+file.remove("tmp1.html")
+
+saveWidget(white_word, "tmp2.html", selfcontained = F)
+webshot("tmp2.html", "./image/white_word.png", delay = 5, vwidth = 500, vheight = 500)
+file.remove("tmp2.html")
+
+saveWidget(rose_word, "tmp3.html", selfcontained = F)
+webshot("tmp3.html", "./image/rose_word.png", delay = 5, vwidth = 500, vheight = 500)
+file.remove("tmp3.html")
+
+saveWidget(sparkling_word, "tmp3.html", selfcontained = F)
+webshot("tmp3.html", "./image/sparkling_word.png", delay = 5, vwidth = 500, vheight = 500)
+file.remove("tmp3.html")
 ```
 
 

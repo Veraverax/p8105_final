@@ -144,6 +144,13 @@ At first, the dataset contains more than 50 wine varieties and it is hard to get
 
 <br><br>
 
+## Word cloud
+
+Red Wine ![](./image/red_word.png)\
+White Wine ![](./image/white_word.png)\
+Rose ![](./image/rose_word.png)\
+Sparkling ![](./image/sparkling_word.png)
+
 ## Descriptive Statistics
 
 ### Distribution of price/rating by wine type
