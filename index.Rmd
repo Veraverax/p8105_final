@@ -1,17 +1,20 @@
 ---
-title: "Wine Rating - What's behind great wines?"
+title: ""
 output: 
   html_document:
     toc: false
     toc_float: false
 ---
+
 <br>
+
+<h1 style="text-align: center;" markdown="1">Wine Rating - What's behind great wines?
 
 <h6 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
 
 <br></br>
-<h6 style="text-align: center;" markdown="1"><img src="image/main_pic.jpg" style="width:75%"></h6>
+<h6 style="text-align: center;" markdown="1"><img src="image/main_pic.jpg" style="width:50%"></h6>
 
 (Wordcloud)
 
@@ -19,16 +22,24 @@ output:
 
 ## Introduction
 
-Wine is one of the most commonly seen alcoholic drinks. With wine consumption in the U.S. at an all-time high, there are a huge amount of varieties of wine on the market. Consumers are more eager to learn about how to pick a good wine. There are many review systems online such as Vinno, Wine Enthusiasts. It is important for the consumers to learn what is behind those ratings. This data offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region to see if there are significant differences among these factors.The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices. 
+Wine is one of the most commonly seen alcoholic drinks. With wine consumption in the U.S. at an all-time high, there are a huge amount of varieties of wine on the market. Consumers are more eager to learn about how to pick a good wine. There are many review systems online such as Vinno, Wine Enthusiasts. It is important for the consumers to learn what is behind those ratings. 
+
+This data offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region to see if there are significant differences among these factors.The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices. 
 
 
-## Fun facts
-A quick summary of our findings include:
+<br>
 
-Data scraping of clinicaltrials.gov is difficult
-Out of 10,000 trials prior to 2017, only 39 met our criteria for calculating the fragility index.
-California has by far the most number of clinical trials out of available data
-For detailed results, analysis and output, please refer to our report.
+## Fun Facts Summary
+
+* 2002 was the year of highest average wine price for sparkling wine - above $100!
+
+* 2004 was the year of highest average wine price for white wine - above $50!
+
+* Relationship between wine price and rating are segmented - see details in [regression analyses](regression.html)!
+
+* England was the country of highest wine rating overall - average rating was 92/100.
+
+
 
 
 
