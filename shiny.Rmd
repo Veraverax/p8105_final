@@ -19,56 +19,18 @@ library(rgdal)
 library(maps)
 library(mapproj)
 library(RColorBrewer)
-```
 
-```{r tidying_data, message=FALSE, warning = FALSE}
 wine_tidy_df = 
   read_csv(
   "./wine_data/tidy/wine_all.csv") %>% 
   janitor::clean_names()
-```
 
-```{r wine_us, message = FALSE}
-wine_us = wine_tidy_df %>% 
-  filter(country == "US") %>%
-  rename(
-    state = province) %>% 
-  mutate(
-   state = na_if(state, "America")
- ) %>%
-  select(state, points, price) %>% 
-  drop_na() %>% 
-  group_by(state) %>%
-  summarise(
-    total = n(),
-    avg_rating = mean(points),
-    avg_price = mean(price)
-  ) %>%
-  mutate(
-    avg_rating = round(avg_rating, 0), 
-    avg_price = round(avg_price, 2)
-    ) %>% 
-  arrange(desc(total))
-```
-
-```{r missing_us, message = FALSE}
-wine_us_missing = wine_tidy_df %>% 
-  filter(country == "US") %>%
-  rename(
-    state = province) %>% 
-  select(state, points, price) %>% 
-  mutate(
-   state = na_if(state, "America")
- )
-
-purrr::map(wine_us_missing, ~ sum(is.na(.)))
-```
-
-```{r country_df, message = FALSE}
 wine_by_country = wine_tidy_df %>% 
  mutate(
    country = recode(country, US = "United States")
  ) %>% 
+mutate(
+   country = recode(country, England = "United Kingdom")) %>% 
   select(country, points, price) %>% 
   group_by(country) %>%
   drop_na() %>% 
@@ -84,70 +46,66 @@ wine_by_country = wine_tidy_df %>%
   arrange(desc(total))
 ```
 
-```{r country_missing, message = FALSE}
-wine_country_missing = wine_tidy_df %>% 
- mutate(
-   country = recode(country, US = "United States")
- ) %>% 
-  select(country, points, price)
-
-purrr::map(wine_country_missing, ~ sum(is.na(.)))
-```
-
-Data Cleaning Steps:
-
-In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US. 
-
-Wines that contained missing prices and state or country information were removed from the dataset. Among all wines made in the US, there were several wines that were labeled as America under state. Those wines were recoded as missing state values and removed from the US dataset. From the US dataset, there were 95 wines that did not have a state value and 239 wines that were missing a price. From the world dataset, there were 63 wines that missing country information and 8996 wines that did not have a price listed. All wines in the dataset had a rating. As the number of missing values was relatively small in comparison to the total number of observations, all wines that contained missing information on wine origin and price were excluded from the map. 
-
-For each dataset, we used `summarise` to generate average ratings and average prices for each state or country, along with the total count of all wines from each state or country. Average ratings was rounded to the nearest whole number and prices were rounded to 2 decimal points.
-
-```{r choropleth_map, echo = T, warning = F, results = 'hide'}
-states <- states(cb = TRUE)
-
-states %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addPolygons(popup = ~NAME)
-
-states_merged_wine <- geo_join(states, wine_us, "NAME", "state")
-
-mybins <- c(0,100,1000,8000,10000,40000)
-mypal <- colorBin(palette = "Purples", domain = states_merged_wine$total, na.color = "transparent", bins = mybins)
-
-states_merged_wine <- subset(states_merged_wine, !is.na(total))
-
-popup <- paste0(
-  states_merged_wine$NAME,"<br>", 
-  "Total Wines: ", states_merged_wine$total, "<br>", 
-      "Avg Rating: ", states_merged_wine$avg_rating, "<br>",
-      "Avg Price: $", states_merged_wine$avg_price,"<br>"
-      )
-
-state_map = states_merged_wine %>% 
-  leaflet() %>%
-  addProviderTiles("CartoDB.Positron") %>%
-  setView(-98.483330, 38.712046, zoom = 4) %>% 
-  addPolygons(
-    fillColor = ~mypal(total), 
-    fillOpacity = 1.0, 
-    weight = 0.4, 
-    smoothFactor = 0.2, 
-    popup = ~popup) %>% 
-  addLegend(pal = mypal, 
-            values = states_merged_wine$total, 
-            position = "bottomright", 
-            title = "Wines")
-```
-
 ```{r world_map_labels_choropleth, echo = T, warning = F, results = 'hide'}
+# world_spdf <- readOGR( 
+#   dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
+#   layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+#   verbose = FALSE
+# )
+# 
+# world_spdf %>%
+#   leaflet() %>% 
+#   addTiles() %>% 
+#   addPolygons(popup = ~NAME)
+# 
+# countries_merged_wine <- geo_join(world_spdf, wine_by_country, "NAME", "country")
+# 
+# world_bins <- c(0,100,1000,10000,20000,30000,60000)
+# world_pal <- colorBin(palette = "RdPu", domain = countries_merged_wine$total, na.color = "transparent", bins = world_bins)
+# 
+# countries_merged_wine <- subset(countries_merged_wine, !is.na(total))
+# 
+# world_popup <- paste0(
+#   countries_merged_wine$country,"<br>", 
+#   "Wines: ", countries_merged_wine$total, "<br>", 
+#       "Avg Rating: ", countries_merged_wine$avg_rating, "<br>",
+#       "Avg Price: $", countries_merged_wine$avg_price,"<br>"
+#       )
+# 
+# world_map_labels = countries_merged_wine %>% 
+#   leaflet() %>%
+#   addMapPane(name = "polygons", zIndex = 410) %>% 
+#   addMapPane(name = "maplabels", zIndex = 420) %>% 
+#   addProviderTiles("CartoDB.PositronNoLabels") %>%
+#   addProviderTiles("CartoDB.PositronOnlyLabels", 
+#                    options = leafletOptions(pane = "maplabels"),
+#                    group = "labels") %>%
+#   setView( lat = 10, lng = 0 , zoom = 2) %>% 
+#   addPolygons(
+#     fillColor = ~world_pal(total), 
+#     fillOpacity = 1.0, 
+#     group = "country",
+#     weight = 0.4, 
+#     smoothFactor = 0.2, 
+#     popup = ~world_popup,
+#     options = leafletOptions(pane = "polygons")) %>% 
+#   addLayersControl(overlayGroups = c("labels")) %>% 
+#   addLegend(pal = world_pal, 
+#             values = countries_merged_wine$total, 
+#             position = "bottomright", 
+#             title = "Wines")
+# 
+# world_map_labels
+```
+
+```{r shiny}
 world_spdf <- readOGR( 
   dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
   layer = "TM_WORLD_BORDERS_SIMPL-0.3",
   verbose = FALSE
 )
 
-world_spdf %>% 
+world_spdf %>%
   leaflet() %>% 
   addTiles() %>% 
   addPolygons(popup = ~NAME)
@@ -166,8 +124,27 @@ world_popup <- paste0(
       "Avg Price: $", countries_merged_wine$avg_price,"<br>"
       )
 
-world_map_labels = countries_merged_wine %>% 
-  leaflet() %>%
+ui <- bootstrapPage(
+  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+  leafletOutput("map", width = "100%", height = "100%"),
+  absolutePanel(top = 10, right = 10,
+    sliderInput("range", "Average Rating", min(countries_merged_wine$avg_rating), max(countries_merged_wine$avg_rating),
+      value = range(countries_merged_wine$avg_rating), step = 1.0
+    ),
+    sliderInput("range", "Average Price", min(countries_merged_wine$avg_price), max(countries_merged_wine$avg_price),
+      value = range(countries_merged_wine$avg_price), step = 1.0
+    ),
+    checkboxInput("legend", "Show legend", TRUE)
+  )
+)
+
+server <- function(input, output, session) {
+  filteredData <- reactive({
+    countries_merged_wine[countries_merged_wine$avg_rating >= input$range[1] & countries_merged_wine$avg_rating <= input$range[2],]
+  })
+  
+ output$map <- renderLeaflet({
+  leaflet(countries_merged_wine) %>%
   addMapPane(name = "polygons", zIndex = 410) %>% 
   addMapPane(name = "maplabels", zIndex = 420) %>% 
   addProviderTiles("CartoDB.PositronNoLabels") %>%
@@ -188,49 +165,9 @@ world_map_labels = countries_merged_wine %>%
             values = countries_merged_wine$total, 
             position = "bottomright", 
             title = "Wines")
+ })
+}
+
+shinyApp(ui, server)
 ```
 
-## Static Map
-
-```{r static_map}
-# world_static = map_data("world") %>%
-#   left_join(wine_by_country, by = c("region" = "country"))
-# 
-# ggplot(data = world_static, 
-#                mapping = aes(x = long, y = lat, group = group)) +
-#   geom_polygon(aes(fill = avg_rating)) +
-#   scale_fill_continuous(low = "rosybrown1", high = "darkred", 
-#                         na.value = "snow2") +
-#   coord_map(xlim = c(-180,180), ylim = c(-60, 80)) +
-#   theme(
-#     axis.title.x = element_blank(),
-#     axis.text.x  = element_blank(),
-#     axis.ticks.x = element_blank(),
-#     axis.title.y = element_blank(),
-#     axis.text.y  = element_blank(),
-#     axis.ticks.y = element_blank(),
-#     panel.background = element_rect(fill = "white"))
-```
-
-## Interactive Maps {.tabset}
-
-### United States
-
-```{r state_map}
-state_map
-```
-
-### World
-```{r world_map}
-world_map_labels
-```
-
-## {-}
-
-#### Mapping Next Steps
-
-* Take screenshot of maps?
-
-* Update report to include mapping code
-
-* Review interactive - shiny lecture
