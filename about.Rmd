@@ -25,6 +25,10 @@ My name is Helen and I'm in the Epidemiology Department with a certificate in CE
 
 # <a href=""><img class="cat_circle" src="image/wine_bottle.jpg"></a><span style="padding-left:25px">Yuanxin (Yolanda) Zhang
 
+I'm Yolanda, a second year MPH student in Biostatistics, pursuing a certificate in Advanced Epidemiology. I obtained my BS in Statistics from University of California, Davis. I am interested in clinical research and my career goal is to become a biostatistician in pharmaceutical industry. My favorite wine type is reisling.
+
+<br></br>
+
 ABOUT
 
 <br></br>
