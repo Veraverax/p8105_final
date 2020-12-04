@@ -1,11 +1,11 @@
 ---
 title: "Shiny"
 output: 
-  html_document:
-    code_folding: hide
-    toc: true
-    toc_float: true
-
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source: embed
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +19,7 @@ library(rgdal)
 library(maps)
 library(mapproj)
 library(RColorBrewer)
+library(flexdashboard)
 
 wine_tidy_df = 
   read_csv(
@@ -44,6 +45,21 @@ mutate(
     avg_price = round(avg_price, 2)
     ) %>% 
   arrange(desc(total))
+
+world_spdf <- readOGR( 
+  dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
+  layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+  verbose = FALSE
+)
+
+world_spdf %>%
+  leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(popup = ~NAME)
+
+countries_merged_wine <- geo_join(world_spdf, wine_by_country, "NAME", "country")
+
+countries_merged_wine <- subset(countries_merged_wine, !is.na(total))
 ```
 
 ```{r world_map_labels_choropleth, echo = T, warning = F, results = 'hide'}
@@ -98,53 +114,16 @@ mutate(
 # world_map_labels
 ```
 
-```{r shiny}
-world_spdf <- readOGR( 
-  dsn = paste0(getwd(),"/wine_data/world_shape_file/") , 
-  layer = "TM_WORLD_BORDERS_SIMPL-0.3",
-  verbose = FALSE
-)
-
-world_spdf %>%
+```{r}
+world_pal <- colorNumeric(
+  palette = "RdPu",
+  domain = countries_merged_wine$avg_price)
+renderLeaflet({
+  countries_merged_wine %>% 
+  filter(
+      countries == input[["country"]],
+      price %in% input[["avg_price"]][1]:input[["avg_price"]][2],) %>%
   leaflet() %>% 
-  addTiles() %>% 
-  addPolygons(popup = ~NAME)
-
-countries_merged_wine <- geo_join(world_spdf, wine_by_country, "NAME", "country")
-
-world_bins <- c(0,100,1000,10000,20000,30000,60000)
-world_pal <- colorBin(palette = "RdPu", domain = countries_merged_wine$total, na.color = "transparent", bins = world_bins)
-
-countries_merged_wine <- subset(countries_merged_wine, !is.na(total))
-
-world_popup <- paste0(
-  countries_merged_wine$country,"<br>", 
-  "Wines: ", countries_merged_wine$total, "<br>", 
-      "Avg Rating: ", countries_merged_wine$avg_rating, "<br>",
-      "Avg Price: $", countries_merged_wine$avg_price,"<br>"
-      )
-
-ui <- bootstrapPage(
-  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
-  leafletOutput("map", width = "100%", height = "100%"),
-  absolutePanel(top = 10, right = 10,
-    sliderInput("range", "Average Rating", min(countries_merged_wine$avg_rating), max(countries_merged_wine$avg_rating),
-      value = range(countries_merged_wine$avg_rating), step = 1.0
-    ),
-    sliderInput("range", "Average Price", min(countries_merged_wine$avg_price), max(countries_merged_wine$avg_price),
-      value = range(countries_merged_wine$avg_price), step = 1.0
-    ),
-    checkboxInput("legend", "Show legend", TRUE)
-  )
-)
-
-server <- function(input, output, session) {
-  filteredData <- reactive({
-    countries_merged_wine[countries_merged_wine$avg_rating >= input$range[1] & countries_merged_wine$avg_rating <= input$range[2],]
-  })
-  
- output$map <- renderLeaflet({
-  leaflet(countries_merged_wine) %>%
   addMapPane(name = "polygons", zIndex = 410) %>% 
   addMapPane(name = "maplabels", zIndex = 420) %>% 
   addProviderTiles("CartoDB.PositronNoLabels") %>%
@@ -165,9 +144,63 @@ server <- function(input, output, session) {
             values = countries_merged_wine$total, 
             position = "bottomright", 
             title = "Wines")
- })
-}
+  
+})
+```
 
-shinyApp(ui, server)
+
+```{r shiny}
+# world_popup <- paste0(
+#   countries_merged_wine$country,"<br>", 
+#   "Wines: ", countries_merged_wine$total, "<br>", 
+#       "Avg Rating: ", countries_merged_wine$avg_rating, "<br>",
+#       "Avg Price: $", countries_merged_wine$avg_price,"<br>"
+#       )
+# 
+# ui <- bootstrapPage(
+#   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+#   leafletOutput("map", width = "100%", height = "100%"),
+#   absolutePanel(top = 10, right = 10,
+#     sliderInput("range", "Average Rating", min(countries_merged_wine$avg_rating), max(countries_merged_wine$avg_rating),
+#       value = range(countries_merged_wine$avg_rating), step = 1.0
+#     ),
+#     sliderInput("range", "Average Price", min(countries_merged_wine$avg_price), max(countries_merged_wine$avg_price),
+#       value = range(countries_merged_wine$avg_price), step = 1.0
+#     ),
+#     checkboxInput("legend", "Show legend", TRUE)
+#   )
+# )
+# 
+# server <- function(input, output, session) {
+#   filteredData <- reactive({
+#     countries_merged_wine[countries_merged_wine$avg_rating >= input$range[1] & countries_merged_wine$avg_rating <= input$range[2],]
+#   })
+#   
+#  output$map <- renderLeaflet({
+#   leaflet(countries_merged_wine) %>%
+#   addMapPane(name = "polygons", zIndex = 410) %>% 
+#   addMapPane(name = "maplabels", zIndex = 420) %>% 
+#   addProviderTiles("CartoDB.PositronNoLabels") %>%
+#   addProviderTiles("CartoDB.PositronOnlyLabels", 
+#                    options = leafletOptions(pane = "maplabels"),
+#                    group = "labels") %>%
+#   setView( lat = 10, lng = 0 , zoom = 2) %>% 
+#   addPolygons(
+#     fillColor = ~world_pal(total), 
+#     fillOpacity = 1.0, 
+#     group = "country",
+#     weight = 0.4, 
+#     smoothFactor = 0.2, 
+#     popup = ~world_popup,
+#     options = leafletOptions(pane = "polygons")) %>% 
+#   addLayersControl(overlayGroups = c("labels")) %>% 
+#   addLegend(pal = world_pal, 
+#             values = countries_merged_wine$total, 
+#             position = "bottomright", 
+#             title = "Wines")
+#  })
+# }
+# 
+# shinyApp(ui, server)
 ```
 
