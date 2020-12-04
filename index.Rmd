@@ -5,6 +5,7 @@ output:
     toc: false
     toc_float: false
 ---
+<br>
 
 <h6 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
