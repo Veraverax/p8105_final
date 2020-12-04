@@ -17,9 +17,9 @@ ABOUT
 
 <br></br>
 
-# <a href=""><img class="cat_circle" src="image/test.jpg"></a><span style="padding-left:25px">Helen Zhang
+# <a href=""><img class="cat_circle" src="image/helen.jpg"></a><span style="padding-left:25px">Helen Zhang
 
-ABOUT placeholder 
+My name is Helen and I'm in the Epidemiology Department with a certificate in CEOR. Prior to graduate school, I received my BS in Microbiology from University of Wisconsin-Madison. My professional interests are real-world data and outcomes research. 
 
 <br></br>
 
