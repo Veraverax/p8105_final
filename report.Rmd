@@ -1,5 +1,5 @@
 ---
-title: "Project Report"
+title: "Project Report - What's Behind Great Wines?"
 output: 
   html_document:
     code_folding: hide 
@@ -24,51 +24,48 @@ library(modelr)
 library(mgcv)
 ```
 
-
 # Motivation
 
-Wine is one of the most commonly seen alcoholic drinks, and there is a tremendous amount of knowledge about wine history, wine categories, and what characterizes a great bottle of wine.
+Wine is one of the most common alcoholic drinks in the world and there is a tremendous amount of knowledge about wine history, wine categories, and what characterizes a great bottle of wine.
 
-This dataset offers us an excellent opportunity to explore what factors are associated with wine ratings. We hope to firstly get the image of wine price and rating trend using exploratory graphs. We also hope to identify the keywords of each type of wine using the word cloud tools. We also aim to use an interactive map for a better demonstration of wine distribution geographically. 
+This dataset offers us an excellent opportunity to explore what factors are associated with wine ratings. We hope to begin by evaluating wine prices and rating trends using exploratory graphs. We also hope to identify keywords for each wine type using the word clouds. We will also use an interactive map to better demonstrate the geographic distribution of wine.
 
-In addition, we hope to conduct regression analyses of the wine rating and price and better capture the relationship between wine rating and prices. The regression models would help customers estimate and predict wine rating with a series of wine characteristics.
+In addition, we plan to conduct regression analyses of wine rating and price to better capture the relationship between these two variables. We hope that the regression models would help customers estimate and predict wine ratings using a series of wine characteristics.
 
 
 # Related work
 
-Interesting projects that inspired us can be found below.
+Some interesting projects that inspired us can be found below:
 
-* A [project](https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html) that aims to analyze the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlationally related to each other
+* A [project](https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html) that aims to analyze the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlated with each other
 
 * A [project](http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html) that examined Red Wine Quality using a red wine dataset from Kaggle.
 
-
-
 # Initial questions
 
-We are trying to answer some questions from exploratory analysis. 
+We are trying to answer several questions using exploratory analysis. 
 
 To understand the information that customers could get from the ratings, price among different wine type and region, we want to answer the following questions:
 
-1. What is the distribution of prices among four types of wine? Is at least one wine type's price different from the others?
+1. What is the distribution of prices among the four types of wine? Is at least one wine type's price different from the others?
 
-2. What is the distribution of ratings among four types of wine? Is at least one wine type's rating different from the others?
+2. What is the distribution of ratings among the four types of wine? Is at least one wine type's rating different from the others?
 
-3. What is the average price of wines at different regions? Which region has the highest average price wine?
+3. What is the average price of wines from different regions? Which region has the highest average price wine?
 
-4. What is the average rating of wines at different regions? Which region has the highest average rating?
+4. What is the average rating of wines from different regions? Which region has the highest average rating?
 
-5. What is the trend of price over time among 4 types of wine? 
+5. What is the trend of price over time among the 4 types of wine? 
 
-6. What is the trend of ratings over time among 4 types of wine?
+6. What is the trend of ratings over time among the 4 types of wine?
 
 7. What is the average ratings by each tasters? Who rates the highest price wine? Who reviews the largest number of wines?
 
 8. Which winery has the top average ratings wine? 
 
-9. Is there any differences in prices between new world and old world wine?
+9. Are there any differences in prices between new world and old world wine?
 
-10. Is there any differences in ratings between new world and old world wine?
+10. Are there any differences in ratings between new world and old world wine?
 
 11. What is the relationship between wine rating and wine prices?
 
@@ -78,12 +75,11 @@ To understand the information that customers could get from the ratings, price a
 
 13. What is the distribution of wine quality and price within US using interactive demonstration?
 
-
 # Data
 
-The data for this project is downloaded [here](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k wine reviews with variety, location, winery, price, description and reviewer information. 
+The data for this project is downloaded [here](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k wine reviews with variety, location, winery, price, description, and reviewer information. 
 
-We first imported the raw dataset, and created a **Year extracting function**. This function was used to extract the wine vintage information from the wine name.
+We first imported the raw dataset, and created a **year extracting function**. This function was used to extract the wine vintage information from the wine name.
 
 ```{r extract_year_function, echo = FALSE, message = FALSE, warning = FALSE}
 year_extract <- function(string) {
@@ -104,7 +100,7 @@ wine_df =
   mutate(year = year_extract(title))
 ```
 
-We also coded new variables for wines from **New vs Old World**. The new-world and old-world wines are categorized mainly by the country of origin. The detailed introduction can be found [here](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.)
+We also coded new variables for wines from **New vs Old World**. The new-world and old-world wines are categorized mainly by the country of origin. The detailed breakdown between new-world and old-world wines can be found [here](https://winefolly.com/deep-dive/new-world-vs-old-world-wine/.)
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 old_world_country = c("France", "Italy", "Portugal", "Spain", "Germany", "Hungary", "Croatia", "England")
@@ -122,7 +118,7 @@ wine_df =
   "./wine_data/tidy/wine_all.csv")
 ```
 
-In terms of wine type, we separated wine types by four major types: **red, white, sparkling and rose** baesd on the categorzing method from [Wine Folly](https://media.winefolly.com/Different-Types-of-Wine-v2.jpg): we firstly created a excel sheet that mathes all grape types with wine >200 to the four category, and then subset the data using the following code chunk:
+In terms of wine type, we separated wine types into four major types: **red, white, sparkling, and rose** based on the categorizing method from [Wine Folly](https://media.winefolly.com/Different-Types-of-Wine-v2.jpg). We did this by creating a excel sheet that matches all grape types with wine >200 to the four category, and then subset the data using the following code chunk:
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 wine_type = 
@@ -156,7 +152,6 @@ rose_df =
     filter(!is.na(type),
            type == "rose")
 ```
-
 
 ## Variables
 
@@ -224,11 +219,11 @@ In summary, top wine notes generated by the keywords from taster's descriptions 
 ### Distribution of price/rating by wine type
 Question: What is the distribution of prices/rating among four types of wine? Is at least one wine type's price/rating different from the others?
 
-To explore this question, we first look at the wine with price lower than $100 since there are many very expensive wine and it is hard to show the distribution with a very long tail. We want to graph a boxplot of prices for each of the four types of wine: red, rose, sparkling and white. It is interesting to see that red and sparking wine have similar distribution with mean price around $27. The prices of rose are lower than the other three types and are mostly round $10~$20. In addition, we run an ANOVA test to find if at least one of the wine types'e price is different from the others. 
+To explore this question, we first looked at wines priced lower than $100, as there are many very expensive wine and it is hard to show the distribution with a very long tail. We then created a boxplot graph of prices for each of the four types of wine: red, white, sparkling, and rose. It is interesting to see that red and sparking wine have similar price distribution with the mean price around $27. The prices of rose are lower than the other three types and are mostly around $10~$20. In addition, we ran an ANOVA test to determine if at least one of the wine types' price is different from the others. 
 
-We repeat the same process to ratings. The results for price and ratings are both significant. Therefore, we can conclude that there is at least one wine type's price/rating significantly different from the others. 
+We repeated the same process for wine ratings. The results for price and ratings are both significant. Therefore, we can conclude that at least one wine type's price/rating is significantly different from the others. 
 
-This inform further modeling to see if we can based on the type of wine to predict its price and rating.
+This informed further modeling to see if we can use wine type to predict price and rating.
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -261,16 +256,14 @@ res.aov %>%
 
 <br><br>
 
-
 ### Distribution of price/rating by region
 Question: What is the average price/rating of wines at different regions? Which region has the highest average price/rating wine? 
 
-To answer this question, we look at the average price grouped by the country they come from. We have created an interactive plot to show the rank of price and ratings. Switzerland has the highest mean price of wine at $85. England is the second highest and Germany is the third. 
-England has the highest average rating. Indis and Austria are the second and third highest.
-Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. Wine in Switzerland is not very recommended. 
+To answer this question, we looked at the average price grouped by the country of origin. We created an interactive plot to show the rank of price and ratings. Switzerland has the highest mean price of wine at $85. England is the second highest and Germany is the third. 
+Overall, England has the highest average rating. India and Austria are the second and third highest.
+Even though Switzerland has the highest priced wine, they are only ranked 11th in terms of wine ratings. Wine in Switzerland is not very well recommended, despite their high price tag. 
 
-This inform further modeling to see if we can based on the origin of the wine to predict its price and rating.
-
+This informed further modeling to see if we can utilize wine origin to predict price and rating.
 
 ```{r, message=FALSE, warning=FALSE}
 y <- list(
@@ -305,20 +298,18 @@ wine_df %>%
 
 ```
 
-
 <br>
 
-
 ### Trend of price/rating over time
-Question: What is the trend of price/rating over time among 4 types of wine? 
+Question: What is the trend of price/rating over time among the 4 types of wine? 
 
-For this question, we first start with extracting the year from the description on the wine bottle. We use a regex function to pull out the year the wine is made in. However, some of the year did not make sense so we choose to filter out all the wine before 2000 from our data. Then, we made a line plot to show the trend of price and rating over time. 
+For this question, we began with extracting the year from the description on the wine bottle. We use a regex function to pull out the year the wine is made in. However, some of the years did not make sense so we choose to filter out all wine produced before 2000 from our data. Then, we made a line plot to show the trend of price and rating over time. 
 
-For prices, we can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparling wine and 2004 is a good year for white wine
+For prices, we can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, sparkling wine have the highest prices among all types but the prices decrease as we move closer to the present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 was a good year for sparkling wine and 2004 was a good year for white wine.
 
-For ratings, we can see a trend that sparkling wines that are older have higher ratings. For other types of wine, the ratings are stable. Therefore, the age of the wine does not affect the rating much for red, rose and white wines. Among the wine that were produced before 2010, Sparkling wine have the highest ratings among all types but the ratings decreases with the year closer to present.
+For ratings, we can see a trend that sparkling wines that are older have higher ratings. For other types of wine, the ratings are stable. Therefore, the age of the wine does not affect the rating much for red, rose and white wines. Among the wine that were produced before 2010, sparkling wine have the highest ratings among all types but the ratings decreases as year increases.
 
-We could add year as a predictor in our future modeling. 
+From this, we determined that could add year as a predictor in our modeling.
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -350,11 +341,10 @@ wine_df %>%
 
 <br>
 
-
 ### Price and ratings by taster.
 Question: Who rates the highest price wine? Who reviews the largest number of wines?
 
-We also have data on who rated the wine and want to extract some information from it. We ploted an interactive bar plot to show the avergae ratings for each taster.
+We also have data on who rated the wine and wanted to extract some information from it. We plotted an interactive bar plot to show the average ratings for each taster.
 ```{r, message=FALSE, warning=FALSE}
 y <- list(
   title = "Mean ratings"
@@ -374,7 +364,7 @@ y <- list(
 
 ```
 
-We also want to know the tasters that rated wines with price greater than $800 and most of the most expensive wine are rated by Roger Voss.
+We also wanted to know among wines priced greater than $800, which taster was most popular. We determined that several of the most expensive wines were rated by Roger Voss.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -388,7 +378,7 @@ wine_df %>%
 
 ```
 
-In addition, we find out that Roger Voss rated the most number of wine at WineEthusiast Magazine. 
+In addition, we found that Roger Voss was the most popular rater, as he rated the most wines for WineEnthusiast Magazine. 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
   filter(!is.na(taster_name)) %>% 
@@ -399,16 +389,14 @@ wine_df %>%
 
 ```
 
-
 <br><br>
 
-
 ### Winery and ratings
-Question: Which winery has the top average ratings wine? 
+Question: Which winery has the top average ratings?
 
-We want to know that if the origin of a wine affect the ratings. We group by winery and country and get the avergae points of the wines at each winery. We ranked them in descending order and picked out the top 10. Araujo in the US has the highest average rating of 98. Among the top 10 wineries, four of them are in the US and four of them are in the France.
+We wanted to know if the origin of a wine affect ratings. We grouped by winery and country and calculated the average points of the wines at each winery. We ranked them in descending order and picked out the top 10. Araujo in the US has the highest average rating of 98. Among the top 10 wineries, four of them are in the US and four of them are in the France.
 
-This could be a useful information if we want to predict whether a wine will be rated high or not based on the winery it came from.
+This could be useful information for if we want to predict whether a wine will be rated high or not based on the winery it came from.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -423,14 +411,13 @@ wine_df %>%
 
 <br><br>
 
-
 ### Differences of prices/ratings between new world and old world wine
 
-We followed a popular categorizing method to divided all the wines to new world and old world. We wanted to investigate that whether this categorization will affect the price or rating for a wine. We created boxplot to show the distribution of prices and ratings for two groups: new world and old world. In addition, we conducted a two sample t-test to see there is a significant differences in prices or ratings between the two groups. 
+We followed a popular categorizing method to divide all the wines into new world or old world. We wanted to investigate whether this categorization will affect the price or rating for a wine. We created a boxplot graph to show the distribution of prices and ratings for the two groups: new world and old world. In addition, we conducted a two sample t-test to see if there are significant differences in prices or ratings between the two groups. 
 
-In conclusion, we found out that ratings for new world or old world wine are not different from the others but prices of new world or old world wine are significantly different from the others.
+In conclusion, we found that ratings for new world or old world wine are not significantly different from the each other but prices of new world or old world wine are significantly different from each other.
 
-This could also be useful information in our regression analysis.
+This provided useful information in our regression analysis.
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -538,7 +525,7 @@ Wines that contained missing prices and state or country information were remove
 
 For each dataset, we used `summarise` to generate average ratings and average prices for each state or country, along with the total count of all wines from each state or country. Average ratings was rounded to the nearest whole number and prices were rounded to 2 decimal points.
 
-In order to generate the choropleth maps, England was recoded as United Kingdom and US as United States
+In order to generate the choropleth maps, England was recoded as United Kingdom and US as United States.
 
 ```{r choropleth_map, eval=F, echo=T}
 states <- states(cb = TRUE)
@@ -628,11 +615,11 @@ world_map_labels = countries_merged_wine %>%
             title = "Total Wine Count")
 ```
 
+Below are screenshots of the interactive maps, which are also found [here](mapping.html)
+
 <br><img src="./image/us_map.png" alt="us_map" style="width:65%; border:2px solid"><br>
 
 <br><img src="./image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br>
-
-
 
 # Additional analysis
 
@@ -662,7 +649,6 @@ white_df =
          price_seg = as.factor(price_seg))
 ```
 
-
 ```{r, message = FALSE, warning = FALSE}
 red_df_reg =
   red_df %>%
@@ -688,12 +674,11 @@ white_df_reg =
 ```
 
 
-There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
+There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Can this positive correlation be interpreted as a simple linear relationship?
 
 The price of wine ranges from value purchase to luxury. This [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides more comprehensive discussion about price and quality. 
 
-In the analysis of our dataset, we segmented the wine price at two cutoffs - \$30 and \$100. The distribution of price-rating for white and red wines is show below:
-
+In the analysis of our dataset, we segmented the wine price at two cutoffs - \$30 and \$100. The distribution of price and ratings for white and red wines is shown below:
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 red_df %>% 
@@ -722,10 +707,9 @@ white_df %>%
 
 ```
 
-
 ### Fit models for rating - candidates
 
-To better capture the relationship between wine price and points, we aim to fit different models and pick the best one using cross validation. The three candidate models are:
+To better capture the relationship between wine price and points, we fitted different models and picked the best one using cross validation. The three candidate models are:
 
 * Simple linear model
 
@@ -786,7 +770,7 @@ red_cv_df %>%
   geom_violin()
 ```
 
-**Simple linear model - Red Wine**
+**Simple Linear model - Red Wine**
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 linear_mod_red %>%
@@ -879,7 +863,7 @@ white_cv_df %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```
 
-**Simple linear model - White Wine**
+**Simple Linear model - White Wine**
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 linear_mod_white %>%
@@ -923,18 +907,17 @@ pw_white_output %>%
 
 ### Summarizing the findings
 
-Based on the coefficient estimates of the piecewise model, the model is actually revealing the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the rating change is less sensitive as the wine of this price segment is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury segment the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
+Based on the coefficient estimates of the piecewise model, the model best represents the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the change in rating is less sensitive as the wine of this price category is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury wines, the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
 
-#### Key takeaway message 
+#### Key Takeaway Message 
 
-* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine
+* Among the value wines, paying more very likely increases the chance to enjoy a better bottle of wine
 
-* Among the premium wine segment, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.
+* Among the premium wines, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value wines.
 
-* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be study its reviews for more informative decision.
+* Among the luxury wines, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be to study its reviews for a more informative decision.
 
 <br></br>
-
 
 ## II. Multivariate Models for Rating
 
@@ -942,7 +925,7 @@ Based on the coefficient estimates of the piecewise model, the model is actually
 
 The goal for this part of regression analyses is to connect the rating with information about a bottle of wine. Price Segment and key taste notes are used as predictor variables in this section. 
 
-**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easily to get lost - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and the summary graph. 
+**Why tasting notes?** These words are the only way we can quantify what a wine tastes like before we buy it. The whole universe of wine tasting description is fascinating yet easy to get lost in - to start with a general picture, again, Wine Folly has a great [article](https://winefolly.com/tips/wine-descriptions-chart-infographic/) and infographic. 
 
 ### Red Wine
 
@@ -952,7 +935,7 @@ For red wine, predictor variables are:
  
 + **old_world** and **new_world**: two dummy variables coded based on the country listed on Wine Folly. If neither is true then it refers to the reference category - other.
  
-The following binary variables are identified by the key description scale from [Vivino](https://www.vivino.com) - also highly recommend to install the Mobile App to know more about the wine before purchasing.
+The following binary variables are identified by the key description scale from [Vivino](https://www.vivino.com) - we also highly recommend installing the Vivino mobile app to learn more about the wine prior to purchasing.
 
 + **Bold**: TRUE if contains description of boldness.
  
@@ -963,7 +946,6 @@ The following binary variables are identified by the key description scale from 
 + **Acidity** TRUE if contains description related to acidic taste.
 
 + **full_body** TRUE if contains description related to full body.
-
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
@@ -976,12 +958,11 @@ fit_red %>%
 
 #### Summarizing the findings for red wines:
 
-* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment 5.40 points lower than the luxury on average.
+* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment is 5.40 points lower than the luxury on average.
 
-* Bold, tannin, acidity and full body are the key words for higher rating as compared to without these key words. While dry is the key words that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters are leaning toward dry as a sign of better quality.
+* Bold, tannin, acidity, and full body are the key words for higher ratings as compared to wines without these key words, while dry is the key word that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters may lean toward dry as a sign of better quality.
 
 * The old world wines are, on average 0.38 pts higher than the unidentified category, while the new world wines are 0.14 pts higher than the unidentified category.
-
 
 ### White Wine
 
@@ -997,7 +978,6 @@ For white wine, predictor variables are:
 
 + **Acidity** TRUE if contains description related to acidic taste.
 
-
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_white = lm(points ~ price_seg + bold + sweet + acidity + old_world + new_world, data = white_df_reg)
 
@@ -1009,14 +989,13 @@ fit_white %>%
 
 #### Summarizing the findings for white wines:
 
-* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.
+* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment is 6.27 points lower than the luxury on average.
 
-* Bold and acidity are the key words for higher rating as compared to without these key words. While sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
+* Bold and acidity are the key words for higher rating as compared to without these key words, and sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
 
-* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
+* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This was unexpected, but still reasonable because red wines are the wine type where the country of origin is more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
 <br></br>
-
 
 # Discussion
 
@@ -1030,7 +1009,7 @@ Our data was scraped from a website that primarily focused on Western and Europe
 
 ### Limitations of Word Cloud Analyses
 
-Using [wordcloud2](https://www.rdocumentation.org/packages/wordcloud2/versions/0.2.1/topics/wordcloud2) package, there seems to be some problem with generating word cloud using an image as a shape mask. Only the first of multiple word cloud plots can show up properly in the html output. Another issue is the difficulty in combining words with the same root; for example, fruit, fruits and fruity.
+Using [wordcloud2](https://www.rdocumentation.org/packages/wordcloud2/versions/0.2.1/topics/wordcloud2) package, there seems to be some problems with generating word clouds using an image as a shape mask. Only the first of multiple word cloud plots can show up properly in the html output. Another issue is the difficulty in combining words with the same root; for example, fruit, fruits and fruity.
 
 <br>
 
@@ -1038,13 +1017,13 @@ Using [wordcloud2](https://www.rdocumentation.org/packages/wordcloud2/versions/0
 
 There are several large limitations to this analysis:   
 
-* **Year**: Although there is a general perception that the certain older wines are better, but that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to discribe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is sucpectable to bias when assessing the association. 
+* **Year**: Although there is a general perception that older wines are better, that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to describe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is susceptible to bias when assessing the association. 
 
-* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.
+* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simplify the word identification process and chose the 3-5 key words used in the Vivino app. To better understand the wine rating and incorporating, more information about the tasting notes and more reviews are needed. This model provides only a basic sense of whether certain notes correspond to a higher rating.
 
-* **Old vs New World**: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
+* **Old vs New World**: Since there is no comprehensive list of countries to categorize all wines, we relied on the best possible, and popular, list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
 
-* **Price**: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.
+* **Price**: In the multivariate model, we segmented price three categories: value, premium and luxury, rather than keeping price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only utilizng three categories for price could be over-simplifying the true and complicated real world business indications behind wine pricing.
 
 * **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% filter(is.na(price)) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% filter(is.na(price)) %>% nrow()` in the white wine dataset.
 
@@ -1052,9 +1031,8 @@ There are several large limitations to this analysis:
 
 ### Final Words
 
-Using data science toolkit to approach the world of wines has been a trendy topic, yet there are many challenges throughout the process. The key reason behind this is that wine tasting and rating is a more subject matter; despite influencers sharing their thoughts, each person has their preferences. 
+Using data science tools to approach the world of wines has been a trendy topic, yet there are many challenges throughout the process. The key reason behind this is that wine tasting and rating is a subjective matter; despite influencers sharing their thoughts, each person has their preferences. 
 
-With the dataset we have, the massive number of observations enabled us to explore using tools, including word cloud, interactive maps, and regression analyses.  However, the extent to which we can dig into more information is limited by the currently available variables and information without too much space to expand. All the quantitative analyses results are generated from this dataset, but might not truly reflect the real wine world's pattern.
+With the dataset we have, the massive number of observations enabled us to explore using tools, including word cloud, interactive maps, and regression analyses. However, the extent to which we can dig into this information is limited by the currently available variables and information without too much space to expand. All the quantitative analyses results are generated from this dataset, but might not truly reflect the real wine world's pattern.
 
-Lastly, we hope that this project serves as a great opportunity for wine beginners to know more about wine information. We also sincerely hope that some of our key findings will help you make better or more informative purchase choices during the upcoming holiday season!
-
+Lastly, we hope that this project serves as a great opportunity for wine beginners to learn more about wine information. We also sincerely hope that some of our key findings will help you make better or more informative purchase choices during the upcoming holiday season!
