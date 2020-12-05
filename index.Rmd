@@ -8,7 +8,7 @@ output:
 
 <br>
 
-<h1 style="text-align: center;" markdown="1">What's behind great wines?</h1>
+<h1 style="text-align: center;" markdown="1">What's Behind Great Wines?</h1>
 
 <br>
 
@@ -27,7 +27,7 @@ In addition, we hope to conduct regression analyses of the wine rating and price
 
 <br>
 
-## Fun Facts Summary
+## Fun Facts
 
 <br>
 
