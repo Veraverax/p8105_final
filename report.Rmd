@@ -37,7 +37,7 @@ In addition, we plan to conduct regression analyses of wine rating and price to 
 
 Some interesting projects that inspired us can be found below:
 
-* A [project](https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html) that aims to analyze the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlated with each other
+* A [project](https://web.stanford.edu/~kjytay/courses/stats32-aut2019/projects/wine_report.html) that analyzed the same dataset to evaluate what characteristics of a wine affect its perceived quality, and what characteristics are correlated with each other
 
 * A [project](http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html) that examined Red Wine Quality using a red wine dataset from Kaggle.
 
