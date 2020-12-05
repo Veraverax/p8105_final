@@ -81,11 +81,9 @@ To understand the information that customers could get from the ratings, price a
 
 # Data
 
-## Dataset
-
 The data for this project is downloaded [here](https://www.kaggle.com/zynicide/wine-reviews). It was scraped on November 22nd, 2017 from the [WineEnthusiast Rating database](https://www.winemag.com/?s=&drink_type=wine). It contains 130k wine reviews with variety, location, winery, price, description and reviewer information. 
 
-We firstly imported the raw dataset, and created a **Year extracting function**. This function is used to extract the wine vintage information from the wine name.
+We first imported the raw dataset, and created a **Year extracting function**. This function was used to extract the wine vintage information from the wine name.
 
 ```{r extract_year_function, echo = FALSE, message = FALSE, warning = FALSE}
 year_extract <- function(string) {
@@ -185,8 +183,6 @@ rose_df =
 * **year**: wine vintage
 
 * **new_world** and **old_world**: world categorization of origin
-
-
 
 # Exploratory analysis
 
@@ -447,18 +443,15 @@ t.test(price ~ new_old, data = wine_price) %>%
 
 <br><br>
 
-
-### Visualizations
+## Visualizations
 In order to make the US map and World map, we created two separate datasets. The US dataset contained only wines that were from the US. 
 
-```{r tidying_data, message = FALSE, warning = FALSE}
+```{r tidying_data, message = FALSE, warning = FALSE, results = 'hide'}
 wine_tidy_df = 
   read_csv(
   "./wine_data/tidy/wine_all.csv") %>% 
   janitor::clean_names()
-```
 
-```{r wine_us, message = FALSE}
 wine_us = wine_tidy_df %>% 
   filter(country == "US") %>%
   rename(
@@ -479,9 +472,7 @@ wine_us = wine_tidy_df %>%
     avg_price = round(avg_price, 2)
     ) %>% 
   arrange(desc(total))
-```
 
-```{r missing_us, results = 'hide'}
 wine_us_missing = wine_tidy_df %>% 
   filter(country == "US") %>%
   rename(
@@ -492,13 +483,13 @@ wine_us_missing = wine_tidy_df %>%
  )
 
 purrr::map(wine_us_missing, ~ sum(is.na(.)))
-```
 
-```{r country_df, message = FALSE}
 wine_by_country = wine_tidy_df %>% 
  mutate(
    country = recode(country, US = "United States")
  ) %>% 
+mutate(
+   country = recode(country, England = "United Kingdom")) %>% 
   select(country, points, price) %>% 
   group_by(country) %>%
   drop_na() %>% 
@@ -512,13 +503,8 @@ wine_by_country = wine_tidy_df %>%
     avg_price = round(avg_price, 2)
     ) %>% 
   arrange(desc(total))
-```
 
-```{r country_missing, results = 'hide'}
 wine_country_missing = wine_tidy_df %>% 
- mutate(
-   country = recode(country, US = "United States")
- ) %>% 
   select(country, points, price)
 
 purrr::map(wine_country_missing, ~ sum(is.na(.)))
@@ -527,6 +513,8 @@ purrr::map(wine_country_missing, ~ sum(is.na(.)))
 Wines that contained missing prices and state or country information were removed from the dataset. Among all wines made in the US, there were several wines that were labeled as America under state. Those wines were recoded as missing state values and removed from the US dataset. From the US dataset, there were 95 wines that did not have a state value and 239 wines that were missing a price. From the world dataset, there were 63 wines that missing country information and 8996 wines that did not have a price listed. All wines in the dataset had a rating. As the number of missing values was relatively small in comparison to the total number of observations, all wines that contained missing information on wine origin and price were excluded from the map. 
 
 For each dataset, we used `summarise` to generate average ratings and average prices for each state or country, along with the total count of all wines from each state or country. Average ratings was rounded to the nearest whole number and prices were rounded to 2 decimal points.
+
+In order to generate the choropleth maps, England was recoded as United Kingdom and US as United States
 
 ```{r choropleth_map, eval=F, echo=T}
 states <- states(cb = TRUE)
@@ -563,7 +551,7 @@ state_map = states_merged_wine %>%
   addLegend(pal = mypal, 
             values = states_merged_wine$total, 
             position = "bottomright", 
-            title = "Wines")
+            title = "Total Wine Count")
 ```
 
 ```{r world_map_labels_choropleth, eval=F,  echo=T}
@@ -573,7 +561,7 @@ world_spdf <- readOGR(
   verbose = FALSE
 )
 
-world_spdf %>% 
+world_spdf %>%
   leaflet() %>% 
   addTiles() %>% 
   addPolygons(popup = ~NAME)
@@ -613,7 +601,7 @@ world_map_labels = countries_merged_wine %>%
   addLegend(pal = world_pal, 
             values = countries_merged_wine$total, 
             position = "bottomright", 
-            title = "Wines")
+            title = "Total Wine Count")
 ```
 
 <br><img src="./image/us_map.png" alt="us_map" style="width:65%; border:2px solid"><br>
@@ -1009,6 +997,10 @@ fit_white %>%
 # Discussion
 
 <br>
+
+### Dataset Limitations
+
+Our data was scraped from a website that primarily focused on Western and European wines. In particular, a large majority of wines were produced in the United States. There were very little wines in our dataset from non-European or non-Western countries. As such, there was limited information on wines from Eastern countries. For example, there were 9 wines sampled from India and 1 from China. This could bias our findings, in particular average ratings and prices for each country.
 
 ### Limitations of Word Cloud Analyses
 
