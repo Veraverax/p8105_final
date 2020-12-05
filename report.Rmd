@@ -33,7 +33,7 @@ This dataset offers us an excellent opportunity to explore what factors are asso
 In addition, we plan to conduct regression analyses of wine rating and price to better capture the relationship between these two variables. We hope that the regression models would help customers estimate and predict wine ratings using a series of wine characteristics.
 
 
-# Related work
+# Related Work
 
 Some interesting projects that inspired us can be found below:
 
@@ -41,7 +41,7 @@ Some interesting projects that inspired us can be found below:
 
 * A [project](http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html) that examined Red Wine Quality using a red wine dataset from Kaggle.
 
-# Initial questions
+# Initial Questions
 
 We are trying to answer several questions using exploratory analysis. 
 
@@ -179,7 +179,7 @@ rose_df =
 
 * **new_world** and **old_world**: world categorization of origin
 
-# Exploratory analysis
+# Exploratory Analysis
 
 <br>
 
@@ -621,7 +621,7 @@ Below are screenshots of the interactive maps, which are also found [here](mappi
 
 <br><img src="./image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br>
 
-# Additional analysis
+# Additional Analysis
 
 <br>
 
@@ -905,17 +905,17 @@ pw_white_output %>%
 
 <br></br>
 
-### Summarizing the findings
+### Summarizing the Findings
 
 Based on the coefficient estimates of the piecewise model, the model best represents the truth behind the price - rating change trend. Among the **Value Wines**, the slope is the highest and the response of increase in rating points to a unit price change is the most sensitive. When it comes to **Premium Wines**, the change in rating is less sensitive as the wine of this price category is, to some extent, of satisfactory rating in the first place. In **Luxury Wines**, however, the estimated slope value is close to 0, and it's true that among the luxury wines, the price demonstrate more of a branding effect of some wineries rather than providing much information of the wine quality itself.
 
 #### Key Takeaway Message 
 
-* Among the value wines, paying more very likely increases the chance to enjoy a better bottle of wine
+* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine.
 
-* Among the premium wines, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value wines.
+* Among the premium wine segment, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.
 
-* Among the luxury wines, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be to study its reviews for a more informative decision.
+* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be to study its reviews for more informed decisions.
 
 <br></br>
 
@@ -958,9 +958,9 @@ fit_red %>%
 
 #### Summarizing the findings for red wines:
 
-* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment is 5.40 points lower than the luxury on average.
+* The premium segment is, on average 2.56 pts lower than the luxury segment; while the value segment 5.40 points lower than the luxury on average.
 
-* Bold, tannin, acidity, and full body are the key words for higher ratings as compared to wines without these key words, while dry is the key word that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters may lean toward dry as a sign of better quality.
+* Bold, tannin, acidity and full body are the key words for higher rating as compared to without these key words. While dry is the key words that has lower average rating comparing to without this word. This is generally true based on wine notes knowledge, but the mean difference of the dry word is open to argument as some wine tasters are leaning toward dry as a sign of better quality.
 
 * The old world wines are, on average 0.38 pts higher than the unidentified category, while the new world wines are 0.14 pts higher than the unidentified category.
 
@@ -989,11 +989,11 @@ fit_white %>%
 
 #### Summarizing the findings for white wines:
 
-* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment is 6.27 points lower than the luxury on average.
+* The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.
 
-* Bold and acidity are the key words for higher rating as compared to without these key words, and sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
+* Bold and acidity are the key words for higher rating as compared to without these keywords. While sweet is the keyword that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
 
-* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This was unexpected, but still reasonable because red wines are the wine type where the country of origin is more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
+* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 pts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine types where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
 <br></br>
 
@@ -1017,19 +1017,19 @@ Using [wordcloud2](https://www.rdocumentation.org/packages/wordcloud2/versions/0
 
 There are several large limitations to this analysis:   
 
-* **Year**: Although there is a general perception that older wines are better, that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to describe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is susceptible to bias when assessing the association. 
+* **Year**: Although there is a general perception that certain older wines are better, but that does not always hold true. We omitted the year as a predictor in the final multivariate model for two reasons. First, a linear relationship using the year as a continuous variable is not appropriate to describe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is suspectable to bias when assessing the association.
 
-* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simplify the word identification process and chose the 3-5 key words used in the Vivino app. To better understand the wine rating and incorporating, more information about the tasting notes and more reviews are needed. This model provides only a basic sense of whether certain notes correspond to a higher rating.
+* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 keywords used in the Vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher ratings.
 
-* **Old vs New World**: Since there is no comprehensive list of countries to categorize all wines, we relied on the best possible, and popular, list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
+* **Old vs New World**: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
 
-* **Price**: In the multivariate model, we segmented price three categories: value, premium and luxury, rather than keeping price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only utilizng three categories for price could be over-simplifying the true and complicated real world business indications behind wine pricing.
+* **Price**: In the multivariate model, we used price segmentation rather than price as a continuous variable to fit the model. The categorization is the appropriate method to better describe the rating outcome, but only segmenting into three categories could be over-simplifying the true and complicated real world business indications.
 
 * **Missing Data**: There were `r read_csv("./wine_data/tidy/wine_red.csv") %>% filter(is.na(price)) %>% nrow()` in the red wine dataset and `r read_csv("./wine_data/tidy/wine_white.csv") %>% filter(is.na(price)) %>% nrow()` in the white wine dataset.
 
 <br>
 
-### Final Words
+# Final Words
 
 Using data science tools to approach the world of wines has been a trendy topic, yet there are many challenges throughout the process. The key reason behind this is that wine tasting and rating is a subjective matter; despite influencers sharing their thoughts, each person has their preferences. 
 

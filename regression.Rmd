@@ -347,7 +347,7 @@ Based on the coefficient estimates of the piecewise model, the model is actually
 
 <br>
 
-#### Key takeaway message 
+#### Key Takeaway Message 
 
 * Among the value wine segment, paying more is very likely to enjoy a better bottle of wine.
 

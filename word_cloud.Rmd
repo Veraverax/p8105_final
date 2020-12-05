@@ -158,7 +158,7 @@ In overall, higher-rated wines share many key words with lower-rated wines. [Reg
 
 ## Red wine
 ```{r message = FALSE}
-red_word <- wine_word_cloud(red_df, "8D021F", "white")
+red_word <- wine_word_cloud(red_df, "#8D021F", "white")
 red_word
 ```
 
@@ -181,7 +181,7 @@ As introduced in our "About the data" [page](data_intro.html), wines are categor
 
 ## White wine
 ```{r message = FALSE}
-white_word <- wine_word_cloud(white_df, "FEDC56", "white")
+white_word <- wine_word_cloud(white_df, "#FEDC56", "white")
 white_word
 ```
 
@@ -193,7 +193,7 @@ new_white_word
 
 ### (2) Old-world white wine
 ```{r message = FALSE}
-old_white_word <- wine_word_cloud(old_white, "D2B55B", "white")
+old_white_word <- wine_word_cloud(old_white, "#D2B55B", "white")
 old_white_word
 ```
 
@@ -204,13 +204,13 @@ Both new-world and old-world white wines have many fruity notes. "Acidity" appea
 
 ## Rose
 ```{r message = FALSE}
-rose_word <- wine_word_cloud(rose_df, "E75480", "white")
+rose_word <- wine_word_cloud(rose_df, "#E75480", "white")
 rose_word
 ```
 
 ## Sparkling
 ```{r, fig.align="center", message = FALSE}
-sparkling_word <- wine_word_cloud(sparkling_df, "F5B799", "white")
+sparkling_word <- wine_word_cloud(sparkling_df, "#F5B799", "white")
 sparkling_word
 ```
 
