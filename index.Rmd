@@ -17,13 +17,11 @@ output:
 
 <br>
 
+Wine is one of the most common alcoholic drinks around the world and there is a tremendous amount of knowledge about wine history, wine categories, and what characterizes a great bottle of wine.
 
-Wine is one of the most commonly seen alcoholic drinks, and there is a tremendous amount of knowledge about wine history, wine categories, and what characterizes a great bottle of wine.
+This dataset offers us an excellent opportunity to explore what factors are associated with wine ratings. We hope to first explore the relationship between wine prices and trends in rating over time using exploratory graphs. We also hope to identify the keywords of each type of wine using the word clouds. We will also use an interactive map to better demonstrate the geographic distribution of wine.
 
-This dataset offers us an excellent opportunity to explore what factors are associated with wine ratings. We hope to firstly get the image of wine price and rating trend using exploratory graphs. We also hope to identify the keywords of each type of wine using the word cloud tools. We also aim to use an interactive map for a better demonstration of wine distribution geographically. 
-
-In addition, we hope to conduct regression analyses of the wine rating and price and better capture the relationship between wine rating and prices. The regression models would help customers estimate and predict wine rating with a series of wine characteristics.
-
+In addition, we hope to conduct regression analyses of the wine rating and price to better capture the relationship between wine rating and prices. The regression models would help customers estimate and predict wine rating with a series of wine characteristics.
 
 <h6 style="text-align: center;" markdown="1"><img src="image/all_wine_wordcloud.png" style="width:70%"></h6>
 
@@ -39,7 +37,7 @@ In addition, we hope to conduct regression analyses of the wine rating and price
 
 * England was the country of highest wine rating overall - average rating was 92/100.
 
-* Words appeared most frequently for red wine, white wine, rose wine and sparkling wine are fruit, acidity, acidity and apple, respectively.
+* Words appeared most frequently for red wine, white wine, rose wine and sparkling wine are fruit, acidity, acidity, and apple, respectively.
 
 * Relationship between wine price and rating are segmented - see details in [regression analyses](regression.html)!
 
