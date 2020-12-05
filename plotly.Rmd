@@ -133,7 +133,7 @@ wine_df %>%
 
 
 # Distribution of rating by region
-England has the highest average rating. Indis and Austria are the second and third highest.
+England has the highest average rating. India and Austria are the second and third highest.
 Even though Switzerland has the highest priced wine, the average ratings is only ranked at 11. Wine in Switzerland is not very recommended. 
 
 ```{r, message=FALSE, warning=FALSE}
