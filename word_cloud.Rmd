@@ -135,17 +135,20 @@ Word cloud presents the key tasting notes by showing frequent words in larger fo
 
 ## All types
 ```{r message = FALSE}
-wine_word_cloud(wine_df, "red", "white")
+all_wine_word <- wine_word_cloud(wine_df, "red", "white")
+all_wine_word
 ```
 
-### (1) Higher-rating (>=90)
+### (1) Higher-rated (>=90)
 ```{r message = FALSE}
-wine_word_cloud(high_wine, "blue", "white")
+higer_wine_word <- wine_word_cloud(high_wine, "blue", "white")
+higer_wine_word
 ```
 
-### (2) Lower-rating (<90)
+### (2) Lower-rated (<90)
 ```{r message = FALSE}
-wine_word_cloud(low_wine, "green", "white")
+lower_wine_word <- wine_word_cloud(low_wine, "green", "white")
+lower_wine_word
 ```
 
 In overall, higher-rated wines share many key words with lower-rated wines. [Regression analysis](regression.html) would take a deeper look by comparing at their differences among specific wine type groups.
@@ -161,12 +164,14 @@ red_word
 
 ### (1) New-world red wine
 ```{r message = FALSE}
-wine_word_cloud(new_red, "#A1045A", "white")
+new_red_word <- wine_word_cloud(new_red, "#A1045A", "white")
+new_red_word
 ```
 
 ### (2) Old-world red wine
 ```{r message = FALSE}
-wine_word_cloud(old_red, "#67032F", "white")
+old_red_word <- wine_word_cloud(old_red, "#67032F", "white")
+old_red_word
 ```
 
 As introduced in our "About the data" [page](data_intro.html), wines are categorized by new and old world. From word clouds above, "tannins" appears more frequently in the descriptions for old-world red wines, while "blackberry" appears more frequently in the descriptions for new-world red wines.
@@ -182,12 +187,14 @@ white_word
 
 ### (1) New-world white wine
 ```{r message = FALSE}
-wine_word_cloud(new_white, "#F9E076", "white")
+new_white_word <- wine_word_cloud(new_white, "#F9E076", "white")
+new_white_word
 ```
 
 ### (2) Old-world white wine
 ```{r message = FALSE}
-wine_word_cloud(old_white, "D2B55B", "white")
+old_white_word <- wine_word_cloud(old_white, "D2B55B", "white")
+old_white_word
 ```
 
 Both new-world and old-world white wines have many fruity notes. "Acidity" appears more frequently in the descriptions for old-world white wines, but other than that, there is no obvious difference between the two.
@@ -210,29 +217,25 @@ sparkling_word
 Both rose and sparkling would have many good wines for beginners, given the tasting notes of crisp and fresh. New and old world comparisons are not made here as this categorization is usually not used for these two types.
 
 ```{r export, include = FALSE}
-saveWidget(red_word, "tmp1.html", selfcontained = F)
-webshot("tmp1.html", "./image/red_word.png", delay = 5, vwidth = 500, vheight = 500)
+#Export word cloud as .png as preparation for report
+export_word <- function(word_cloud, html_file, output, file_delete){
+  saveWidget(word_cloud, html_file, selfcontained = F)
+  webshot(html_file, output, delay = 5, vwidth = 500, vheight = 500)
+  file.remove(html_file)
+  unlink(file_delete, recursive = TRUE)
+}
 
-saveWidget(white_word, "tmp2.html", selfcontained = F)
-webshot("tmp2.html", "./image/white_word.png", delay = 5, vwidth = 500, vheight = 500)
-
-saveWidget(rose_word, "tmp3.html", selfcontained = F)
-webshot("tmp3.html", "./image/rose_word.png", delay = 5, vwidth = 500, vheight = 500)
-
-saveWidget(sparkling_word, "tmp4.html", selfcontained = F)
-webshot("tmp4.html", "./image/sparkling_word.png", delay = 5, vwidth = 500, vheight = 500)
-
-file.remove("tmp1.html")
-file.remove("tmp2.html")
-file.remove("tmp3.html")
-file.remove("tmp4.html")
-
-
-unlink("tmp1_files", recursive = TRUE)
-unlink("tmp2_files", recursive = TRUE)
-unlink("tmp3_files", recursive = TRUE)
-unlink("tmp4_files", recursive = TRUE)
-
+export_word(all_wine_word, "tmp1.html", "./image/all_wine_word.png", "tmp1_files")
+export_word(higer_wine_word, "tmp2.html", "./image/higer_wine_word.png", "tmp2_files")
+export_word(lower_wine_word, "tmp3.html", "./image/lower_wine_word.png", "tmp3_files")
+export_word(red_word, "tmp4.html", "./image/red_word.png", "tmp4_files")
+export_word(new_red_word, "tmp5.html", "./image/new_red_word.png", "tmp5_files")
+export_word(old_red_word, "tmp6.html", "./image/old_red_word.png", "tmp6_files")
+export_word(white_word, "tmp7.html", "./image/white_word.png", "tmp7_files")
+export_word(new_white_word, "tmp8.html", "./image/new_white_word.png", "tmp8_files")
+export_word(old_white_word, "tmp9.html", "./image/old_white_word.png", "tmp9_files")
+export_word(rose_word, "tmp10.html", "./image/rose_word.png", "tmp10_files")
+export_word(sparkling_word, "tmp11.html", "./image/sparkling_word.png", "tmp11_files")
 ```
 
 

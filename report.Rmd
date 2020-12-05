@@ -190,10 +190,14 @@ rose_df =
 
 ## Word cloud
 
-Red Wine ![](./image/red_word.png)\
-White Wine ![](./image/white_word.png)\
-Rose ![](./image/rose_word.png)\
-Sparkling ![](./image/sparkling_word.png)
+<h6 style="text-align: center;" markdown="1"><img src="./image/red_word.png" style="width:45%"></h6>
+Red Wine
+<h6 style="text-align: center;" markdown="1"><img src="./image/white_word.png" style="width:45%"></h6>
+White Wine
+<h6 style="text-align: center;" markdown="1"><img src="./image/rose_word.png" style="width:45%"></h6>
+Rose
+<h6 style="text-align: center;" markdown="1"><img src="./image/sparkling_word.png" style="width:45%"></h6>
+Sparkling
 
 ## Descriptive Statistics
 
@@ -1003,6 +1007,8 @@ fit_white %>%
 Our data was scraped from a website that primarily focused on Western and European wines. In particular, a large majority of wines were produced in the United States. There were very little wines in our dataset from non-European or non-Western countries. As such, there was limited information on wines from Eastern countries. For example, there were 9 wines sampled from India and 1 from China. This could bias our findings, in particular average ratings and prices for each country.
 
 ### Limitations of Word Cloud Analyses
+
+Using [wordcloud2](https://www.rdocumentation.org/packages/wordcloud2/versions/0.2.1/topics/wordcloud2) package, there seems to be some problem with generating word cloud using an image as a shape mask. Only the first of multiple word cloud plots can show up properly in the html output. Another issue is the difficulty in combining words with the same root; for example, fruit, fruits and fruity.
 
 <br>
 
