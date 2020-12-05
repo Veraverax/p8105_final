@@ -16,7 +16,7 @@ library(plotly)
 
 <br></br>
 
-**Let's take a deeper look into the price and rating of red wines and white wines. The goal is to fit proper linear models that better describe:**
+**Let's take a more in-depth look at the price and rating of red wines and white wines. The goal is to fit proper linear models that better describe:**
 
 * **Price and Rating: what's the best model for their relationship?**
 
@@ -74,9 +74,9 @@ white_df_reg =
 
 <br></br>
 
-There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Is the positive correlation can be further interpreted as a simple linear relationship?
+There has been a lot of ongoing discussion about the value behind the price tag of a bottle of wine. We usually believe that the more expensive wines are of better quality, but is that always true? Can the positive correlation be further interpreted as a simple linear relationship?
 
-The price of wine ranges from value purchase to luxury. The picture summary below shows a general price segmentation of wine. For more information, we highly recommend this [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides more comprehensive discussion about price and quality. 
+The price of wine ranges from value purchase to luxury. The picture summary below shows a general price segmentation of wine. For more information, we highly recommend this [article](https://winefolly.com/lifestyle/reality-of-wine-prices-what-you-get-for-what-you-spend/) from Wine Folly provides a more comprehensive discussion about price and quality. 
 
 <h6 style="text-align: center;" markdown="1"><img src="image/wine_price.jpg" style="width:50%"></h6>
 
@@ -349,11 +349,11 @@ Based on the coefficient estimates of the piecewise model, the model is actually
 
 #### Key takeaway message 
 
-* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine
+* Among the value wine segment, paying more is very likely to enjoy a better bottle of wine.
 
 * Among the premium wine segment, you'll still get better quality wine with higher price, but the value of extra money spent is less apparent as compared to the value segment.
 
-* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be study its reviews for more informative decision.
+* Among the luxury wine segment, don't rely too much on the price tag to expect for a better bottle of wine. Better choice would be to study its reviews for more informed decisions.
 
 <br></br>
 
@@ -436,9 +436,9 @@ fit_white %>%
 
 * The premium segment is, on average 3.07 pts lower than the luxury segment; while the value segment 6.27 points lower than the luxury on average.
 
-* Bold and acidity are the key words for higher rating as compared to without these key words. While sweet is the key words that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
+* Bold and acidity are the key words for higher rating as compared to without these keywords. While sweet is the keyword that has lower average rating comparing to without this word. This is generally true for white wines without much space for argument.
 
-* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
+* The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 pts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine types where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
 <br>
 
@@ -447,9 +447,9 @@ fit_white %>%
 
 There are several large limitations to this analysis:   
 
-* **Year**: Although there is a general perception that the certain older wines are better, but that does not always hold true. We omitted year as a predictor in the final multivariate model for two reasons. First, a linear relationship using year as a continuous variable is not appropriate to discribe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is sucpectable to bias when assessing the association. 
+* **Year**: Although there is a general perception that certain older wines are better, but that does not always hold true. We omitted the year as a predictor in the final multivariate model for two reasons. First, a linear relationship using the year as a continuous variable is not appropriate to describe the association between wine rating and year. Besides, the dataset does not provide information on when the wine rating is generated, which is suspectable to bias when assessing the association.
 
-* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 key words used in the vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher rating.
+* **Word Descriptions**: Due to the limited information of the tasting notes of a bottle of wine in our dataset, we could only simply the word identification process and chose the 3-5 keywords used in the Vivino app. To better understand the wine rating and incorporating more information about the tasting notes, more reviews are needed. This model provides only a basic sense of certain notes correspond to higher ratings.
 
 * **Old vs New World**: Since there is no comprehensive list of countries that categorize all wines, we relied on the best possible list by Wine Folly. However, there could be wines that belong to either new or old world that are currently categorized as other (reference group).
 
