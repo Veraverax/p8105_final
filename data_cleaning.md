@@ -36,8 +36,7 @@ wine_df =
 
     ## Warning: Missing column names filled in: 'X1' [1]
 
-    ## 
-    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Parsed with column specification:
     ## cols(
     ##   X1 = col_double(),
     ##   country = col_character(),
