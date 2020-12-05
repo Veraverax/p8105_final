@@ -391,8 +391,6 @@ The following binary variables are identified by the key description scale from 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
 
-## how to set ref group for price_seg?
-
 fit_red %>% 
   broom::tidy()%>%
   select(term, estimate, p.value) %>% 

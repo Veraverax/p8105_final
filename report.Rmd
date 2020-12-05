@@ -1,18 +1,18 @@
 ---
-title: ""
+title: "Project Report"
 output: 
   html_document:
-    code_folding: hide
+    code_folding: hide 
     toc: true
     toc_float: true
 ---
-<h1 style="text-align: center;" markdown="1">Project Report
-
-<h4 style="text-align: center;" markdown="1">Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)</h6>
 
 <br>
 
-This is the report of our wine data project.
+**Vera Xu (yx2578) | Tianheng Hu (th2533) | Helen Zhang (hlz2108) | Yuanxin Zhang (yz3736)**
+
+<br>
+
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
@@ -22,30 +22,17 @@ library(plotly)
 library(readxl)
 library(modelr)
 library(mgcv)
-
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 
-<br>
 
 # Motivation
 
-Wine is one of the most commonly seen alcoholic drinks, and there is a great amount of knowledge about wine history, wine categories and what characterizes a great bottle of wine.
+Wine is one of the most commonly seen alcoholic drinks, and there is a tremendous amount of knowledge about wine history, wine categories, and what characterizes a great bottle of wine.
 
-This dataset offers us a great opportunity to explore what factors are associated with wine ratings. We hope to conduct regression analysis of the wine rating and price based on location/grape type/notes/region and see if there are significant difference among these categorical predictors. The regression model would help customers estimate and predict wine rating with a series of wine characteristics. We also want to provide people with a interactive website to visualize wine ratings and prices.
+This dataset offers us an excellent opportunity to explore what factors are associated with wine ratings. We hope to firstly get the image of wine price and rating trend using exploratory graphs. We also hope to identify the keywords of each type of wine using the word cloud tools. We also aim to use an interactive map for a better demonstration of wine distribution geographically. 
 
-<br>
+In addition, we hope to conduct regression analyses of the wine rating and price and better capture the relationship between wine rating and prices. The regression models would help customers estimate and predict wine rating with a series of wine characteristics.
+
 
 # Related work
 
@@ -55,7 +42,7 @@ Interesting projects that inspired us can be found below.
 
 * A [project](http://rstudio-pubs-static.s3.amazonaws.com/496773_7fbdf1545d2e44048bbbfad374027b94.html) that examined Red Wine Quality using a red wine dataset from Kaggle.
 
-<br>
+
 
 # Initial questions
 
@@ -91,7 +78,6 @@ To understand the information that customers could get from the ratings, price a
 
 13. What is the distribution of wine quality and price within US using interactive demonstration?
 
-<br>
 
 # Data
 
@@ -200,11 +186,11 @@ rose_df =
 
 * **new_world** and **old_world**: world categorization of origin
 
-<br>
+
 
 # Exploratory analysis
 
-<br><br>
+<br>
 
 ## Word cloud
 
@@ -300,7 +286,7 @@ wine_df %>%
 ```
 
 
-<br><br>
+<br>
 
 
 ### Trend of price/rating over time
@@ -342,7 +328,7 @@ wine_df %>%
 
 ```
 
-<br><br>
+<br>
 
 
 ### Price and ratings by taster.
@@ -634,7 +620,7 @@ world_map_labels = countries_merged_wine %>%
 
 <br><img src="./image/world_map.png" alt="world_map" style="width:65%; border:2px solid"><br>
 
-<br></br>
+
 
 # Additional analysis
 
@@ -970,8 +956,6 @@ The following binary variables are identified by the key description scale from 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 fit_red = lm(points ~ price_seg  + bold + tannin + dry + acidity + full_body + old_world + new_world, data = red_df_reg)
 
-## how to set ref group for price_seg?
-
 fit_red %>% 
   broom::tidy()%>%
   select(term, estimate, p.value) %>% 
@@ -1019,7 +1003,8 @@ fit_white %>%
 
 * The old world wines are, on average 0.19 pts lower than the unidentified category, while the new world wines are 0.43 ptts lower than the unidentified category. This wasn't expected, but still reasonable because red wines are the wine tpyes where the country of origin is way more heavily discussed and compared, while discussion of white wine is less focused on the old vs new world comparison.
 
-<br>
+<br></br>
+
 
 # Discussion
 

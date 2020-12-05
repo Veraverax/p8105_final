@@ -198,15 +198,17 @@ webshot("tmp3.html", "./image/rose_word.png", delay = 5, vwidth = 500, vheight =
 saveWidget(sparkling_word, "tmp4.html", selfcontained = F)
 webshot("tmp4.html", "./image/sparkling_word.png", delay = 5, vwidth = 500, vheight = 500)
 
+file.remove("tmp1.html")
+file.remove("tmp2.html")
+file.remove("tmp3.html")
+file.remove("tmp4.html")
+
 
 unlink("tmp1_files", recursive = TRUE)
 unlink("tmp2_files", recursive = TRUE)
 unlink("tmp3_files", recursive = TRUE)
 unlink("tmp4_files", recursive = TRUE)
-remove.file("tmp1.html")
-remove.file("tmp2.html")
-remove.file("tmp3.html")
-remove.file("tmp4.html")
+
 ```
 
 
