@@ -76,7 +76,7 @@ The results is significant which means that we can conclude that at least one wi
 
 # Distribution of rating by wine type
 Plot the distribution of wine ratings across four different wine types: red, rose, sparkling, white. 
-We can see that red wine has higher ratings than the other tree types. Rose has the lowest. 
+We can see that red wine has higher ratings than the other three types. Rose has the lowest. 
 
 ```{r, message=FALSE, warning=FALSE}
 wine_df %>% 
@@ -157,7 +157,7 @@ wine_df %>%
 
 
 # Trend of wine prices over wine vintage
-We can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparling wine and 2004 is a good year for white wine.
+We can see a trend that wines that are older are more expensive. Among the wine that were produced before 2010, Sparkling wine have the highest prices among all types but the prices decreases with the year closer to present. Among the wine that were produced after 2010, red wines are the most expensive. 2002 is a good year for sparkling wine and 2004 is a good year for white wine.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -227,7 +227,7 @@ y <- list(
 <br>
 
 # Who rates the highest price wine? 
-We want to know the tasters that rated wines with price greater than $800.Most of the most expensive wine are rated by Roger Voss.
+We want to know the tasters that rated wines with price greater than $800. Most of the most expensive wine are rated by Roger Voss.
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -322,7 +322,7 @@ wine_df %>%
 
 <br><br>
 
-## Conduct a  t-test on price vs new/old world wine
+## Conduct a t-test on price vs new/old world wine
 
 The results is significant which means that we can conclude that prices of new world or old world wine are significantly different from the others.
 
