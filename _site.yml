@@ -21,7 +21,7 @@ navbar:
     - text: "Project Report"
       href: report.html
     - icon: fa-youtube fa-lg
-      href: https://www.youtube.com/watch?v=ULm6gKnIc2E
+      href: https://youtu.be/A1iWprvTfj8
     - icon: fa-github fa-lg
       href: https://github.com/Veraverax/p8105_final/
 output:
