@@ -7,7 +7,7 @@ output:
     toc_float: true
 ---
 
-We were curious to look at the geographical variation within our wine dataset, in particular where wines were most commonly produced. In order to help visualize the dataset, we generated several maps to show us the location where wines were produced and the total number of wines from each US state or country in our dataset. Below are several maps depicting where wines are made, the total number of wines from the region, and the average ratings and prices for each country.
+We were curious to look at the geographical variation within our wine dataset, in particular where wines were most commonly produced. To help visualize the dataset, we generated several maps to show us the location where wines were produced and the total number of wines from each US state or country in our dataset. Below are several maps depicting where wines are made, the total number of wines from the region, and the average ratings and prices for each country.
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -71,7 +71,7 @@ mutate(
 
 ## Static Map
 
-The static map depicts the average rating of each countries' wines. England leads in terms of average wine ratings, with Austria, Germany, and India close behind. It is important to note that there were a much smaller sample size for wines from England India, with only 69 and 9 wines sampled respectively, as compared to other countries with high rankings. On the lower end of the averages cores is Peru and Ukraine.
+The static map depicts the average rating of each countries' wines. England leads in terms of average wine ratings, with Austria, Germany, and India close behind. It is important to note that there were a much smaller sample size for wines from England and India, with only 69 and 9 wines sampled respectively, as compared to other countries with high rankings. On the lower end of the average scores is Peru and Ukraine.
 
 ```{r static_map}
 wine_by_country_static = wine_by_country %>% 
